@@ -5,18 +5,14 @@ import { View, Text, SafeAreaView, StyleSheet, StatusBar, ImageBackground, Image
 import BackImage from './../../assets/background.jpg';
 import Driver from './../../assets/driver.png';
 import Truck from './../../assets/truck.png';
+import Logo from './../../assets/splash_logo.png';
 
 const HomeRoute = ({ navigation }) => {
   return (
-      <ImageBackground 
-        source={BackImage}
-        style={{ flex: 1,
-          width: null,
-          height: null,
-          objectFit: 'contain'
-          }}
+      <View 
+        style={styles.container}
       >
-        <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "#1e73be" translucent = {true}/>
+        <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "#1370a4" translucent = {true}/>
 
         <SafeAreaView style={styles.container}>
 
@@ -27,26 +23,24 @@ const HomeRoute = ({ navigation }) => {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
-
+            }}>
+              <View style={{...styles.HeaderLogo, height: 120, width:120}}>
+                <Image style={{...styles.buttonImage, height: 90, width:90}} source={Logo}/>
+              </View>
               <Text
-                style={{
-                  fontSize: 18,
-                  textAlign: 'center',
-                  marginBottom: 16,
-                  color: '#1f1f1f'
-                }}>
-                LOGIN AS
+                style={styles.buttonText}>
+                Abay Logistics PLC
               </Text>
+
               <TouchableOpacity style={styles.buttonCard} onPress={()=>navigation.navigate('TruckLogin')}>
                 <Image style={styles.buttonImage} source={Truck}/>
               </TouchableOpacity>
-              <Text style={styles.text}>Transporter</Text>
+              <Text style={styles.text}>Transporter Login</Text>
 
               <TouchableOpacity style={styles.buttonCard} onPress={()=>navigation.navigate('DriverLogin')}>
                 <Image style={styles.buttonImage} source={Driver}/>
               </TouchableOpacity>
-              <Text style={styles.text}>Driver</Text>
+              <Text style={styles.text}>Driver Login</Text>
 
             </View>
 
@@ -56,7 +50,7 @@ const HomeRoute = ({ navigation }) => {
 
         </SafeAreaView>
 
-      </ImageBackground>
+      </View>
   );
 }
 
@@ -67,46 +61,48 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    
+    backgroundColor: '#19788e',
   },
-  linearGradient: {
-    paddingLeft: 15,
-    paddingRight: 15,
-    borderRadius: 5,
-    width: '100%',
-    height: '100%'
+  HeaderLogo:{
+    backgroundColor:'#FFF',
+    borderRadius: 100,
+    height: 100,
+    width: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonText: {
     fontSize: 18,
     textAlign: 'center',
-    margin: 10,
-    color: '#1f1f1f',
-    backgroundColor: 'transparent',
+    marginTop: 15,
+    color: '#fff',
+    fontWeight: 'bold'
   },
 
   buttonCard:{
-    height: 120,
-    width: 120,
+    height: 100,
+    width: 100,
     backgroundColor: '#FFF',
     borderRadius: 15,
     marginTop: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: '#1f1f1f',
     shadowOffset: {width: -2, height: 4},
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 
   text:{
-    fontSize: 15,
+    fontSize: 16,
     textAlign: 'center',
     margin: 10,
-    color: '#1f1f1f',
+    color: '#fff',
+    fontWeight: "bold",
   },
 
   buttonImage:{
-    width: 80,
-    height: 80
+    width: 75,
+    height: 75
   }
 });
