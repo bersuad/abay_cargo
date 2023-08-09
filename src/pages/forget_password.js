@@ -10,49 +10,34 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import Driver from './../../assets/driver.gif';
-import { useNavigation } from '@react-navigation/native';
+import Driver from './../../assets/password.gif';
 
 export default function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigation = useNavigation();
-
   return (
     <View style={styles.container}>
-      <View style={styles.logoArea}>
-        <Image style={styles.image} source={Driver} /> 
-        <Text style={styles.buttonText}>
-          Driver Login
-        </Text>
-      </View>
-      <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Email Here."
-          placeholderTextColor="#003f5c"
-          onChangeText={(email) => setEmail(email)}
-        /> 
-      </View> 
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Password."
-          placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        /> 
-      </View> 
-      <TouchableOpacity onPress={()=>navigation.navigate('ForgetPassword')}>
-        <Text style={{...styles.forgot_button, color: '#19788e'}}>Forgot Password?</Text> 
-      </TouchableOpacity> 
-      <TouchableOpacity style={styles.loginBtn}>
-        <Text style={styles.loginText}>LOGIN</Text> 
-      </TouchableOpacity> 
-      
+        <View style={styles.logoArea}>
+            <Image style={styles.image} source={Driver} /> 
+            <Text style={styles.buttonText}>
+                Forgot Password?
+            </Text>
+        </View>
+        <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
+        <View style={styles.inputView}>
+            <TextInput
+            style={styles.TextInput}
+            placeholder="Your email here."
+            placeholderTextColor="#003f5c"
+            onChangeText={(email) => setEmail(email)}
+            /> 
+        </View> 
+        
+        <TouchableOpacity style={styles.loginBtn}>
+            <Text style={styles.loginText}>SEND</Text> 
+        </TouchableOpacity> 
     </View> 
-  );
+    );
 }
 const styles = StyleSheet.create({
   container: {
@@ -63,9 +48,10 @@ const styles = StyleSheet.create({
   },
   image: {
     marginBottom: 0,
-    height: 100,
-    width: 100,
+    height: 150,
+    width: 150,
     objectFit: "contain",
+    marginTop: -30
   },
   logoArea:{
     marginBottom: 40,

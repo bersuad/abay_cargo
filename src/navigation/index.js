@@ -6,6 +6,7 @@ import splash from './../pages/splash';
 import HomeRoute from '../pages/login_route';
 import TruckLogin from './../pages/transporter_login';
 import DriverLogin from './../pages/driver_login';
+import ForgetPassword from './../pages/forget_password';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -40,6 +41,22 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Driver Login',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#19788e',
+            },
+            headerTintColor: '#fff'
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="ForgetPassword"
+          title="Forget Password"
+          component={ForgetPassword} 
+          options={{
+            headerShown: true,
+            headerTitle:'Forget Password',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#19788e',

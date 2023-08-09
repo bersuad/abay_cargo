@@ -11,10 +11,13 @@ import {
 } from "react-native";
 
 import Truck from './../../assets/transporter.gif';
+import { useNavigation } from '@react-navigation/native';
 
 export default function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
+  
   return (
     <View style={styles.container}>
       <View style={styles.logoArea}>
@@ -41,7 +44,7 @@ export default function App() {
           onChangeText={(password) => setPassword(password)}
         /> 
       </View> 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>navigation.navigate('ForgetPassword')}>
         <Text style={{...styles.forgot_button, color: '#19788e'}}>Forgot Password?</Text> 
       </TouchableOpacity> 
       <TouchableOpacity style={styles.loginBtn}>
