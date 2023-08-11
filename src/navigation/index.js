@@ -8,6 +8,9 @@ import TruckLogin from './../pages/transporter_login';
 import DriverLogin from './../pages/driver_login';
 import ForgetPassword from './../pages/forget_password';
 import Registration from './../pages/transporterRegistration';
+import TransporterDashboard from './../pages/transporterDashboard';
+import ActionBarImage from './../pages/headerImage';
+import NotificationBar from './../pages/transporterNotification'
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -82,6 +85,25 @@ export default function App() {
           }}
           
         />
+
+        <Stack.Screen
+          name="TransporterDashboard"
+          title="TransporterDashboard"
+          component={TransporterDashboard} 
+          options={{
+            headerShown: true,
+            headerTitle:'Cargo And Delivery',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            headerBackTitleVisible: false,
+            headerLeft: ()=> <ActionBarImage/>,
+            headerRight: ()=> <NotificationBar />,
+          }}
+          
+        />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

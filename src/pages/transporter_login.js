@@ -47,7 +47,7 @@ export default function App() {
       <TouchableOpacity onPress={()=>navigation.navigate('ForgetPassword')}>
         <Text style={{...styles.forgot_button, color: '#19788e'}}>Forgot Password?</Text> 
       </TouchableOpacity> 
-      <TouchableOpacity style={styles.loginBtn}>
+      <TouchableOpacity style={styles.loginBtn} onPress={()=>navigation.navigate('TransporterDashboard')}>
         <Text style={styles.loginText}>LOGIN</Text> 
       </TouchableOpacity> 
       <TouchableOpacity onPress={()=>navigation.navigate('Registration')}>
