@@ -7,6 +7,7 @@ import HomeRoute from '../pages/login_route';
 import TruckLogin from './../pages/transporter_login';
 import DriverLogin from './../pages/driver_login';
 import ForgetPassword from './../pages/forget_password';
+import Registration from './../pages/transporterRegistration';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -57,6 +58,22 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Forget Password',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#19788e',
+            },
+            headerTintColor: '#fff'
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="Registration"
+          title="Registration"
+          component={Registration} 
+          options={{
+            headerShown: true,
+            headerTitle:'Transporter Registration',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#19788e',

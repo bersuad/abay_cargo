@@ -70,13 +70,13 @@ const styles = StyleSheet.create({
       alignItems: 'center',
   },
   logoText:{
-      color: '#002A25',
+      color: '#19788e',
       fontSize: 25,
       marginTop: 15,
       fontWeight: '300',
   },
   simpleText:{
-      color: '#002A25',
+      color: '#19788e',
       fontSize: 14,
       marginTop: 2.9,
       fontWeight: '300',
