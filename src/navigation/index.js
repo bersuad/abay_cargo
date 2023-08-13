@@ -4,13 +4,13 @@ import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack'
 
 import splash from './../pages/splash';
 import HomeRoute from '../pages/login_route';
-import TruckLogin from './../pages/transporter_login';
-import DriverLogin from './../pages/driver_login';
+import TruckLogin from '../pages/transporter/transporter_login';
+import DriverLogin from '../pages/driver/driver_login';
 import ForgetPassword from './../pages/forget_password';
-import Registration from './../pages/transporterRegistration';
-import TransporterDashboard from './../pages/transporterDashboard';
+import Registration from '../pages/transporter/transporterRegistration';
+import TransporterDashboard from '../pages/transporter/transporterDashboard';
 import ActionBarImage from './../pages/headerImage';
-import NotificationBar from './../pages/transporterNotification'
+import NotificationBar from '../pages/transporter/transporterNotification'
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -92,9 +92,13 @@ export default function App() {
           component={TransporterDashboard} 
           options={{
             headerShown: true,
-            headerTitle:'Cargo And Delivery',
+            headerTitle:'Cargo & Delivery',
             headerStyle: {
               backgroundColor: '#fff',
+              shadowColor: '#1f1f1f',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 0.2,
+              shadowRadius: 3,
             },
             headerTintColor: '#19788e',
             headerBackTitleVisible: false,

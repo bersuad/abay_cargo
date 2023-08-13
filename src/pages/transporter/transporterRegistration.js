@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Image, View, StyleSheet, TouchableOpacity, Text, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Logo from './../../assets/splash_logo.png';
+import Logo from './../../../assets/splash_logo.png';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ImagePickerExample() {
   const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;
@@ -27,7 +28,7 @@ export default function ImagePickerExample() {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={{marginBottom:10}}>
           {image && <Image source={{ uri: image }} style={styles.image} />}
           <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
@@ -102,12 +103,23 @@ export default function ImagePickerExample() {
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}
           /> 
+        </View> 
+
+        <Text style={styles.HeaderText}>Confirm Password</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Confirm Password"
+            placeholderTextColor="#19788e"
+            secureTextEntry={true}
+            onChangeText={(password) => setPassword(password)}
+          /> 
         </View>  
 
         <TouchableOpacity style={styles.loginBtn}>
           <Text style={styles.loginText}>Next <Ionicons name="md-arrow-forward" size={15} color="#fff" /></Text> 
         </TouchableOpacity> 
-      </View>
+      </SafeAreaView>
     </ScrollView>
   );
 }

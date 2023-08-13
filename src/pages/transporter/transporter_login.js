@@ -10,20 +10,20 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import Driver from './../../assets/driver.gif';
+import Truck from './../../../assets/transporter.gif';
 import { useNavigation } from '@react-navigation/native';
 
 export default function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.logoArea}>
-        <Image style={styles.image} source={Driver} /> 
+        <Image style={styles.image} source={Truck} /> 
         <Text style={styles.buttonText}>
-          Driver Login
+          Transporter Login
         </Text>
       </View>
       <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
@@ -47,10 +47,12 @@ export default function App() {
       <TouchableOpacity onPress={()=>navigation.navigate('ForgetPassword')}>
         <Text style={{...styles.forgot_button, color: '#19788e'}}>Forgot Password?</Text> 
       </TouchableOpacity> 
-      <TouchableOpacity style={styles.loginBtn}>
+      <TouchableOpacity style={styles.loginBtn} onPress={()=>navigation.navigate('TransporterDashboard')}>
         <Text style={styles.loginText}>LOGIN</Text> 
       </TouchableOpacity> 
-      
+      <TouchableOpacity onPress={()=>navigation.navigate('Registration')}>
+        <Text style={{...styles.buttonText, marginTop: 25}}>Register</Text> 
+      </TouchableOpacity> 
     </View> 
   );
 }
