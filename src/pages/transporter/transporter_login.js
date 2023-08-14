@@ -12,6 +12,7 @@ import {
 
 import Truck from './../../../assets/transporter.gif';
 import { useNavigation } from '@react-navigation/native';
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function App() {
   const [email, setEmail] = useState("");
@@ -19,41 +20,43 @@ export default function App() {
   const navigation = useNavigation();
   
   return (
-    <View style={styles.container}>
-      <View style={styles.logoArea}>
-        <Image style={styles.image} source={Truck} /> 
-        <Text style={styles.buttonText}>
-          Transporter Login
-        </Text>
-      </View>
-      <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Email Here."
-          placeholderTextColor="#003f5c"
-          onChangeText={(email) => setEmail(email)}
-        /> 
+    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+      <View style={styles.container}>
+        <View style={styles.logoArea}>
+          <Image style={styles.image} source={Truck} /> 
+          <Text style={styles.buttonText}>
+            Transporter Login
+          </Text>
+        </View>
+        <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Email Here."
+            placeholderTextColor="#003f5c"
+            onChangeText={(email) => setEmail(email)}
+          /> 
+        </View> 
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Password."
+            placeholderTextColor="#003f5c"
+            secureTextEntry={true}
+            onChangeText={(password) => setPassword(password)}
+          /> 
+        </View> 
+        <TouchableOpacity onPress={()=>navigation.navigate('ForgetPassword')}>
+          <Text style={{...styles.forgot_button, color: '#19788e'}}>Forgot Password?</Text> 
+        </TouchableOpacity> 
+        <TouchableOpacity style={styles.loginBtn} onPress={()=>navigation.navigate('TransporterDashboard')}>
+          <Text style={styles.loginText}>LOGIN</Text> 
+        </TouchableOpacity> 
+        <TouchableOpacity onPress={()=>navigation.navigate('Registration')}>
+          <Text style={{...styles.buttonText, marginTop: 25, marginBottom: 25}}>Register</Text> 
+        </TouchableOpacity> 
       </View> 
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.TextInput}
-          placeholder="Password."
-          placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        /> 
-      </View> 
-      <TouchableOpacity onPress={()=>navigation.navigate('ForgetPassword')}>
-        <Text style={{...styles.forgot_button, color: '#19788e'}}>Forgot Password?</Text> 
-      </TouchableOpacity> 
-      <TouchableOpacity style={styles.loginBtn} onPress={()=>navigation.navigate('TransporterDashboard')}>
-        <Text style={styles.loginText}>LOGIN</Text> 
-      </TouchableOpacity> 
-      <TouchableOpacity onPress={()=>navigation.navigate('Registration')}>
-        <Text style={{...styles.buttonText, marginTop: 25}}>Register</Text> 
-      </TouchableOpacity> 
-    </View> 
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
@@ -70,6 +73,7 @@ const styles = StyleSheet.create({
     objectFit: "contain",
   },
   logoArea:{
+    marginTop: 40,
     marginBottom: 40,
     alignItems: "center",
     justifyContent: "center",

@@ -11,32 +11,35 @@ import {
 } from "react-native";
 
 import Driver from './../../assets/password.gif';
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
-    <View style={styles.container}>
-        <View style={styles.logoArea}>
-            <Image style={styles.image} source={Driver} /> 
-            <Text style={styles.buttonText}>
-                Forgot Password?
-            </Text>
-        </View>
-        <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
-        <View style={styles.inputView}>
-            <TextInput
-            style={styles.TextInput}
-            placeholder="Your email here."
-            placeholderTextColor="#003f5c"
-            onChangeText={(email) => setEmail(email)}
-            /> 
-        </View> 
-        
-        <TouchableOpacity style={styles.loginBtn}>
-            <Text style={styles.loginText}>SEND</Text> 
-        </TouchableOpacity> 
-    </View> 
+    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+      <View style={styles.container}>
+          <View style={styles.logoArea}>
+              <Image style={styles.image} source={Driver} /> 
+              <Text style={styles.buttonText}>
+                  Forgot Password?
+              </Text>
+          </View>
+          <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
+          <View style={styles.inputView}>
+              <TextInput
+              style={styles.TextInput}
+              placeholder="Your email here."
+              placeholderTextColor="#003f5c"
+              onChangeText={(email) => setEmail(email)}
+              /> 
+          </View> 
+          
+          <TouchableOpacity style={styles.loginBtn}>
+              <Text style={styles.loginText}>SEND</Text> 
+          </TouchableOpacity> 
+      </View> 
+    </ScrollView>
     );
 }
 const styles = StyleSheet.create({
@@ -86,6 +89,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: "#19788e",
     color: '#fff',
+    marginBottom: 25
   },
   loginText: {
     color: '#fff',

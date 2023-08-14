@@ -6,51 +6,51 @@ import BackImage from './../../assets/background.jpg';
 import Driver from './../../assets/driver.png';
 import Truck from './../../assets/truck.png';
 import Logo from './../../assets/splash_logo.png';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const HomeRoute = ({ navigation }) => {
   return (
-      <View 
+    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+      <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "#1370a4" translucent = {true}/>
+      <SafeAreaView 
         style={styles.container}
       >
-        <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "#1370a4" translucent = {true}/>
 
-        <SafeAreaView style={styles.container}>
+        <View>
 
-          <View>
-
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}>
-              <View style={{...styles.HeaderLogo, height: 120, width:120}}>
-                <Image style={{...styles.buttonImage, height: 90, width:90}} source={Logo}/>
-              </View>
-              <Text
-                style={styles.buttonText}>
-                Abay Logistics PLC
-              </Text>
-
-              <TouchableOpacity style={styles.buttonCard} onPress={()=>navigation.navigate('TruckLogin')}>
-                <Image style={styles.buttonImage} source={Truck}/>
-              </TouchableOpacity>
-              <Text style={styles.text}>Transporter Login</Text>
-
-              <TouchableOpacity style={styles.buttonCard} onPress={()=>navigation.navigate('DriverLogin')}>
-                <Image style={styles.buttonImage} source={Driver}/>
-              </TouchableOpacity>
-              <Text style={styles.text}>Driver Login</Text>
-
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+          }}>
+            <View style={{...styles.HeaderLogo, height: 120, width:120}}>
+              <Image style={{...styles.buttonImage, height: 90, width:90}} source={Logo}/>
             </View>
+            <Text
+              style={styles.buttonText}>
+              Abay Logistics PLC
+            </Text>
 
-            
+            <TouchableOpacity style={styles.buttonCard} onPress={()=>navigation.navigate('TruckLogin')}>
+              <Image style={styles.buttonImage} source={Truck}/>
+            </TouchableOpacity>
+            <Text style={styles.text}>Transporter Login</Text>
+
+            <TouchableOpacity style={styles.buttonCard} onPress={()=>navigation.navigate('DriverLogin')}>
+              <Image style={styles.buttonImage} source={Driver}/>
+            </TouchableOpacity>
+            <Text style={styles.text}>Driver Login</Text>
 
           </View>
 
-        </SafeAreaView>
+          
 
-      </View>
+        </View>
+
+      </SafeAreaView>
+    </ScrollView>
+
   );
 }
 
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     width: 100,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 30
   },
   buttonText: {
     fontSize: 18,
@@ -105,4 +106,6 @@ const styles = StyleSheet.create({
     width: 75,
     height: 75
   }
+
+  
 });

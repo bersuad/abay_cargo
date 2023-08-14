@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import {Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, SimpleLineIcons} from '@expo/vector-icons';
 
 
 import { useNavigation } from '@react-navigation/native';
@@ -24,50 +24,223 @@ export default function App() {
   const navigation = useNavigation();
 
   return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.15)'}}>
+    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
       <View style={styles.container}>
         <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
-        <ImageBackground source={cardBackground} resizeMode="cover" style={styles.welcomeCard}>
+        <ImageBackground imageStyle={{ borderRadius: 10}} source={cardBackground} resizeMode="cover" style={[styles.welcomeCard, styles.boxShadow]}>
           <Text style={styles.cardText}>WELCOME.., </Text>
           <Text style={{...styles.cardText, fontSize:18, }}>transporter company</Text>
           <Image style={styles.cardImage} source={headerImage}/>
-          <Text style={{...styles.cardText, fontSize: 13, marginTop: 50, color: "#1b9be6"}}>GET </Text>
-          <Text style={{...styles.cardText, fontSize: 13, marginTop: 0, color: "#1b9be6"}}>STARTED! </Text>
+          <TouchableOpacity>
+            <Text style={{...styles.cardText, fontSize: 13, marginTop: 90, color: "#1b9be6"}}>GET STARTED! </Text>
+          </TouchableOpacity>
         </ImageBackground>
 
         <View
           style={[
-            styles.container,
             {
               flexDirection: 'row',
-              width: '94%',
+              width: '90%',
               gap: 15,
               shadowColor: '#1f1f1f',
               shadowOffset: {width: -2, height: 1},
               shadowOpacity: 0.2,
               shadowRadius: 1,
-              marginTop: 30
+              marginTop: 20,
             },
           ]}>
-          <View style={styles.listCard}>
-              <View style={styles.iconArea}>
-                <Ionicons name="md-arrow-swap" size={15} color="rgba(255,255,255,0.5)" />
-              </View>
-              <Text style={{...styles.cardText, fontSize:13, }}>Vehicles</Text>
-          </View>
-          <View style={styles.listCard}>
-              <View style={styles.iconArea}>
-                <Ionicons name="md-arrow-swap" size={15} color="rgba(255,255,255,0.5)" />
-              </View>
-              <Text style={{...styles.cardText, fontSize:13, }}>Drivers</Text>
-          </View>
-          <View style={styles.listCard}>
-            <View style={styles.iconArea}>
-              <Ionicons name="md-swap-horizontal " size={15} color="rgba(255,255,255,0.5)" />
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]}>
+            <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)"}}>
+              <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
+            </View>
+            <Text style={{...styles.cardText, fontSize:13, }}>Vehicles</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]}>
+            <View style={{...styles.iconArea, backgroundColor: "#1b9be6"}}>
+              <FontAwesome5 name="id-badge" size={24} color="#fff" />
+            </View>
+            <Text style={{...styles.cardText, fontSize:13, }}>Drivers</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]}>
+            <View style={{...styles.iconArea, backgroundColor: "#19788e"}}>
+              <Ionicons name="swap-horizontal" size={24} color="#fff" />
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Frights</Text>
+          </TouchableOpacity>
+
+        </View>
+
+        <TouchableOpacity style={[styles.boxShadow, styles.offers]}>
+
+          <View style={{...styles.iconArea, backgroundColor: "#1b9be6", position: "absolute", left: 20}}>
+            <MaterialCommunityIcons name="notebook-check" size={24} color="#fff" />
+          </View>
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offer Goods  
+            <View style={{...styles.badge, backgroundColor: "#1b9be6", }}>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>10</Text>
+            </View>
+          </Text>
+          <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
+          
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
+          <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)", position: "absolute", left: 20}}>
+            <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
+          </View>
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+            <View style={{...styles.badge, backgroundColor: "rgba(1, 138, 40, 0.88)", }}>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}> 8 </Text>
+            </View>
+          </Text>
+          <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
+        </TouchableOpacity>
+        
+        <View
+          style={[
+            {
+              flex: 1,
+              flexDirection: 'column',
+              width: '90%',
+              shadowColor: '#1f1f1f',
+              shadowOffset: {width: -2, height: 1},
+              shadowOpacity: 0.2,
+              shadowRadius: 1,
+              marginTop: 10,
+            },
+          ]}>
+          <View style={{alignItems: 'flex-start' }}>
+            <Text style={{fontSize:15, color:'#1f1f1f', fontWeight:"bold"}}>Ongoing Frights</Text>
+          </View>
+          <TouchableOpacity style={{alignItems: 'flex-end', marginTop: -18 }}>
+            <Text style={{fontSize:15, color:'#1b9be6', fontWeight:"bold"}}>View All</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* on going Frights area */}
+        <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+          <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+            <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '90%',
+                gap: 15,
+                shadowColor: '#1f1f1f',
+                shadowOffset: {width: -2, height: 1},
+                shadowOpacity: 0.2,
+                shadowRadius: 1,
+              },
+            ]}>
+              <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                <FontAwesome5 name="box-open" size={24} color="#fff" />
+              </View>
+              <View >
+                <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
+                <Text style={{textAlign:'left', width: 200}}>
+                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
+                </Text>
+              </View>
+              <View style={{position: "absolute", top: 0, right:0}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 3}}>
+                  <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+            <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '90%',
+                gap: 15,
+                shadowColor: '#1f1f1f',
+                shadowOffset: {width: -2, height: 1},
+                shadowOpacity: 0.2,
+                shadowRadius: 1,
+              },
+            ]}>
+              <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                <FontAwesome5 name="box-open" size={24} color="#fff" />
+              </View>
+              <View >
+                <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
+                <Text style={{textAlign:'left', width: 200}}>
+                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
+                </Text>
+              </View>
+              <View style={{position: "absolute", top: 0, right:0}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 3}}>
+                  <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+            <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '90%',
+                gap: 15,
+                shadowColor: '#1f1f1f',
+                shadowOffset: {width: -2, height: 1},
+                shadowOpacity: 0.2,
+                shadowRadius: 1,
+              },
+            ]}>
+              <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                <FontAwesome5 name="box-open" size={24} color="#fff" />
+              </View>
+              <View >
+                <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
+                <Text style={{textAlign:'left', width: 200}}>
+                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
+                </Text>
+              </View>
+              <View style={{position: "absolute", top: 0, right:0}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 3}}>
+                  <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+            <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '90%',
+                gap: 15,
+                shadowColor: '#1f1f1f',
+                shadowOffset: {width: -2, height: 1},
+                shadowOpacity: 0.2,
+                shadowRadius: 1,
+              },
+            ]}>
+              <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                <FontAwesome5 name="box-open" size={24} color="#fff" />
+              </View>
+              <View >
+                <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
+                <Text style={{textAlign:'left', width: 200}}>
+                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
+                </Text>
+              </View>
+              <View style={{position: "absolute", top: 0, right:0}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 3}}>
+                  <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </View>
+
+        
       </View>
     </ScrollView>
   );
@@ -131,20 +304,20 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     
   },
+  boxShadow:{
+    shadowOffset: { width: 10, height: 10 },
+    shadowColor: 'black',
+    shadowOpacity: 1,
+    elevation: 3,
+  },
   welcomeCard:{
-    height: 200,
+    minHeight: 200,
     minWidth: '94%',
-    shadowColor: '#1f1f1f',
-    shadowOffset: {width: -2, height: 1},
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
     padding: 15,
     alignContent: 'flex-start',
     textAlign: "left",
     alignItems: "flex-start",
-    // marginTop: 20,
     top: 0,
-    borderRadius: 30,
   },
   cardImage:{
     position: "absolute",
@@ -158,7 +331,7 @@ const styles = StyleSheet.create({
   },
   listCard:{
     flex: 1, 
-    backgroundColor: '#f1f1f1', 
+    backgroundColor: '#fafafa', 
     height: 100, 
     width: 100, 
     borderRadius: 20,
@@ -172,5 +345,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+  offers:{
+    width: '94%',
+    height: 70,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginTop: 30,
+    marginBottom: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badge:{
+    height: 20, 
+    width:20, 
+    alignItems: "center", 
+    justifyContent: "center", 
+    borderRadius: 100,
   }
 });
