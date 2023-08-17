@@ -126,10 +126,7 @@ export default function App() {
                 flexDirection: 'row',
                 width: '90%',
                 gap: 15,
-                shadowColor: '#1f1f1f',
-                shadowOffset: {width: -2, height: 1},
-                shadowOpacity: 0.2,
-                shadowRadius: 1,
+                
               },
             ]}>
               <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
@@ -137,12 +134,12 @@ export default function App() {
               </View>
               <View >
                 <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
-                <Text style={{textAlign:'left', width: 200}}>
+                <Text style={{textAlign:'left', width: 200,}}>
                   Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
                 </Text>
               </View>
               <View style={{position: "absolute", top: 0, right:0}}>
-                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 3}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
                   <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
                 </TouchableOpacity>
               </View>
@@ -156,10 +153,6 @@ export default function App() {
                 flexDirection: 'row',
                 width: '90%',
                 gap: 15,
-                shadowColor: '#1f1f1f',
-                shadowOffset: {width: -2, height: 1},
-                shadowOpacity: 0.2,
-                shadowRadius: 1,
               },
             ]}>
               <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
@@ -172,7 +165,7 @@ export default function App() {
                 </Text>
               </View>
               <View style={{position: "absolute", top: 0, right:0}}>
-                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 3}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
                   <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
                 </TouchableOpacity>
               </View>
@@ -186,10 +179,6 @@ export default function App() {
                 flexDirection: 'row',
                 width: '90%',
                 gap: 15,
-                shadowColor: '#1f1f1f',
-                shadowOffset: {width: -2, height: 1},
-                shadowOpacity: 0.2,
-                shadowRadius: 1,
               },
             ]}>
               <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
@@ -202,7 +191,7 @@ export default function App() {
                 </Text>
               </View>
               <View style={{position: "absolute", top: 0, right:0}}>
-                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 3}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
                   <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
                 </TouchableOpacity>
               </View>
@@ -216,10 +205,6 @@ export default function App() {
                 flexDirection: 'row',
                 width: '90%',
                 gap: 15,
-                shadowColor: '#1f1f1f',
-                shadowOffset: {width: -2, height: 1},
-                shadowOpacity: 0.2,
-                shadowRadius: 1,
               },
             ]}>
               <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
@@ -232,7 +217,7 @@ export default function App() {
                 </Text>
               </View>
               <View style={{position: "absolute", top: 0, right:0}}>
-                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 3}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
                   <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
                 </TouchableOpacity>
               </View>
@@ -305,10 +290,10 @@ const styles = StyleSheet.create({
     
   },
   boxShadow:{
-    shadowOffset: { width: 10, height: 10 },
+    shadowOffset: { width: 1, height: 1 },
     shadowColor: 'black',
-    shadowOpacity: 1,
-    elevation: 3,
+    shadowOpacity: 0.2,
+    elevation: 1,
   },
   welcomeCard:{
     minHeight: 200,

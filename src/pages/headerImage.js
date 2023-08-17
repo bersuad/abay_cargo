@@ -13,6 +13,7 @@ const ActionBarImage = () => {
           height: 40,
         //   borderRadius: 100,
           marginLeft: 15,
+          marginBottom: 5
         }}
       />
     </View>
