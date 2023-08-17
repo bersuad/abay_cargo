@@ -102,10 +102,6 @@ export default function App() {
               flex: 1,
               flexDirection: 'column',
               width: '90%',
-              shadowColor: '#1f1f1f',
-              shadowOffset: {width: -2, height: 1},
-              shadowOpacity: 0.2,
-              shadowRadius: 1,
               marginTop: 10,
             },
           ]}>

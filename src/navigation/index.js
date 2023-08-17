@@ -8,7 +8,7 @@ import TruckLogin from '../pages/transporter/transporter_login';
 import DriverLogin from '../pages/driver/driver_login';
 import ForgetPassword from './../pages/forget_password';
 import Registration from '../pages/transporter/transporterRegistration';
-import TransporterDashboard from '../pages/transporter/transporterDashboard';
+import TransporterDashboard from '../pages/transporter/transporterTab';
 import ActionBarImage from './../pages/headerImage';
 import NotificationBar from '../pages/transporter/transporterNotification'
 
