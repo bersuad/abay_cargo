@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
   },
 
   buttonCard:{
-    height: 100,
-    width: 100,
+    height: 95,
+    width: 95,
     backgroundColor: '#FFF',
     borderRadius: 15,
     marginTop: 30,
@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
   },
 
   buttonImage:{
-    width: 75,
-    height: 75
+    width: 70,
+    height: 70
   }
 
   

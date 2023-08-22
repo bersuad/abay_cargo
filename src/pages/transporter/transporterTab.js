@@ -4,21 +4,21 @@ import { createAppContainer } from "react-navigation";
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
 import HomeScreen from "./transporterDashboard";
-import UserScreen from "./transporterRegistration";
+import transporterManagmentSystem from "./transporterManagmentSystem";
+import transportMarketPlace from "./transportMarketplace";
 import SettingScreen from "./transporter_login";
 
 const TabNavigator = createMaterialBottomTabNavigator(
 {
 	Home: {
     screen: HomeScreen,
+    title:"Home",
     navigationOptions: {
-      showLabel: false,
       tabBarLabel:() => {return null},
-      
       tabBarIcon: (tabInfo) => (
         <Ionicons
           name="md-home"
-          size={tabInfo.focused ? 20 : 17}
+          size={tabInfo.focused ? 20 : 19}
           color={tabInfo.tintColor}
         />
       ),
@@ -30,27 +30,27 @@ const TabNavigator = createMaterialBottomTabNavigator(
     },
 
 	},
-	User: {
-	screen: UserScreen,
+	TransporterManagmentSystem: {
+	screen: transporterManagmentSystem,
+  title: "Transporter Management System",
 	navigationOptions: {
-		tabBarLabel:() => {return null},
+    tabBarLabel:() => {return null},
 		tabBarIcon: (tabInfo) => (
-		<Ionicons
-			name="swap-horizontal"
-			size={tabInfo.focused ? 20 : 17}
-			color={tabInfo.tintColor}
-		/>
+      <MaterialCommunityIcons 
+        name="offer" 
+        size={tabInfo.focused ? 20 : 19}
+        color={tabInfo.tintColor}
+      />
 		),
 	},
 	},
-  Offer: {
-    screen: UserScreen,
+  transportMarketPlace: {
+    screen: transportMarketPlace,
     navigationOptions: {
       tabBarLabel:() => {return null},
       tabBarIcon: (tabInfo) => (
-        <MaterialCommunityIcons 
-          name="offer" 
-          size={tabInfo.focused ? 20 : 17}
+        <Ionicons name="notifications"
+          size={tabInfo.focused ? 20 : 19}  
           color={tabInfo.tintColor}
         />
       ),
@@ -63,7 +63,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
 		tabBarIcon: (tabInfo) => (
 		<Ionicons
 			name="md-settings-outline"
-			size={tabInfo.focused ? 20 : 17}
+			size={tabInfo.focused ? 20 : 19}
 			color={tabInfo.tintColor}
 		/>
 		),
