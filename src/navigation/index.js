@@ -1,6 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
+import {View, Text, TouchableOpacity} from 'react-native';
+import {FontAwesome5} from '@expo/vector-icons';
 
 import splash from './../pages/splash';
 import HomeRoute from '../pages/login_route';
@@ -10,7 +12,8 @@ import ForgetPassword from './../pages/forget_password';
 import Registration from '../pages/transporter/transporterRegistration';
 import TransporterDashboard from '../pages/transporter/transporterTab';
 import ActionBarImage from './../pages/headerImage';
-import NotificationBar from '../pages/transporter/transporterNotification'
+import NotificationBar from '../pages/transporter/transporterNotification';
+import ProfileSetting from '../pages/transporter/transportProfile';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -104,6 +107,28 @@ export default function App() {
             headerBackTitleVisible: false,
             headerLeft: ()=> <ActionBarImage/>,
             headerRight: ()=> <NotificationBar />,
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="ProfileSetting"
+          title="Profile Setting"
+          component={ProfileSetting} 
+          options={{
+            headerShown: true,
+            headerTitle:'Profile Setting',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            headerRight: ()=> 
+            <View>
+              <TouchableOpacity style={{flexDirection: 'row', height: "100%", marginTop: 10}}>
+                <FontAwesome5 name="edit" size={24} color="#19788e" style={{marginRight: 25, marginTop: 6}}/>
+              </TouchableOpacity>
+          </View>,
           }}
           
         />

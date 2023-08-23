@@ -7,6 +7,7 @@ import HomeScreen from "./transporterDashboard";
 import transporterManagmentSystem from "./transporterManagmentSystem";
 import transportMarketPlace from "./transportMarketplace";
 import SettingScreen from "./transporterSetting";
+// import ProfileScreen from "./transportProfile";
 
 const TabNavigator = createMaterialBottomTabNavigator(
 {

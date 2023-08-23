@@ -10,13 +10,11 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import {Entypo, SimpleLineIcons, Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, AntDesign} from '@expo/vector-icons';
-
+import {Entypo, SimpleLineIcons, Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, AntDesign, Fontisto} from '@expo/vector-icons';
 
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
-import cardBackground from "./../../../assets/cardimage.jpg";
 import headerImage from "./../../../assets/cargodelivary.png";
 
 export default function App() {
@@ -28,11 +26,11 @@ export default function App() {
         <View style={styles.container}>
         <Text style={styles.HeaderText}>Settings</Text>
 
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 110, backgroundColor:'rgba(25, 120, 142, 1)'}]}>
+        <TouchableOpacity onPress={()=>navigation.navigate('ProfileSetting')} style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 110, backgroundColor:'rgba(25, 120, 142, 1)'}]}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <Image style={styles.cardImage} source={headerImage}/>
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>Offered Vehicles</Text>
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>Besufekade Adane</Text>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#cfcfcf', marginTop: 60, top: 1 }}>bersuadane@gmail.com</Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
@@ -41,16 +39,16 @@ export default function App() {
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <AntDesign name="piechart" size={24} color="rgba(25, 120, 142, 0.9)" />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Reports
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <FontAwesome5 name="wallet" size={24} color="rgba(25, 120, 142, 0.9)" />
+            <Fontisto name="wallet" size={24} color="rgba(25, 120, 142, 0.9)" />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Payments
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
@@ -59,7 +57,7 @@ export default function App() {
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <AntDesign name="questioncircle" size={24} color="rgba(25, 120, 142, 0.9)" />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>How it works?
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
@@ -68,7 +66,7 @@ export default function App() {
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <Entypo name="chat" size={24} color="rgba(25, 120, 142, 0.9)" />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>FAQ
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
@@ -77,7 +75,7 @@ export default function App() {
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <SimpleLineIcons name="call-out" size={24} color="rgba(25, 120, 142, 0.9)"  />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Contact Us
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
@@ -86,7 +84,7 @@ export default function App() {
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
           <AntDesign name="infocirlce" size={24} color="rgba(25, 120, 142, 0.9)"  />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>About Us
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
@@ -95,7 +93,7 @@ export default function App() {
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <MaterialIcons name="menu-book" size={24} color="rgba(25, 120, 142, 0.9)"  />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Terms And Conditions
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
@@ -104,7 +102,7 @@ export default function App() {
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <MaterialIcons name="privacy-tip" size={24} color="rgba(25, 120, 142, 0.9)"  />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Privacy Policy
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
@@ -216,7 +214,7 @@ const styles = StyleSheet.create({
     width: '94%',
     height: 70,
     backgroundColor: '#fff',
-    borderRadius: 10,
+    borderRadius: 12,
     marginTop: 30,
     marginBottom: 20,
     alignItems: "center",
