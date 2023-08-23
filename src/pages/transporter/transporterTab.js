@@ -6,7 +6,7 @@ import { createMaterialBottomTabNavigator } from "react-navigation-material-bott
 import HomeScreen from "./transporterDashboard";
 import transporterManagmentSystem from "./transporterManagmentSystem";
 import transportMarketPlace from "./transportMarketplace";
-import SettingScreen from "./transporter_login";
+import SettingScreen from "./transporterSetting";
 
 const TabNavigator = createMaterialBottomTabNavigator(
 {
