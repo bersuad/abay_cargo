@@ -14,6 +14,7 @@ import TransporterDashboard from '../pages/transporter/transporterTab';
 import ActionBarImage from './../pages/headerImage';
 import NotificationBar from '../pages/transporter/transporterNotification';
 import ProfileSetting from '../pages/transporter/transportProfile';
+import transporterVehiclesSearch from '../pages/transporter/vehiclesSearch';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -129,6 +130,23 @@ export default function App() {
                 <FontAwesome5 name="edit" size={24} color="#19788e" style={{marginRight: 25, marginTop: 6}}/>
               </TouchableOpacity>
           </View>,
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="transporterVehiclesSearch"
+          title="Vehicles Search"
+          component={transporterVehiclesSearch} 
+          options={{
+            headerShown: true,
+            headerTitle:'Vehicles Search',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
           }}
           
         />

@@ -49,7 +49,7 @@ export default function App() {
               marginTop: 20,
             },
           ]}>
-          <TouchableOpacity style={[styles.listCard, styles.boxShadow]}>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
             <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)"}}>
               <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
             </View>
