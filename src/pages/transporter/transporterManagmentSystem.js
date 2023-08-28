@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Image, View, StyleSheet, TouchableOpacity, Text, TextInput } from 'react-native';
 import {Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, SimpleLineIcons} from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ImagePickerExample() {
+  const navigation = useNavigation();
 
   return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
@@ -13,14 +15,14 @@ export default function ImagePickerExample() {
         <View style={[styles.boxShadow, styles.groupButton, {marginTop: 20, borderTopLeftRadius:10, borderTopRightRadius:10}]}>
             <Text style={{...styles.cardText, fontSize:18, position: "absolute", left: 20, color: "#1b9be6" }}>Registration </Text>
         </View>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Vehicles </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Derivers </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
+        </TouchableOpacity>
         <View style={[styles.boxShadow, styles.groupButton]}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>MOU </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>

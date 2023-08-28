@@ -55,7 +55,7 @@ export default function App() {
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Vehicles</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.listCard, styles.boxShadow]}>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
             <View style={{...styles.iconArea, backgroundColor: "#1b9be6"}}>
               <FontAwesome5 name="id-badge" size={24} color="#fff" />
             </View>

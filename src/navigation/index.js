@@ -15,6 +15,7 @@ import ActionBarImage from './../pages/headerImage';
 import NotificationBar from '../pages/transporter/transporterNotification';
 import ProfileSetting from '../pages/transporter/transportProfile';
 import transporterVehiclesSearch from '../pages/transporter/vehiclesSearch';
+import transporterDriverSearch from '../pages/transporter/driverSearch';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -141,6 +142,23 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Vehicles Search',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="transporterDriverSearch"
+          title="Driver Search"
+          component={transporterDriverSearch} 
+          options={{
+            headerShown: true,
+            headerTitle:'Driver Search',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',
