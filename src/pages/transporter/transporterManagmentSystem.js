@@ -41,10 +41,10 @@ export default function ImagePickerExample() {
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Live Tracking </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
         </View>
-        <View style={[styles.boxShadow, styles.groupButton, {marginBottom: 20, borderBottomLeftRadius:10, borderBottomRightRadius:10}]}>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton, {marginBottom: 20, borderBottomLeftRadius:10, borderBottomRightRadius:10}]} onPress={()=>navigation.navigate('transporterFreights')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Frights </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
+        </TouchableOpacity>
         
       </SafeAreaView>
     </ScrollView>

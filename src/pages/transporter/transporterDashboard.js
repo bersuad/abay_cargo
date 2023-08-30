@@ -61,7 +61,7 @@ export default function App() {
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Drivers</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.listCard, styles.boxShadow]}>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterFreights')}>
             <View style={{...styles.iconArea, backgroundColor: "#19788e"}}>
               <Ionicons name="swap-horizontal" size={24} color="#fff" />
             </View>
