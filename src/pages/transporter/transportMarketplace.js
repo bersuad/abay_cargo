@@ -41,7 +41,7 @@ export default function ImagePickerExample() {
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
         </View>
         <View style={[styles.boxShadow, styles.groupButton]}>
-            <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Order Confermation </Text>
+            <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Order Confirmation </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
         </View>
         

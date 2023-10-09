@@ -10,7 +10,13 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import {Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, SimpleLineIcons} from '@expo/vector-icons';
+import {
+  Ionicons,
+  MaterialCommunityIcons, 
+  FontAwesome5, 
+  MaterialIcons, 
+  SimpleLineIcons
+} from '@expo/vector-icons';
 
 
 import { useNavigation } from '@react-navigation/native';
