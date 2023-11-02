@@ -3,10 +3,10 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createAppContainer } from "react-navigation";
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
-import HomeScreen from "./transporterDashboard";
-import transporterManagmentSystem from "./transporterManagmentSystem";
-import transportMarketPlace from "./transportMarketplace";
-import SettingScreen from "./transporterSetting";
+import HomeScreen from "./bottomTabs/transporterDashboard";
+import transporterManagmentSystem from "./bottomTabs/transporterManagmentSystem";
+import transportMarketPlace from "./bottomTabs/transportMarketplace";
+import SettingScreen from "./bottomTabs/transporterSetting";
 // import ProfileScreen from "./transportProfile";
 
 const TabNavigator = createMaterialBottomTabNavigator(

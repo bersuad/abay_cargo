@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import Truck from './../../../assets/transporter.gif';
+import Truck from './../../../../assets/transporter.gif';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from "react-native-gesture-handler";
 

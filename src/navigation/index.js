@@ -6,17 +6,19 @@ import {FontAwesome5} from '@expo/vector-icons';
 
 import splash from './../pages/splash';
 import HomeRoute from '../pages/login_route';
-import TruckLogin from '../pages/transporter/transporter_login';
+import TruckLogin from '../pages/transporter/Auth/transporter_login';
 import DriverLogin from '../pages/driver/driver_login';
 import ForgetPassword from './../pages/forget_password';
-import Registration from '../pages/transporter/transporterRegistration';
+import Registration from '../pages/transporter/Auth/transporterRegistration';
 import TransporterDashboard from '../pages/transporter/transporterTab';
 import ActionBarImage from './../pages/headerImage';
 import NotificationBar from '../pages/transporter/transporterNotification';
-import ProfileSetting from '../pages/transporter/transportProfile';
-import transporterVehiclesSearch from '../pages/transporter/vehiclesSearch';
-import transporterDriverSearch from '../pages/transporter/driverSearch';
-import transporterFreights from '../pages/transporter/transporterFreights';
+import ProfileSetting from '../pages/transporter/bottomTabs/settings/transportProfile';
+import transporterVehiclesSearch from '../pages/transporter/bottomTabs/management/vehiclesSearch';
+import transporterDriverSearch from '../pages/transporter/bottomTabs/management/driverSearch';
+import transporterFreights from '../pages/transporter/bottomTabs/management/transporterFreights';
+import transporterMOU from '../pages/transporter/bottomTabs/management/transporterMOU';
+import transporterContract from '../pages/transporter/bottomTabs/management/transporterContract';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -177,6 +179,38 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Freights',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+        <Stack.Screen
+          name="transporterMOU"
+          title="MOU Process"
+          component={transporterMOU} 
+          options={{
+            headerShown: true,
+            headerTitle:'MOU Process',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+        <Stack.Screen
+          name="transporterContract"
+          title="Contract"
+          component={transporterContract} 
+          options={{
+            headerShown: true,
+            headerTitle:'Contract',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

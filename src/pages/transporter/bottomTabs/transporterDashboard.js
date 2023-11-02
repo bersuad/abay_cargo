@@ -22,8 +22,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
-import cardBackground from "./../../../assets/cardimage.jpg";
-import headerImage from "./../../../assets/cargodelivary.png";
+import cardBackground from "./../../../../assets/cardimage.jpg";
+import headerImage from "./../../../../assets/cargodelivary.png";
 
 export default function App() {
   
@@ -114,7 +114,7 @@ export default function App() {
           <View style={{alignItems: 'flex-start' }}>
             <Text style={{fontSize:15, color:'#1f1f1f', fontWeight:"bold"}}>Ongoing Frights</Text>
           </View>
-          <TouchableOpacity style={{alignItems: 'flex-end', marginTop: -18 }}>
+          <TouchableOpacity style={{alignItems: 'flex-end', marginTop: -18 }} onPress={()=>navigation.navigate('transporterFreights')}>
             <Text style={{fontSize:15, color:'#1b9be6', fontWeight:"bold"}}>View All</Text>
           </TouchableOpacity>
         </View>

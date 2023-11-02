@@ -23,14 +23,14 @@ export default function ImagePickerExample() {
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Derivers </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
         </TouchableOpacity>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterMOU')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>MOU </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
-        <View style={[styles.boxShadow, styles.groupButton, {marginBottom: 20, borderBottomLeftRadius:10, borderBottomRightRadius:10}]}>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton, {marginBottom: 20, borderBottomLeftRadius:10, borderBottomRightRadius:10}]} onPress={()=>navigation.navigate('transporterContract')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Contract </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
+        </TouchableOpacity>
 
         {/* GPS */}
 

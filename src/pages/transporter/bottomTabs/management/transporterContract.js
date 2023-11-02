@@ -11,34 +11,28 @@ import {
   ImageBackground,
 } from "react-native";
 import {Entypo, SimpleLineIcons, Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, AntDesign, Fontisto} from '@expo/vector-icons';
-
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
-import headerImage from "./../../../assets/cargodelivary.png";
+import headerImage from "./../../../../../assets/cargodelivary.png";
 
 export default function App() {
   
   const navigation = useNavigation();
 
   return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
-      <View style={styles.container}>        
-        <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
-          <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
-            <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Vehicle</Text>
-          </TouchableOpacity>
+    <View style={{height:'100%', backgroundColor: '#FFF'}}>
+        <ScrollView>
+        <View style={styles.container}>        
+            <Text>Here will be the Contract text</Text>
         </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Search"
-            placeholderTextColor="#003f5c"
-          /> 
-          <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
-        </View> 
-      </View>
-    </ScrollView>
+            <TouchableOpacity style={styles.buttonStyle}>
+                <Text style={{color: '#fff'}}>View Full Contract</Text>
+            </TouchableOpacity>
+        </ScrollView>
+        
+    </View>
   );
 }
 const styles = StyleSheet.create({
@@ -166,4 +160,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 10
   },
+  buttonStyle : {
+    backgroundColor: '#19788e',
+    width: 160,
+    borderRadius: 10,
+    height: 50,
+    right: 10,
+    justifyContent: 'center',
+    alignItems:'center',
+    position: 'absolute',
+    top: 100,
+  },
+  buttonTextStyle : {
+    color:'white',
+    fontSize: 45,
+    marginBottom: 6
+  }
 });
