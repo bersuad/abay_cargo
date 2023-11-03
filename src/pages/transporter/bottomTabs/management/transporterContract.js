@@ -1,20 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+
 import {
   StyleSheet,
   Text,
   View,
-  Image,
-  TextInput,
-  Button,
   TouchableOpacity,
-  ImageBackground,
-} from "react-native";
-import {Entypo, SimpleLineIcons, Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, AntDesign, Fontisto} from '@expo/vector-icons';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView } from "react-native-gesture-handler";
+  useNavigation,
+  ScrollView
+} from './../../../../components/index';
 
 export default function App() {
   

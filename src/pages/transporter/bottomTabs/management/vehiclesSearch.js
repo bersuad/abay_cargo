@@ -1,21 +1,17 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+
 import {
   StyleSheet,
   Text,
   View,
-  Image,
   TextInput,
-  Button,
   TouchableOpacity,
-  ImageBackground,
-} from "react-native";
-import {Entypo, SimpleLineIcons, Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, AntDesign, Fontisto} from '@expo/vector-icons';
-
-import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView } from "react-native-gesture-handler";
-import headerImage from "./../../../../../assets/cargodelivary.png";
+  ScrollView,
+  useNavigation,
+  Ionicons,
+  AntDesign,
+} from './../../../../components/index'
 
 export default function App() {
   
@@ -24,11 +20,6 @@ export default function App() {
   return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
       <View style={styles.container}>        
-        <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
-          <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
-            <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Vehicle</Text>
-          </TouchableOpacity>
-        </View>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
@@ -37,6 +28,11 @@ export default function App() {
           /> 
           <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
         </View> 
+        <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
+          <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+            <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Vehicle</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );

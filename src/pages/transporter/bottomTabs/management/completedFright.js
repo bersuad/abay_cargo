@@ -1,34 +1,26 @@
 import React, { useState } from "react";
+
 import {
+  useNavigation,
   StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  Button,
-  TouchableOpacity,
-  ImageBackground,
   ScrollView,
-} from "react-native";
-import {
-  Ionicons,
-  MaterialCommunityIcons, 
-  FontAwesome5, 
-  MaterialIcons, 
-  SimpleLineIcons
-} from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+  View,
+  Text,
+  SafeAreaView
+} from './../../../../components/index';
 
 export default function CompletedFright() {
   
     const navigation = useNavigation();
   
     return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
-        <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-            <Text>No Completed Fright.</Text>
-        </View>
-    </ScrollView>
+      <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+        <SafeAreaView>
+              <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+                  <Text>No Completed Fright.</Text>
+              </View>
+        </SafeAreaView>
+      </ScrollView>
     );
 }
 

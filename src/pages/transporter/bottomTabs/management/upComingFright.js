@@ -1,23 +1,16 @@
 import React, { useState } from "react";
+
 import {
+  useNavigation,
   StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  Button,
-  TouchableOpacity,
-  ImageBackground,
   ScrollView,
-} from "react-native";
-import {
-  Ionicons,
-  MaterialCommunityIcons, 
-  FontAwesome5, 
-  MaterialIcons, 
-  SimpleLineIcons
-} from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+  View,
+  Text,
+  TouchableOpacity,
+  MaterialCommunityIcons,
+  FontAwesome5
+
+} from './../../../../components/index';
 
 export default function UpComingFright() {
   

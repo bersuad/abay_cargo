@@ -37,6 +37,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createAppContainer } from "react-navigation";
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 //images
 import Logo from './../../assets/splash_logo.png';
 import Driver from './../../assets/driver.png';
@@ -64,6 +65,7 @@ export {
   BackHandler, 
   LogBox, 
   StatusBar, 
+  BouncyCheckbox,
   SafeAreaView,
   ImagePicker,
 
