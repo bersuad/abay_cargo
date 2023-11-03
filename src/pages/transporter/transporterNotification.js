@@ -1,8 +1,11 @@
 import React from 'react';
 
-import {View, Text} from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import  {
+  View,
+  Text,
+  TouchableOpacity,
+  Ionicons
+} from './../../components/index';
 
 const NotificationBar = () => {
   return (

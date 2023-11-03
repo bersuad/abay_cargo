@@ -1,4 +1,4 @@
-import { StatusBar } from "expo-status-bar";
+
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -6,12 +6,12 @@ import {
   View,
   Image,
   TextInput,
-  Button,
+  StatusBar,
   TouchableOpacity,
-} from "react-native";
-
-import Driver from './../../assets/password.gif';
-import { ScrollView } from "react-native-gesture-handler";
+  Driver,
+  ForgetPassword,
+  ScrollView
+} from "./../components/index";
 
 export default function App() {
   const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ export default function App() {
     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
       <View style={styles.container}>
           <View style={styles.logoArea}>
-              <Image style={styles.image} source={Driver} /> 
+              <Image style={styles.image} source={ForgetPassword} /> 
               <Text style={styles.buttonText}>
                   Forgot Password?
               </Text>

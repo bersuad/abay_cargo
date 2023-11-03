@@ -15,7 +15,6 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
-import headerImage from "./../../../../../assets/cargodelivary.png";
 
 export default function App() {
   
@@ -27,14 +26,15 @@ export default function App() {
         <View style={styles.container}>        
             <Text>Here will be the Contract text</Text>
         </View>
-            <TouchableOpacity style={styles.buttonStyle}>
-                <Text style={{color: '#fff'}}>View Full Contract</Text>
-            </TouchableOpacity>
         </ScrollView>
         
+        <TouchableOpacity style={styles.buttonStyle}>
+            <Text style={{color: '#fff'}}>View Full Contract</Text>
+        </TouchableOpacity>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -162,14 +162,14 @@ const styles = StyleSheet.create({
   },
   buttonStyle : {
     backgroundColor: '#19788e',
-    width: 160,
-    borderRadius: 10,
-    height: 50,
-    right: 10,
+    width: '98%',
+    height: 66,
     justifyContent: 'center',
     alignItems:'center',
     position: 'absolute',
-    top: 100,
+    bottom: 20,
+    alignSelf: "center" ,
+    borderRadius: 8,
   },
   buttonTextStyle : {
     color:'white',

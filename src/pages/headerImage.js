@@ -1,7 +1,10 @@
 import React from 'react';
 
-import {View, Image} from 'react-native';
-import Logo from './../../assets/splash_logo.png';
+import {
+  View,
+  Image,
+  Logo,
+} from './../components/index'
 
 const ActionBarImage = () => {
   return (

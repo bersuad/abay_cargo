@@ -1,9 +1,14 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {FontAwesome5} from '@expo/vector-icons';
 
+import {
+  NavigationContainer,
+  createStackNavigator,
+  View,
+  TouchableOpacity,
+  FontAwesome5
+} from './../components/index'
+
+// Pages List
 import splash from './../pages/splash';
 import HomeRoute from '../pages/login_route';
 import TruckLogin from '../pages/transporter/Auth/transporter_login';

@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import {Alert, View, Text, StyleSheet, Animated, Image, BackHandler, LogBox, StatusBar, Button} from 'react-native';
-import Logo from './../../assets/splash_logo.png';
+
+import {
+    View,
+    Text,
+    StyleSheet,
+    Animated,
+    Image,
+    StatusBar,
+    Logo,
+} from './../components/index';
 
 const Splash = ({ navigation }) => {
     state = { 

@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Image, View, StyleSheet, TouchableOpacity, Text, TextInput } from 'react-native';
-import {Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, SimpleLineIcons} from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  Text,
+  MaterialIcons,
+  SafeAreaView,
+} from './../../../components/index';
 
 export default function ImagePickerExample() {
   

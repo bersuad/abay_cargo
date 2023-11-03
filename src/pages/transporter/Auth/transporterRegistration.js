@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Image, View, StyleSheet, TouchableOpacity, Text, TextInput } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Logo from './../../../../assets/splash_logo.png';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  ImagePicker,
+  SafeAreaView,
+  //image
+  Logo,
+  //Icons
+  Ionicons
+} from "./../../../components/index";
 
 export default function ImagePickerExample() {
   const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;

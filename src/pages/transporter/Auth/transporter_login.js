@@ -1,18 +1,22 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+
 import {
   StyleSheet,
   Text,
   View,
   Image,
   TextInput,
-  Button,
   TouchableOpacity,
-} from "react-native";
+  StatusBar,
+  ScrollView,
 
-import Truck from './../../../../assets/transporter.gif';
-import { useNavigation } from '@react-navigation/native';
-import { ScrollView } from "react-native-gesture-handler";
+  //navigation
+  useNavigation,
+  //image
+  TruckLogin,
+} from "./../../../components/index";
+
+
 
 export default function App() {
   const [email, setEmail] = useState("");
@@ -23,7 +27,7 @@ export default function App() {
     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
       <View style={styles.container}>
         <View style={styles.logoArea}>
-          <Image style={styles.image} source={Truck} /> 
+          <Image style={styles.image} source={TruckLogin} /> 
           <Text style={styles.buttonText}>
             Transporter Login
           </Text>

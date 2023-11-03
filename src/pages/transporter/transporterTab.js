@@ -1,7 +1,11 @@
 import React from "react";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { createAppContainer } from "react-navigation";
-import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+
+import{
+  Ionicons,
+  MaterialCommunityIcons,
+  createAppContainer,
+  createMaterialBottomTabNavigator
+} from './../../components/index'
 
 import HomeScreen from "./bottomTabs/transporterDashboard";
 import transporterManagmentSystem from "./bottomTabs/transporterManagmentSystem";

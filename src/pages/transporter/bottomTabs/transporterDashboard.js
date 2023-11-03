@@ -1,29 +1,25 @@
-import { StatusBar } from "expo-status-bar";
+
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  Button,
-  TouchableOpacity,
-  ImageBackground,
-} from "react-native";
-import {
+
+import{
   Ionicons,
   MaterialCommunityIcons, 
   FontAwesome5, 
   MaterialIcons, 
-  SimpleLineIcons
-} from '@expo/vector-icons';
+  TouchableOpacity,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  useNavigation,
+  ScrollView,
+  StatusBar,
+  //Images
+  cardBackground,
+  headerImage
+} from './../../../components/index';
 
-
-import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView } from "react-native-gesture-handler";
-import cardBackground from "./../../../../assets/cardimage.jpg";
-import headerImage from "./../../../../assets/cargodelivary.png";
 
 export default function App() {
   

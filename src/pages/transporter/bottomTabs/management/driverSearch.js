@@ -15,7 +15,6 @@ import {Entypo, SimpleLineIcons, Ionicons, MaterialCommunityIcons, FontAwesome5,
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "react-native-gesture-handler";
-import headerImage from "./../../../../assets/cargodelivary.png";
 
 export default function App() {
   

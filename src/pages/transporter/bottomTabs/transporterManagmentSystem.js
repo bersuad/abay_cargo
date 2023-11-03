@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Image, View, StyleSheet, TouchableOpacity, Text, TextInput } from 'react-native';
-import {Ionicons, MaterialCommunityIcons, FontAwesome5, MaterialIcons, SimpleLineIcons} from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  MaterialIcons,
+  SafeAreaView,
+  useNavigation
+} from './../../../components/index';
 
 export default function ImagePickerExample() {
   const navigation = useNavigation();
@@ -58,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: '100%',
     marginBottom: 20,
-    },
+  },
   image: {
     marginBottom: 0,
     height: 100,

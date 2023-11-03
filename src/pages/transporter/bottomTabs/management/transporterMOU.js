@@ -28,7 +28,7 @@ export default function App() {
             <Text>Here will be the MOU data text</Text>
         </View>
         </ScrollView>
-        <View style={{...styles.buttonStyle, bottom:70, backgroundColor: '#FFF'}}>
+        <View style={{...styles.buttonStyle, bottom:80, backgroundColor: '#FFF'}}>
             <Text>
                 <BouncyCheckbox 
                     size={25}
@@ -175,12 +175,14 @@ const styles = StyleSheet.create({
   },
   buttonStyle : {
     backgroundColor: '#19788e',
-    width: '100%',
+    width: '98%',
     height: 66,
     justifyContent: 'center',
     alignItems:'center',
     position: 'absolute',
-    bottom: 10,
+    bottom: 20,
+    alignSelf: "center" ,
+    borderRadius: 8,
   },
   buttonTextStyle : {
     color:'white',

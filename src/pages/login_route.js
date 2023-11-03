@@ -1,12 +1,20 @@
 // Example: Switch from One Screen to another using React Navigation //
 // https://aboutreact.com/react-native-stack-navigation //
 import * as React from 'react';
-import { View, Text, SafeAreaView, StyleSheet, StatusBar, ImageBackground, Image, TouchableOpacity } from 'react-native';
-import BackImage from './../../assets/background.jpg';
-import Driver from './../../assets/driver.png';
-import Truck from './../../assets/truck.png';
-import Logo from './../../assets/splash_logo.png';
-import { ScrollView } from 'react-native-gesture-handler';
+
+import{
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Driver,
+  Truck,
+  Logo,
+} from './../components/index';
 
 const HomeRoute = ({ navigation }) => {
   return (
