@@ -24,6 +24,7 @@ import transporterDriverSearch from '../pages/transporter/bottomTabs/management/
 import transporterFreights from '../pages/transporter/bottomTabs/management/transporterFreights';
 import transporterMOU from '../pages/transporter/bottomTabs/management/transporterMOU';
 import transporterContract from '../pages/transporter/bottomTabs/management/transporterContract';
+import NotificationList from '../pages/transporter/notificationList'
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -99,6 +100,7 @@ export default function App() {
           
         />
 
+        {/* Main Dashboard  */}
         <Stack.Screen
           name="TransporterDashboard"
           title="TransporterDashboard"
@@ -226,7 +228,25 @@ export default function App() {
           
         />
         
+        <Stack.Screen
+          name="NotificationList"
+          title="Notifications"
+          component={NotificationList} 
+          options={{
+            headerShown: true,
+            headerTitle:'Notifications',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
       </Stack.Navigator>
+      
     </NavigationContainer>
   );
 }

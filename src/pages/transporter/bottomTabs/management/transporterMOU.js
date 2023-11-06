@@ -29,7 +29,7 @@ export default function App() {
                     fillColor="#19788e"
                     unfillColor="#FFFFFF"
                     text="I accept the terms & conditions."
-                    onPress={(isChecked: boolean) => {}} 
+                    onPress={(/*isChecked: boolean*/) => {}} 
                     textStyle={{
                         textDecorationLine: "none",
                     }}
