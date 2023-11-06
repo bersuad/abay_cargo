@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -50,6 +50,8 @@ import headerImage from "./../../assets/cargodelivary.png";
 import userImage from "./../../assets/userava.png";
 import placeholder from "./../../assets/placeholder.jpg";
 
+import Collapsible from 'react-native-collapsible';
+
 export {
   StyleSheet,
   Text,
@@ -76,6 +78,7 @@ export {
   NavigationContainer,
   createStackNavigator, 
   HeaderBackButton,
+  Collapsible,
   
   //icons
   Ionicons,

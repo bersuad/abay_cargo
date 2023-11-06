@@ -24,7 +24,8 @@ import transporterDriverSearch from '../pages/transporter/bottomTabs/management/
 import transporterFreights from '../pages/transporter/bottomTabs/management/transporterFreights';
 import transporterMOU from '../pages/transporter/bottomTabs/management/transporterMOU';
 import transporterContract from '../pages/transporter/bottomTabs/management/transporterContract';
-import NotificationList from '../pages/transporter/notificationList'
+import NotificationList from '../pages/transporter/notificationList';
+import FAQView from '../pages/transporter/bottomTabs/settings/FAQ'
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -245,6 +246,20 @@ export default function App() {
           
         />
 
+        <Stack.Screen
+          name="FAQView"
+          title="FAQ"
+          component={FAQView}
+          options={{
+            headerShown: true,
+            headerTitle:'Frequently Asked Questions',
+            headerBackTitle: 'Back',
+            headerStyle:{
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+          }}
+        />
       </Stack.Navigator>
       
     </NavigationContainer>
