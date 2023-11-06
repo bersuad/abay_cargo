@@ -6,7 +6,6 @@ import {
     StyleSheet,
     Text,
     AntDesign,
-    TouchableOpacity,
     Button,
     SafeAreaView
 } from './../../../../components/index';
@@ -39,12 +38,12 @@ function App(): JSX.Element {
 
   function renderHeader(section, _, isActive) {
     return (
-      <View style={styles.accordHeader}>
-        <Text style={styles.accordTitle}>{ section.title }</Text>
-        <AntDesign name={ isActive ? 'caretup' : 'caretdown' } size={18} color="#19788e" />
-      </View>
+        <View style={styles.accordHeader}>
+            <Text style={styles.accordTitle}>{ section.title }</Text>
+            <AntDesign name={ isActive ? 'caretup' : 'caretdown' } size={18} color="#19788e" />
+        </View>
     );
-  };
+};
 
     function renderContent(section, _, isActive) {
     return (
@@ -59,13 +58,13 @@ function App(): JSX.Element {
         contentInsetAdjustmentBehavior="automatic"
         style={styles.container}>
             <Accordion
-            align="bottom"
-            sections={sections}
-            activeSections={activeSections}
-            renderHeader={renderHeader}
-            renderContent={renderContent}
-            onChange={(sections) => setActiveSections(sections)}
-            sectionContainerStyle={styles.accordContainer}
+                align="bottom"
+                sections={sections}
+                activeSections={activeSections}
+                renderHeader={renderHeader}
+                renderContent={renderContent}
+                onChange={(sections) => setActiveSections(sections)}
+                sectionContainerStyle={styles.accordContainer}
             />
         </ScrollView>
     </SafeAreaView>
@@ -77,14 +76,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     accordContainer: {
-        marginTop: 10,
-        paddingBottom: 4
+        paddingBottom: 4,
+        marginTop: 8,
     },
     accordHeader: {
-        padding: 12,
         height: 70,
         backgroundColor: '#fff',
-        // borderRadius: 12,
         flex: 1,
         flexDirection: 'row',
         justifyContent:'space-between',
@@ -95,6 +92,8 @@ const styles = StyleSheet.create({
         width: '99%',
         alignItems: "center",
         alignSelf:'center',
+        paddingLeft: 20,
+        paddingRight: 20,
     },
     accordTitle: {
         fontSize: 20,

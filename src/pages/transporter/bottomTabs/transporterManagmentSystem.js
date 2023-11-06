@@ -27,7 +27,7 @@ export default function ImagePickerExample() {
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
-            <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Derivers </Text>
+            <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Drivers </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterMOU')}>

@@ -30,7 +30,7 @@ import {
   SimpleLineIcons,
   AntDesign, 
   Fontisto,
-  Entypo
+  Entypo,
 } from '@expo/vector-icons';
 
 import { useNavigation } from '@react-navigation/native';

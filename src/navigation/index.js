@@ -25,7 +25,11 @@ import transporterFreights from '../pages/transporter/bottomTabs/management/tran
 import transporterMOU from '../pages/transporter/bottomTabs/management/transporterMOU';
 import transporterContract from '../pages/transporter/bottomTabs/management/transporterContract';
 import NotificationList from '../pages/transporter/notificationList';
-import FAQView from '../pages/transporter/bottomTabs/settings/FAQ'
+import FAQView from '../pages/transporter/bottomTabs/settings/FAQ';
+import ContactUs from '../pages/transporter/bottomTabs/settings/contactus';
+import AboutUs from '../pages/transporter/bottomTabs/settings/aboutus';
+import Terms from '../pages/transporter/bottomTabs/settings/termsandconditions';
+import Privacy from '../pages/transporter/bottomTabs/settings/privacy';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -260,6 +264,67 @@ export default function App() {
             headerTintColor: '#19788e',
           }}
         />
+
+        <Stack.Screen
+          name='ContactUs'
+          title="Contact Us"
+          component={ContactUs}
+          options={{
+            headerShown: true,
+            headerTitle: "Contact Us",
+            headerBackTitle: "back",
+            headerStyle:{
+              backgroundColor: '#fff'
+            },
+            headerTintColor: '#19788e',
+          }}
+        />
+        
+        <Stack.Screen
+          name='AboutUs'
+          title="About Us"
+          component={AboutUs}
+          options={{
+            headerShown: true,
+            headerTitle: "About Us",
+            headerBackTitle: "back",
+            headerStyle:{
+              backgroundColor: '#fff'
+            },
+            headerTintColor: '#19788e',
+          }}
+        />
+
+        <Stack.Screen
+          name='Terms'
+          title="Terms & Conditions"
+          component={Terms}
+          options={{
+            headerShown: true,
+            headerTitle: "Terms & Conditions",
+            headerBackTitle: "back",
+            headerStyle:{
+              backgroundColor: '#fff'
+            },
+            headerTintColor: '#19788e',
+          }}
+        />
+
+        <Stack.Screen
+          name='Privacy'
+          title="Privacy Policy"
+          component={Privacy}
+          options={{
+            headerShown: true,
+            headerTitle: "Privacy Policy",
+            headerBackTitle: "back",
+            headerStyle:{
+              backgroundColor: '#fff'
+            },
+            headerTintColor: '#19788e',
+          }}
+        />
+
       </Stack.Navigator>
       
     </NavigationContainer>
