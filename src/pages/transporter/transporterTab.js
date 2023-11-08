@@ -5,7 +5,7 @@ import{
   MaterialCommunityIcons,
   createAppContainer,
   createMaterialBottomTabNavigator
-} from './../../components/index'
+} from './../../components/index';
 
 import HomeScreen from "./bottomTabs/transporterDashboard";
 import transporterManagmentSystem from "./bottomTabs/transporterManagmentSystem";

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   StyleSheet,
   Text,
@@ -12,9 +11,9 @@ import {
   Animated,
   BackHandler, 
   LogBox, 
-  StatusBar, 
 } from "react-native";
 
+import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
 

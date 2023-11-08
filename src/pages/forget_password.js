@@ -12,6 +12,7 @@ import {
   ForgetPassword,
   ScrollView
 } from "./../components/index";
+import appPageStyle from "../styles/common";
 
 export default function App() {
   const [email, setEmail] = useState("");
@@ -35,8 +36,8 @@ export default function App() {
               /> 
           </View> 
           
-          <TouchableOpacity style={styles.loginBtn}>
-              <Text style={styles.loginText}>SEND</Text> 
+          <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor]}>
+              <Text style={appPageStyle.primaryTextColor}>SEND</Text> 
           </TouchableOpacity> 
       </View> 
     </ScrollView>
@@ -87,13 +88,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
-    backgroundColor: "#19788e",
     color: '#fff',
     marginBottom: 25
   },
-  loginText: {
-    color: '#fff',
-  },
+  
   buttonText: {
     fontSize: 18,
     textAlign: 'center',

@@ -15,6 +15,7 @@ import {
   //image
   TruckLogin,
 } from "./../../../components/index";
+import appPageStyle from "../../../styles/common";
 
 
 
@@ -28,7 +29,7 @@ export default function App() {
       <View style={styles.container}>
         <View style={styles.logoArea}>
           <Image style={styles.image} source={TruckLogin} /> 
-          <Text style={styles.buttonText}>
+          <Text style={[styles.buttonText, appPageStyle.secondaryTextColor]}>
             Transporter Login
           </Text>
         </View>
@@ -37,7 +38,7 @@ export default function App() {
           <TextInput
             style={styles.TextInput}
             placeholder="Email Here."
-            placeholderTextColor="#003f5c"
+            placeholderTextColor={appPageStyle.secondaryTextColor}
             onChangeText={(email) => setEmail(email)}
           /> 
         </View> 
@@ -45,19 +46,19 @@ export default function App() {
           <TextInput
             style={styles.TextInput}
             placeholder="Password."
-            placeholderTextColor="#003f5c"
+            placeholderTextColor={appPageStyle.secondaryTextColor}
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}
           /> 
         </View> 
         <TouchableOpacity onPress={()=>navigation.navigate('ForgetPassword')}>
-          <Text style={{...styles.forgot_button, color: '#19788e'}}>Forgot Password?</Text> 
+          <Text style={{...styles.forgot_button, ...appPageStyle.secondaryTextColor}}>Forgot Password?</Text> 
         </TouchableOpacity> 
-        <TouchableOpacity style={styles.loginBtn} onPress={()=>navigation.navigate('TransporterDashboard')}>
-          <Text style={styles.loginText}>LOGIN</Text> 
+        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor]} onPress={()=>navigation.navigate('TransporterDashboard')}>
+          <Text style={appPageStyle.primaryTextColor}>LOGIN</Text> 
         </TouchableOpacity> 
         <TouchableOpacity onPress={()=>navigation.navigate('Registration')}>
-          <Text style={{...styles.buttonText, marginTop: 25, marginBottom: 25}}>Register</Text> 
+          <Text style={[styles.buttonText, appPageStyle.secondaryTextColor, {marginTop: 25, marginBottom: 25,}]}>Register</Text> 
         </TouchableOpacity> 
       </View> 
     </ScrollView>
@@ -108,17 +109,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
-    backgroundColor: "#19788e",
     color: '#fff',
   },
-  loginText: {
-    color: '#fff',
-  },
+  
   buttonText: {
     fontSize: 18,
     textAlign: 'center',
     marginTop: 15,
-    color: '#19788e',
     fontWeight: 'bold'
   },
 });

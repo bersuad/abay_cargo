@@ -15,13 +15,14 @@ import{
   Truck,
   Logo,
 } from './../components/index';
+import appPageStyle from './../styles/common';
 
 const HomeRoute = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
       <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "#1370a4" translucent = {true}/>
       <SafeAreaView 
-        style={styles.container}
+        style={[styles.container, appPageStyle.primaryColor]}
       >
 
         <View>
@@ -69,7 +70,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#19788e',
   },
   HeaderLogo:{
     backgroundColor:'#FFF',

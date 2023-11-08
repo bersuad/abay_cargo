@@ -6,7 +6,8 @@ import {
   View,
   TouchableOpacity,
   FontAwesome5
-} from './../components/index'
+} from './../components/index';
+import appPageStyle from '../styles/common';
 
 // Pages List
 import splash from './../pages/splash';
@@ -30,6 +31,7 @@ import ContactUs from '../pages/transporter/bottomTabs/settings/contactus';
 import AboutUs from '../pages/transporter/bottomTabs/settings/aboutus';
 import Terms from '../pages/transporter/bottomTabs/settings/termsandconditions';
 import Privacy from '../pages/transporter/bottomTabs/settings/privacy';
+import Report from '../pages/transporter/bottomTabs/settings/report';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -51,9 +53,7 @@ export default function App() {
             headerShown: true,
             headerTitle:'Transporter Login',
             headerBackTitle: 'Back',
-            headerStyle: {
-              backgroundColor: '#19788e',
-            },
+            headerStyle: appPageStyle.primaryColor,
             headerTintColor: '#fff'
           }}
         />
@@ -65,9 +65,7 @@ export default function App() {
             headerShown: true,
             headerTitle:'Driver Login',
             headerBackTitle: 'Back',
-            headerStyle: {
-              backgroundColor: '#19788e',
-            },
+            headerStyle: appPageStyle.primaryColor,
             headerTintColor: '#fff'
           }}
           
@@ -112,7 +110,7 @@ export default function App() {
           component={TransporterDashboard} 
           options={{
             headerShown: true,
-            headerTitle:'Cargo & Delivery',
+            headerTitle:'Abay Transporter',
             headerStyle: {
               backgroundColor: '#fff',
               shadowColor: '#1f1f1f',
@@ -317,6 +315,21 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle: "Privacy Policy",
+            headerBackTitle: "back",
+            headerStyle:{
+              backgroundColor: '#fff'
+            },
+            headerTintColor: '#19788e',
+          }}
+        />
+
+        <Stack.Screen
+          name='Report'
+          title="Reports"
+          component={Report}
+          options={{
+            headerShown: true,
+            headerTitle: "Reports",
             headerBackTitle: "back",
             headerStyle:{
               backgroundColor: '#fff'

@@ -31,8 +31,8 @@ export default  function App(){
                     <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 30, width: 30, borderRadius: 99, marginLeft: 0}}>
                       <Ionicons name="md-notifications" size={15} color="#fff"/>
                     </View>
-                    <View >
-                        <Text style={{textAlign:'justify', width: '50%',}}>
+                    <View style={{width: '85%'}}>
+                        <Text style={{textAlign:'justify'}}>
                         Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
                         </Text>
                     </View>
@@ -54,8 +54,8 @@ export default  function App(){
                     <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 30, width: 30, borderRadius: 99, marginLeft: 0}}>
                       <Ionicons name="md-notifications" size={15} color="#fff"/>
                     </View>
-                    <View >
-                        <Text style={{textAlign:'justify', width: '50%',}}>
+                    <View style={{width: '85%'}}>
+                        <Text style={{textAlign:'justify'}}>
                         Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
                         </Text>
                     </View>

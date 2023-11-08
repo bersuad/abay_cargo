@@ -34,7 +34,7 @@ export default function App() {
           <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
         
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
+        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('Report')}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <AntDesign name="piechart" size={24} color="rgba(25, 120, 142, 0.9)" />
           </View>

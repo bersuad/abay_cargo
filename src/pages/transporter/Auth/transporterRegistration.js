@@ -15,6 +15,7 @@ import {
   //Icons
   Ionicons
 } from "./../../../components/index";
+import appPageStyle from '../../../styles/common';
 
 export default function ImagePickerExample() {
   const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;
@@ -43,7 +44,7 @@ export default function ImagePickerExample() {
         <View style={{marginBottom:10}}>
           {image && <Image source={{ uri: image }} style={styles.image} />}
           <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-            <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13}}> <Ionicons name="md-camera" size={18} color="#19788e" /> Upload Logo</Text> 
+            <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="md-camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload Logo</Text> 
           </TouchableOpacity> 
         </View>
         <Text style={styles.HeaderText}>Company Type</Text>
@@ -127,8 +128,8 @@ export default function ImagePickerExample() {
           /> 
         </View>  
 
-        <TouchableOpacity style={styles.loginBtn}>
-          <Text style={styles.loginText}>Next <Ionicons name="md-arrow-forward" size={15} color="#fff" /></Text> 
+        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]}>
+          <Text style={appPageStyle.primaryTextColor}>Next <Ionicons name="md-arrow-forward" size={15} /></Text> 
         </TouchableOpacity> 
       </SafeAreaView>
     </ScrollView>
@@ -182,17 +183,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 10,
     marginBottom: 20,
-    backgroundColor: "#19788e",
-    color: '#fff',
   },
-  loginText: {
-    color: '#fff',
-  },
+  
   buttonText: {
     fontSize: 18,
     textAlign: 'center',
     marginTop: 5,
-    color: '#19788e',
     fontWeight: 'bold'
   },
   HeaderText:{
