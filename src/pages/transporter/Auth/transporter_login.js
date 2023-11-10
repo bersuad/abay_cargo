@@ -36,17 +36,17 @@ export default function App() {
         <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
         <View style={styles.inputView}>
           <TextInput
-            style={styles.TextInput}
+            style={[styles.TextInput, appPageStyle.secondaryTextColor]}
             placeholder="Email Here."
-            placeholderTextColor={appPageStyle.secondaryTextColor}
+            placeholderTextColor="#003f5c"
             onChangeText={(email) => setEmail(email)}
           /> 
         </View> 
         <View style={styles.inputView}>
           <TextInput
-            style={styles.TextInput}
+            style={[styles.TextInput, appPageStyle.secondaryTextColor]}
             placeholder="Password."
-            placeholderTextColor={appPageStyle.secondaryTextColor}
+            placeholderTextColor="#003f5c"
             secureTextEntry={true}
             onChangeText={(password) => setPassword(password)}
           /> 

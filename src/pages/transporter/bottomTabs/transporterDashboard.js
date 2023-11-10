@@ -19,7 +19,7 @@ import{
   cardBackground,
   headerImage
 } from './../../../components/index';
-
+import appPageStyle from "../../../styles/common";
 
 export default function App() {
   
@@ -127,7 +127,7 @@ export default function App() {
                 
               },
             ]}>
-              <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+              <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
                 <FontAwesome5 name="box-open" size={24} color="#fff" />
               </View>
               <View >
@@ -153,7 +153,33 @@ export default function App() {
                 gap: 15,
               },
             ]}>
-              <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+              <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                <FontAwesome5 name="box-open" size={24} color="#fff" />
+              </View>
+              <View >
+                <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
+                <Text style={{textAlign:'left', width: 200}}>
+                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
+                </Text>
+              </View>
+              <View style={{position: "absolute", top: 0, right:0}}>
+                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
+                  <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.primaryTextColor} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
+          <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+            <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '90%',
+                gap: 15,
+              },
+            ]}>
+              <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
                 <FontAwesome5 name="box-open" size={24} color="#fff" />
               </View>
               <View >
@@ -179,33 +205,7 @@ export default function App() {
                 gap: 15,
               },
             ]}>
-              <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
-                <FontAwesome5 name="box-open" size={24} color="#fff" />
-              </View>
-              <View >
-                <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
-                <Text style={{textAlign:'left', width: 200}}>
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
-                </Text>
-              </View>
-              <View style={{position: "absolute", top: 0, right:0}}>
-                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                  <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-
-          <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-            <View
-            style={[
-              {
-                flexDirection: 'row',
-                width: '90%',
-                gap: 15,
-              },
-            ]}>
-              <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+              <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
                 <FontAwesome5 name="box-open" size={24} color="#fff" />
               </View>
               <View >

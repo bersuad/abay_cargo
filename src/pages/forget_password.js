@@ -16,7 +16,7 @@ import appPageStyle from "../styles/common";
 
 export default function App() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
       <View style={styles.container}>
