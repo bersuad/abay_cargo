@@ -17,9 +17,10 @@ import{
   StatusBar,
   //Images
   cardBackground,
-  headerImage
+  headerImage,
+  //main styling
+  appPageStyle,
 } from './../../../components/index';
-import appPageStyle from "../../../styles/common";
 
 export default function App() {
   
@@ -64,7 +65,7 @@ export default function App() {
             <Text style={{...styles.cardText, fontSize:13, }}>Drivers</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterFreights')}>
-            <View style={{...styles.iconArea, backgroundColor: "#19788e"}}>
+            <View style={[styles.iconArea, appPageStyle.primaryColor]}>
               <Ionicons name="swap-horizontal" size={24} color="#fff" />
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Frights</Text>
@@ -138,7 +139,7 @@ export default function App() {
               </View>
               <View style={{position: "absolute", top: 0, right:0}}>
                 <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                  <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
+                  <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -164,7 +165,7 @@ export default function App() {
               </View>
               <View style={{position: "absolute", top: 0, right:0}}>
                 <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                  <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.primaryTextColor} />
+                  <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -190,7 +191,7 @@ export default function App() {
               </View>
               <View style={{position: "absolute", top: 0, right:0}}>
                 <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                  <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
+                  <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -216,7 +217,7 @@ export default function App() {
               </View>
               <View style={{position: "absolute", top: 0, right:0}}>
                 <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                  <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
+                  <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
                 </TouchableOpacity>
               </View>
             </View>

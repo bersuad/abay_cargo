@@ -7,7 +7,8 @@ import {
     Text,
     AntDesign,
     Button,
-    SafeAreaView
+    SafeAreaView,
+    appPageStyle
 } from './../../../../components/index';
 
 import Accordion from 'react-native-collapsible/Accordion';
@@ -40,7 +41,7 @@ function App(): JSX.Element {
     return (
         <View style={styles.accordHeader}>
             <Text style={styles.accordTitle}>{ section.title }</Text>
-            <AntDesign name={ isActive ? 'caretup' : 'caretdown' } size={18} color="#19788e" />
+            <AntDesign name={ isActive ? 'caretup' : 'caretdown' } size={18} {...appPageStyle.secondaryTextColor} />
         </View>
     );
 };
@@ -89,11 +90,12 @@ const styles = StyleSheet.create({
         shadowColor: '#19788e',
         shadowOpacity: 0.2,
         elevation: 1,
-        width: '99%',
+        width: '95%',
         alignItems: "center",
         alignSelf:'center',
         paddingLeft: 20,
         paddingRight: 20,
+        borderRadius: 10
     },
     accordTitle: {
         fontSize: 20,

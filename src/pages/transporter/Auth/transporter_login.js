@@ -14,8 +14,10 @@ import {
   useNavigation,
   //image
   TruckLogin,
+  //main style
+  appPageStyle,
 } from "./../../../components/index";
-import appPageStyle from "../../../styles/common";
+
 
 
 

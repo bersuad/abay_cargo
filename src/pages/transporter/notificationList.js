@@ -2,16 +2,12 @@ import React, { useState } from "react";
 
 import{
   Ionicons,
-  MaterialCommunityIcons, 
-  TouchableOpacity,
   StyleSheet,
   Text,
   View,
   ScrollView,
-  
+  appPageStyle,
 } from './../../components/index';
-
-
 
 export default  function App(){
     
@@ -28,7 +24,7 @@ export default  function App(){
                         
                     },
                     ]}>
-                    <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 30, width: 30, borderRadius: 99, marginLeft: 0}}>
+                    <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 30, width: 30, borderRadius: 99, marginLeft: 0}}>
                       <Ionicons name="md-notifications" size={15} color="#fff"/>
                     </View>
                     <View style={{width: '85%'}}>
@@ -51,7 +47,7 @@ export default  function App(){
                         
                     },
                     ]}>
-                    <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 30, width: 30, borderRadius: 99, marginLeft: 0}}>
+                    <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 30, width: 30, borderRadius: 99, marginLeft: 0}}>
                       <Ionicons name="md-notifications" size={15} color="#fff"/>
                     </View>
                     <View style={{width: '85%'}}>

@@ -11,7 +11,9 @@ import{
   TouchableOpacity,
   Ionicons,
   AntDesign,
-} from './../../../../components/index'
+  appPageStyle,
+} from './../../../../components/index';
+
 
 export default function App() {
   
@@ -29,7 +31,7 @@ export default function App() {
           <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
         </View> 
         <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
-          <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+          <TouchableOpacity style={{...appPageStyle.primaryColor, height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
             <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Driver</Text>
           </TouchableOpacity>
         </View>

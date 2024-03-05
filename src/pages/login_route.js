@@ -1,5 +1,3 @@
-// Example: Switch from One Screen to another using React Navigation //
-// https://aboutreact.com/react-native-stack-navigation //
 import * as React from 'react';
 
 import{
@@ -14,8 +12,8 @@ import{
   Driver,
   Truck,
   Logo,
+  appPageStyle,
 } from './../components/index';
-import appPageStyle from './../styles/common';
 
 const HomeRoute = ({ navigation }) => {
   return (

@@ -13,9 +13,10 @@ import {
   //image
   Logo,
   //Icons
-  Ionicons
+  Ionicons,
+  // main styling
+  appPageStyle
 } from "./../../../components/index";
-import appPageStyle from '../../../styles/common';
 
 export default function ImagePickerExample() {
   const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;

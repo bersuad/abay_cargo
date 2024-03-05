@@ -11,7 +11,7 @@ import HomeScreen from "./bottomTabs/transporterDashboard";
 import transporterManagmentSystem from "./bottomTabs/transporterManagmentSystem";
 import transportMarketPlace from "./bottomTabs/transportMarketplace";
 import SettingScreen from "./bottomTabs/transporterSetting";
-// import ProfileScreen from "./transportProfile";
+
 
 const TabNavigator = createMaterialBottomTabNavigator(
 {

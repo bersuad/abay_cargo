@@ -50,6 +50,7 @@ import userImage from "./../../assets/userava.png";
 import placeholder from "./../../assets/placeholder.jpg";
 
 import Collapsible from 'react-native-collapsible';
+import appPageStyle from "../styles/common";
 
 export {
   StyleSheet,
@@ -100,4 +101,7 @@ export {
   headerImage,
   userImage,
   placeholder,
+
+  //main styling
+  appPageStyle
 };

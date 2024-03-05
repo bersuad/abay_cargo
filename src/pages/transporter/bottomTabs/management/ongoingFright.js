@@ -8,7 +8,8 @@ import {
   ScrollView,
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  appPageStyle,
 } from './../../../../components/index';
 export default function OnGoingFright() {
   
@@ -18,59 +19,58 @@ export default function OnGoingFright() {
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
         <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
             <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-            <View
-            style={[
-                {
-                flexDirection: 'row',
-                width: '90%',
-                gap: 15,
-                
-                },
-            ]}>
-                <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
-                <FontAwesome5 name="box-open" size={24} color="#fff" />
-                </View>
-                <View >
-                <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
-                <Text style={{textAlign:'left', width: 200,}}>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
-                </Text>
-                </View>
-                <View style={{position: "absolute", top: 0, right:0}}>
-                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                    <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
-                </TouchableOpacity>
-                </View>
+              <View
+              style={[
+                  {
+                  flexDirection: 'row',
+                  width: '90%',
+                  gap: 15,
+                  
+                  },
+              ]}>
+                  <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                    <FontAwesome5 name="box-open" size={24} {...appPageStyle.primaryTextColor} />
+                  </View>
+                  <View >
+                    <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
+                    <Text style={{textAlign:'left', width: 200,}}>
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
+                    </Text>
+                  </View>
+                  <View style={{position: "absolute", top: 0, right:0}}>
+                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
+                        <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
+                    </TouchableOpacity>
+                  </View>
+              </View>
             </View>
-            </View>
-
-            
-
             <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-            <View
-            style={[
-                {
-                flexDirection: 'row',
-                width: '90%',
-                gap: 15,
-                },
-            ]}>
-                <View style={{...styles.iconArea, backgroundColor: "#19788e", height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
-                <FontAwesome5 name="box-open" size={24} color="#fff" />
-                </View>
-                <View >
-                <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
-                <Text style={{textAlign:'left', width: 200}}>
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
-                </Text>
-                </View>
-                <View style={{position: "absolute", top: 0, right:0}}>
-                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                    <MaterialCommunityIcons name="dots-vertical" size={24} color="#19788e" />
-                </TouchableOpacity>
-                </View>
+              <View
+              style={[
+                  {
+                  flexDirection: 'row',
+                  width: '90%',
+                  gap: 15,
+                  
+                  },
+              ]}>
+                  <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                    <FontAwesome5 name="box-open" size={24} {...appPageStyle.primaryTextColor} />
+                  </View>
+                  <View >
+                    <Text style={{fontWeight: 'bold'}}>Ref. No: LD-2307281901-998</Text>
+                    <Text style={{textAlign:'left', width: 200,}}>
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
+                    </Text>
+                  </View>
+                  <View style={{position: "absolute", top: 0, right:0}}>
+                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
+                        <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
+                    </TouchableOpacity>
+                  </View>
+              </View>
             </View>
-            </View>
+
         </View>
     </ScrollView>
     );
