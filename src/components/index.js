@@ -11,7 +11,13 @@ import {
   Animated,
   BackHandler, 
   LogBox, 
+  PermissionsAndroid,
+  ActivityIndicator,
+  ToastAndroid,
 } from "react-native";
+
+import ApiConfig from "./../api/ApiConfig";
+import {PostCallWithErrorResponse} from "./../api/ApiServices";
 
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from '@react-navigation/native';
@@ -37,6 +43,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { createAppContainer } from "react-navigation";
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from "@react-native-community/netinfo";
+
+
 //images
 import Logo from './../../assets/splash_logo.png';
 import Driver from './../../assets/driver.png';
@@ -70,6 +80,8 @@ export {
   BouncyCheckbox,
   SafeAreaView,
   ImagePicker,
+  PermissionsAndroid,
+  ActivityIndicator,
 
   createMaterialBottomTabNavigator,
   createAppContainer,  
@@ -103,5 +115,16 @@ export {
   placeholder,
 
   //main styling
-  appPageStyle
+  appPageStyle,
+
+  // API Config
+  ApiConfig,
+  PostCallWithErrorResponse,
+
+  // storage
+  AsyncStorage,
+
+  // internet
+  NetInfo,
+  ToastAndroid
 };
