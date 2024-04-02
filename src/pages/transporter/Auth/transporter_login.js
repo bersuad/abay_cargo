@@ -74,7 +74,7 @@ export default function App() {
       ToastAndroid.LONG, //can be SHORT, LONG
       ToastAndroid.BOTTOM, //can be TOP, BOTTON, CENTER
       25, //xOffset
-      500, //yOffset
+      400, //yOffset
     );
   };
   
@@ -109,23 +109,41 @@ export default function App() {
         return;
       }
     } 
-    
+    console.log(state);
     PostCallWithErrorResponse(ApiConfig.TRANSPORTER_LOGIN_API, state)
     .then((data) => {
       if (data.json.message === "Wrong credentials entered") {
         setState({ ...state, isLoading: false});
         toastWithDurationHandler();
+        AsyncStorage.clear();
       }
 
-      if (data.json.result) {
-        console.log(data.json.user_details);
+      if (data.json.message === "Registration Rejected , please see check your inbox") {
         setState({ ...state, isLoading: false});
+        toastWithDurationHandler();
+        AsyncStorage.clear();
+      }
+
+      console.log(data.json.message);
+      if (data.json.result) {
+        setState({ ...state, isLoading: false});
+
+        AsyncStorage.setItem("api_key", JSON.stringify(data.json.api_key));
+        AsyncStorage.setItem('user_id', JSON.stringify(data.json.user_id));
+        AsyncStorage.setItem("customer_id", JSON.stringify(data.json.customer_id));
+        
+        AsyncStorage.setItem(
+          "userDetails",
+          JSON.stringify(data.json.user_details)
+        );
+        
+        navigation.navigate('TransporterDashboard');
       }
     })
     .catch((error) => {
       // navigate("/ForgetPassword");
       setState({ ...state, isLoading: true});
-      console.log("api response");
+      console.log(error);
     });
 
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
     View,
@@ -8,19 +8,56 @@ import {
     Image,
     StatusBar,
     Logo,
+    AsyncStorage,
+    LogBox,
+    useNavigation
 } from './../components/index';
 
-const Splash = ({ navigation }) => {
-    state = { 
+export default function Splash() {
+
+    const navigation = useNavigation();
+    
+    const [state, setState] = useState({
+        isUserLoggedIn: false,
+        isLoading: false,
+        checkInternet:true,
         LogoAnimate: new Animated.Value(0),
         LogoText: new Animated.Value(0),
         SimpleText: new Animated.Value(0),
-    };
+    });
+
+    const componentWillMount = () => {
+        useEffect( () => {
+          // Anything in here is fired on component unmount.
+            LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
+            this.mounted = true;
+            this._checkUser();
+
+            return () => {
+                // Anything in here is fired on component unmount.
+                setState({ ...state, isLoading: false, checkInternet:true,});
+                this.mounted = false;
+            }
+        }, []);
+    }
+    
+    componentWillMount();
+    
+    
     const [timePassed, setTimePassed] = useState(false);
 
-    const {LogoAnimate, LogoText, SimpleText}= this.state;
+    
+
+    _checkUser = async () =>{
+        AsyncStorage.getItem('user_id').then(value =>
+            value === null ? setState({...state, isUserLoggedIn:false}) : setState({...state, isUserLoggedIn:true},
+                console.log(value),
+            ),
+        );
+    }
+
     Animated.parallel([
-        Animated.spring(LogoAnimate,{
+        Animated.spring(state.LogoAnimate,{
             toValue:1,
             tension:8,
             friction:1.13,
@@ -28,11 +65,11 @@ const Splash = ({ navigation }) => {
             
         }).start(),
 
-        Animated.timing(LogoText, {
+        Animated.timing(state.LogoText, {
             toValue: 1,
             duration:2600,
         }),
-        Animated.timing(SimpleText, {
+        Animated.timing(state.SimpleText, {
             toValue: 1,
             duration:3000,
         }),
@@ -50,8 +87,8 @@ const Splash = ({ navigation }) => {
                 <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "#1e73be" translucent = {true}/>
                 <Animated.View
                     style={{
-                        opacity: this.state.LogoAnimate,
-                        top: this.state.LogoAnimate.interpolate({
+                        opacity: state.LogoAnimate,
+                        top: state.LogoAnimate.interpolate({
                             inputRange:[0,1],
                             outputRange:[80,0]
                         }),
@@ -65,10 +102,15 @@ const Splash = ({ navigation }) => {
             </View>
         );
     }
-    navigation.navigate('HomeRoute');
+    
+    if (state.isUserLoggedIn) {
+        navigation.navigate('TransporterDashboard');
+    }else{
+        navigation.navigate('HomeRoute');
+    }
 }
 
-export default Splash;
+// export default Splash;
 
 const styles = StyleSheet.create({
   container:{

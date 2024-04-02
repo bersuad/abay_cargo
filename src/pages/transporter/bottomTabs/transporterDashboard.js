@@ -20,19 +20,68 @@ import{
   headerImage,
   //main styling
   appPageStyle,
+  AsyncStorage,
+  RefreshControl
 } from './../../../components/index';
 
 export default function App() {
   
   const navigation = useNavigation();
+  const [state, setState] = useState({
+    isLoading: false,
+    checkInternet:true,
+    tariffExportList:'',
+    tariffImprotList:''
+  });
 
+  const componentWillMount = () => {
+    useEffect( () => {
+      // Anything in here is fired on component unmount.
+      LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
+      this.mounted = true;
+      this._checkConnection();
+      this.index = 0;
+      this.animation = new Animated.Value(0);
+      
+      return () => {
+        // Anything in here is fired on component unmount.
+        setState({ ...state, isLoading: false, checkInternet:true,});
+        this.mounted = false;
+      }
+    }, []);
+  }
+
+  componentWillMount();
+
+  
+ 
+
+  AsyncStorage.getItem('userDetails').then(value =>
+    console.log(JSON.stringify({value}))
+  );
+
+  // refresh page
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+  
   return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView 
+      style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View style={styles.container}>
         <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
         <ImageBackground imageStyle={{ borderRadius: 10}} source={cardBackground} resizeMode="cover" style={[styles.welcomeCard, styles.boxShadow]}>
           <Text style={styles.cardText}>WELCOME.., </Text>
-          <Text style={{...styles.cardText, fontSize:18, }}>transporter company</Text>
+          <Text style={{...styles.cardText, fontSize:18, }}></Text>
           <Image style={styles.cardImage} source={headerImage}/>
           <TouchableOpacity>
             <Text style={{...styles.cardText, fontSize: 13, marginTop: 90, color: "#1b9be6"}}>GET STARTED! </Text>

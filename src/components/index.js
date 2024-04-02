@@ -14,6 +14,7 @@ import {
   PermissionsAndroid,
   ActivityIndicator,
   ToastAndroid,
+  RefreshControl,
 } from "react-native";
 
 import ApiConfig from "./../api/ApiConfig";
@@ -126,5 +127,6 @@ export {
 
   // internet
   NetInfo,
-  ToastAndroid
+  ToastAndroid,
+  RefreshControl,
 };
