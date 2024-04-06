@@ -13,12 +13,14 @@ import {
   LogBox, 
   PermissionsAndroid,
   ActivityIndicator,
-  ToastAndroid,
+  // ToastAndroid,
   RefreshControl,
 } from "react-native";
 
+import Toast from 'react-native-root-toast';
+
 import ApiConfig from "./../api/ApiConfig";
-import {PostCallWithErrorResponse} from "./../api/ApiServices";
+import {PostCallWithErrorResponse, postWithAuthCallWithErrorResponse} from "./../api/ApiServices";
 
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from '@react-navigation/native';
@@ -62,6 +64,7 @@ import placeholder from "./../../assets/placeholder.jpg";
 
 import Collapsible from 'react-native-collapsible';
 import appPageStyle from "../styles/common";
+import AppContext from "./AppContext"
 
 export {
   StyleSheet,
@@ -121,12 +124,14 @@ export {
   // API Config
   ApiConfig,
   PostCallWithErrorResponse,
-
+  postWithAuthCallWithErrorResponse,
   // storage
   AsyncStorage,
 
   // internet
   NetInfo,
-  ToastAndroid,
+  // ToastAndroid,
+  Toast,
   RefreshControl,
+  AppContext
 };

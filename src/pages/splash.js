@@ -27,6 +27,7 @@ export default function Splash() {
     });
 
     const componentWillMount = () => {
+        
         useEffect( () => {
           // Anything in here is fired on component unmount.
             LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
@@ -45,15 +46,16 @@ export default function Splash() {
     
     
     const [timePassed, setTimePassed] = useState(false);
+    const [MyClientID, setMyClientID] = useState('');
 
     
 
     _checkUser = async () =>{
-        AsyncStorage.getItem('user_id').then(value =>
-            value === null ? setState({...state, isUserLoggedIn:false}) : setState({...state, isUserLoggedIn:true},
-                console.log(value),
-            ),
-        );
+        
+        AsyncStorage.getItem('user_id').then((myClientID) => {
+            setMyClientID(myClientID);
+        });
+
     }
 
     Animated.parallel([
@@ -103,7 +105,7 @@ export default function Splash() {
         );
     }
     
-    if (state.isUserLoggedIn) {
+    if (MyClientID) {
         navigation.navigate('TransporterDashboard');
     }else{
         navigation.navigate('HomeRoute');
@@ -138,4 +140,3 @@ const styles = StyleSheet.create({
       objectFit: 'contain'
   },
 });
-

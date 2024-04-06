@@ -25,7 +25,8 @@ import {
   LogBox,
   Animated,
   ActivityIndicator,
-  ToastAndroid
+  Toast,
+  Ionicons,
 } from "./../../../components/index";
 
 import SnackBar from 'react-native-snackbar-component';
@@ -43,11 +44,12 @@ export default function App() {
     username: "",
     password: "",
     isLoading: false,
+    inputFormat: true,
+    icon: "eye-off",
     checkInternet:true,
   });
   const [progress, setProgress] = useState(0);
-  // const [isPasswordValid, setIsPasswordValid] = useState(false);
-  // const [passwordLoadingMessage, setPasswordLoadingMessage] = useState(false);
+  
   const [errMsg, setErrMsg] = useState({ username: "", password: "" });
   
   const componentWillMount = () => {
@@ -67,18 +69,20 @@ export default function App() {
     }, []);
   }
 
-  const toastWithDurationHandler = () => {
+  const toastWithDurationHandler = (message) => {
     // To make Toast with duration
-    ToastAndroid.showWithGravityAndOffset(
-      'Wrong Username or Password',
-      ToastAndroid.LONG, //can be SHORT, LONG
-      ToastAndroid.BOTTOM, //can be TOP, BOTTON, CENTER
-      25, //xOffset
-      400, //yOffset
-    );
+    let toast = Toast.show(message, {
+      duration: Toast.durations.LONG,
+      backgroundColor: 'red',
+      animation: true,
+    });
   };
   
   componentWillMount();
+
+  _changeIcon=()=>{
+    setState(prevState =>({ ...state, icon:prevState.icon === 'eye' ? 'eye-off' : 'eye', inputFormat: !prevState.inputFormat }));
+  }
   
   _checkConnection = async()=>{
     NetInfo.addEventListener(networkState => {
@@ -109,28 +113,34 @@ export default function App() {
         return;
       }
     } 
-    console.log(state);
+    
     PostCallWithErrorResponse(ApiConfig.TRANSPORTER_LOGIN_API, state)
     .then((data) => {
       if (data.json.message === "Wrong credentials entered") {
         setState({ ...state, isLoading: false});
-        toastWithDurationHandler();
+        toastWithDurationHandler('Wrong Username or Password');
         AsyncStorage.clear();
       }
 
       if (data.json.message === "Registration Rejected , please see check your inbox") {
         setState({ ...state, isLoading: false});
-        toastWithDurationHandler();
+        toastWithDurationHandler('Wrong username and password inputs, please check your inputs!');
         AsyncStorage.clear();
       }
 
-      console.log(data.json.message);
+      
       if (data.json.result) {
+        console.log(data.json);
         setState({ ...state, isLoading: false});
-
-        AsyncStorage.setItem("api_key", JSON.stringify(data.json.api_key));
-        AsyncStorage.setItem('user_id', JSON.stringify(data.json.user_id));
-        AsyncStorage.setItem("customer_id", JSON.stringify(data.json.customer_id));
+        
+        AsyncStorage.setItem("api_key", data.json.api_key);
+        
+        AsyncStorage.setItem('user_id', data.json.user_id.toString())
+        .then((success) => {
+          console.log("succesfully saved in asyncestorage");
+        })
+        .catch((e) => console.log(e));
+        AsyncStorage.setItem("customer_id", data.json.customer_id.toString());
         
         AsyncStorage.setItem(
           "userDetails",
@@ -184,7 +194,7 @@ export default function App() {
               style={[styles.TextInput, appPageStyle.secondaryTextColor]}
               placeholder="Password."
               placeholderTextColor="#003f5c"
-              secureTextEntry={true}
+              secureTextEntry={state.inputFormat}
               onChangeText={(password) =>{
                 setErrMsg({ ...errMsg, password: "" });
                 setState({...state, password: password})}
@@ -193,6 +203,7 @@ export default function App() {
               maxLength={50}
               returnKeyLabel = {"Go"}
             /> 
+            <Ionicons name={state.icon} onPress={()=> this._changeIcon()} size={18} color="#003f5c" style={{position: 'absolute', right: 20}}/>
           </View> 
           {errMsg.password.length > 0 && (
             <Text style={{color: '#FF5151', marginTop: -10, paddingBottom: 10, position: "relative"}}>{errMsg.password}</Text>
