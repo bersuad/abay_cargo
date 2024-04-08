@@ -24,99 +24,126 @@ import{
   RefreshControl,
   LogBox,
   ApiConfig,
-  postWithAuthCallWithErrorResponse
+  postWithAuthCallWithErrorResponse,
+  ActivityIndicator
 } from './../../../components/index';
+
 
 export default function App() {
   
   const navigation = useNavigation();
   const [state, setState] = useState({
-    isLoading: false,
+    isLoading: true,
     checkInternet:true,
+    tariffExportList:'',
+    tariffImprotList:'',
+    customerData:'',
+    customer_id:'',
+    user_id:'',
+    api_key: '',
+    from_date:'',
+    to_date:''
   });
 
+  const [dates, setDates] = useState({
+    startDate: "",
+    endDate: "",
+  });
   const [customer_id, setMyClientID]        = useState('');
   const [api_key, setAPI_KEY]               = useState('');
   const [user_id, setMyUserID]              = useState('');
   const [dashBoardData, setDashBoardData ]  = useState([]);
   const [user_details, setUserDetails]      = useState('');
   
-  const componentWillMount = () => {
-    useEffect( () => {
-      
-      // Anything in here is fired on component unmount.
-      this.mounted = true;      
-      this._getDashboardDetails();
 
-      return () => {     
-        setState({ ...state, isLoading: false, checkInternet:true,});
-        this.mounted = false;   
-      }
-    }, []);
-  }
-
-  componentWillMount();
-
-
-  _getDashboardDetails = async() => {
-
-      AsyncStorage.getItem('customer_id').then((myClientID) => {
-        setMyClientID(myClientID);
-      });
-      
-      
-      AsyncStorage.getItem('api_key').then(value =>{
-        setAPI_KEY(value);
-      });
-
-      AsyncStorage.getItem('user_id').then(value =>{
-        setMyUserID(value);
-      });
-
-      AsyncStorage.getItem('userDetails').then(value =>{
-        setUserDetails(value);
-      });    
-
-    postWithAuthCallWithErrorResponse(
-        ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
-      ).then((res) => {
-        if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-            console.log('Wrong Data here')
-        }
-        if(res.json.message === "Insufficient Parameters"){
-          console.log('no data here')
-        }
-        
-        if (res.json.result)setDashBoardData(res.json);
-      
-        // console.log(dashBoardData);
-      });
-    
-  };
+  // componentWillMount();
   
 
   // refresh page
-  const [refreshing, setRefreshing] = React.useState(false);
+  
+  // const [refreshing, setRefreshing] = React.useState(false);
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      // this._getDashboardDetails();
-      setRefreshing(false);
-    }, 2000);
+  // const onRefresh = React.useCallback(() => {
+  //   setRefreshing(true);
+  //   setTimeout(() => {
+  //     setRefreshing(false);
+  //   }, 2000);
+  // }, []);
+  
+  const _getDashboardDetails = async() => {
+    console.log('getting here on loading');
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    await AsyncStorage.getItem('customer_id').then((myClientID) => {
+      setMyClientID(myClientID);
+    });
+    
+    await AsyncStorage.getItem('api_key').then(value =>{
+      setAPI_KEY(value);
+    });
+
+    await AsyncStorage.getItem('user_id').then(value =>{
+      setMyUserID(value);
+    });
+
+    await AsyncStorage.getItem('userDetails').then(value =>{
+      setUserDetails(value);
+    });    
+
+    console.log(user_id);
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
+    ).then((res) => {
+  
+      if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+        setState({ ...state, isLoading: false});  
+        console.log('Wrong Data here');
+      }
+      if(res.json.message === "Insufficient Parameters"){
+        setState({ ...state, isLoading: false});
+        console.log('no data here')
+      }
+  
+      
+      if (res.json.result)setDashBoardData(res.json);
+      setState({ ...state, isLoading: false});
+    });
+    
+  };
+
+  useEffect(() => {
+      
+    // Anything in here is fired on component unmount.
+    this.mounted = true;
+    _getDashboardDetails();
+
+    return () => {     
+      setState({ ...state, isLoading: true, checkInternet:true,});
+      this.mounted = false;   
+    }
   }, []);
+
   
   return (
     <ScrollView 
       style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
+      // refreshControl={
+      //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      // }
     >
+      {state.isLoading &&(
+          <View style={styles.container}>
+            <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
+            <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
+          </View> 
+        )}
+      {!state.isLoading &&(
       <View style={styles.container}>
         <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
         <ImageBackground imageStyle={{ borderRadius: 10}} source={cardBackground} resizeMode="cover" style={[styles.welcomeCard, styles.boxShadow]}>
-          <Text style={styles.cardText}>Welcome Back, </Text>
+          <Text style={styles.cardText}>WELCOME.., </Text>
           <Text style={{...styles.cardText, fontSize:18, }}>{dashBoardData.user_name}</Text>
           <Image style={styles.cardImage} source={headerImage}/>
           <TouchableOpacity>
@@ -203,12 +230,12 @@ export default function App() {
 
         {/* on going Frights area */}
         <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-
+            
             {dashBoardData.ongoing_freights &&
               dashBoardData.ongoing_freights.length &&
               dashBoardData.ongoing_freights.map((fright, key) => (
                 
-          <View style={[styles.boxShadow, {height: 120, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+          <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
             <View
             style={[
               {
@@ -258,6 +285,7 @@ export default function App() {
 
         
       </View>
+      )}
     </ScrollView>
   );
 }

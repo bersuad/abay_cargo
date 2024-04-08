@@ -1,6 +1,4 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,11 +9,84 @@ import {
   useNavigation,
   Ionicons,
   AntDesign,
+  LogBox,
+  AsyncStorage,
+  postWithAuthCallWithErrorResponse,
+  ApiConfig,
+  ActivityIndicator
 } from './../../../../components/index'
 
 export default function App() {
-  
+  const [state, setState] = useState({
+    isLoading: true,
+    checkInternet:true,
+  });
   const navigation = useNavigation();
+  const [driverList, setDriverList]         = useState([]);
+  const [customer_id, setMyClientID]        = useState('');
+  const [api_key, setAPI_KEY]               = useState('');
+  const [user_id, setMyUserID]              = useState('');
+  const [dashBoardData, setDashBoardData ]  = useState([]);
+  const [user_details, setUserDetails]      = useState('');
+
+  const componentWillMount = () => {
+        
+    useEffect( () => {
+      // Anything in here is fired on component unmount.
+        LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
+        this.mounted = true;
+        _getVehicle();
+        return () => {
+            // Anything in here is fired on component unmount.
+            setState({ ...state, isLoading: false, checkInternet:true,});
+            this.mounted = false;
+        }
+    }, []);
+}
+
+componentWillMount();
+
+const _getVehicle = async() => {
+
+  const user_id = await AsyncStorage.getItem('user_id');
+  const customer_id = await AsyncStorage.getItem('customer_id');
+  const api_key = await AsyncStorage.getItem('api_key');
+  
+  await AsyncStorage.getItem('customer_id').then((myClientID) => {
+    setMyClientID(myClientID);
+  });
+  
+  await AsyncStorage.getItem('api_key').then(value =>{
+    setAPI_KEY(value);
+  });
+
+  await AsyncStorage.getItem('user_id').then(value =>{
+    setMyUserID(value);
+  });
+
+  await AsyncStorage.getItem('userDetails').then(value =>{
+    setUserDetails(value);
+  });  
+  
+  postWithAuthCallWithErrorResponse(
+    ApiConfig.DRIVER_LIST,
+    JSON.stringify({ user_id, api_key, customer_id })
+  )
+    .then((res) => {
+      if (res.json.message === 
+        "Invalid user authentication,Please try to relogin with exact credentials.") {
+      }
+      
+      if (res.json.result) {
+        setDriverList(res.json.driver_list);
+      }
+      console.log(res.json.driver_list);
+    })
+    .catch((err) => console.log(err));
+
+};
+
+
 
   return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
