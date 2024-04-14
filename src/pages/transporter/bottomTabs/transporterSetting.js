@@ -17,7 +17,10 @@ import {
   AsyncStorage,
   postWithAuthCallWithErrorResponse,
   ApiConfig,
-  Logo
+  Logo,
+  StatusBar,
+  ActivityIndicator,
+  appPageStyle
 } from './../../../components/index';
 
 export default function App() {
@@ -80,12 +83,22 @@ export default function App() {
 
   return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+      {state.isLoading &&(
+          <View style={styles.container}>
+            <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
+            <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
+          </View> 
+        )}
+      {!state.isLoading &&(
         <View style={styles.container}>
         <Text style={styles.HeaderText}>Settings</Text>
         
         <TouchableOpacity onPress={()=>navigation.navigate('ProfileSetting')} style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 110, backgroundColor:'rgba(25, 120, 142, 1)'}]}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <Image style={styles.cardImage} source={ApiConfig.BASE_URL_FOR_IMAGES + userData.user_profile_pic}/>
+            <Image style={styles.cardImage} 
+              source={{
+                uri: ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic,
+              }}/>
           </View>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>{userData.user_name}</Text>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#cfcfcf', marginTop: 60, top: 1 }}>{userData.user_email}</Text>
@@ -174,6 +187,7 @@ export default function App() {
         </TouchableOpacity>
         
       </View>
+      )}
     </ScrollView>
   );
 }

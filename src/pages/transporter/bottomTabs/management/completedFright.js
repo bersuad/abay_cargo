@@ -1,26 +1,171 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   useNavigation,
-  StyleSheet,
+  MaterialCommunityIcons,
+  FontAwesome5,
+  TouchableOpacity,
   ScrollView,
   View,
   Text,
-  SafeAreaView
+  StyleSheet,
+  appPageStyle,
+  StatusBar,
+  ActivityIndicator,
+  AsyncStorage,
+  ApiConfig,
+  postWithAuthCallWithErrorResponse,
 } from './../../../../components/index';
-
-export default function CompletedFright() {
+export default function OnGoingFright() {
   
     const navigation = useNavigation();
+    const [state, setState] = useState({
+      isLoading: true,
+      checkInternet:true,
+      tariffExportList:'',
+      tariffImprotList:'',
+      customerData:'',
+      customer_id:'',
+      user_id:'',
+      api_key: '',
+      from_date:'',
+      to_date:'',
+      noData: false
+    });
+
+    const [customer_id, setMyClientID]        = useState('');
+    const [api_key, setAPI_KEY]               = useState('');
+    const [user_id, setMyUserID]              = useState('');
+    const [dashBoardData, setDashBoardData ]  = useState([]);
+    const [user_details, setUserDetails]      = useState('');
+
+    const getOngoingFright = async() => {
+      setState({ ...state, isLoading: true});  
+      const user_id = await AsyncStorage.getItem('user_id');
+      const customer_id = await AsyncStorage.getItem('customer_id');
+      const api_key = await AsyncStorage.getItem('api_key');
+      
+      await AsyncStorage.getItem('customer_id').then((myClientID) => {
+        setMyClientID(myClientID);
+      });
+      
+      await AsyncStorage.getItem('api_key').then(value =>{
+        setAPI_KEY(value);
+      });
   
+      await AsyncStorage.getItem('user_id').then(value =>{
+        setMyUserID(value);
+      });
+  
+      await AsyncStorage.getItem('userDetails').then(value =>{
+        setUserDetails(value);
+      });    
+  
+      postWithAuthCallWithErrorResponse(
+        ApiConfig.INITIATE_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
+      ).then((res) => {
+    
+        if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+          setState({ ...state, isLoading: false});  
+          console.log('Wrong Data here');
+        }
+        if(res.json.message === "Insufficient Parameters"){
+          setState({ ...state, isLoading: false});
+          console.log('no data here')
+        }
+
+        if(res.json.result === false){
+          setState({ ...state, noData: true});
+        }
+    
+        console.log(res.json);
+        if (res.json.result)setDashBoardData(res.json);
+        
+        setState({ ...state, isLoading: false});
+      });
+      
+    };
+  
+    useEffect(() => {
+        
+      // Anything in here is fired on component unmount.
+      this.mounted = true;
+      getOngoingFright();
+  
+      return () => {     
+        setState({ ...state, isLoading: true, checkInternet:true,});
+        this.mounted = false;   
+      }
+    }, []);
     return (
-      <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
-        <SafeAreaView>
-              <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-                  <Text>No Completed Fright.</Text>
+    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+      {state.isLoading &&(
+          <View style={styles.container}>
+            <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
+            <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
+          </View> 
+        )}
+      {!state.isLoading &&(
+        <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+        {dashBoardData.ongoing_freights &&
+          dashBoardData.ongoing_freights.length &&
+          dashBoardData.ongoing_freights.map((fright, key) => (
+            
+            <View style={[styles.boxShadow, {minHeight: 150, width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+              <View
+              style={[
+                {
+                  flexDirection: 'row',
+                  width: '90%',
+                  gap: 15,
+                  
+                },
+              ]}>
+                <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                  <FontAwesome5 name="box-open" size={24} color="#fff" />
+                </View>
+                <View >
+                  <Text style={{fontWeight: 'bold'}}>Ref. No: {fright.trip_reference_no}</Text>
+                  <Text style={{textAlign:'left', width: 250,}}>
+                    {fright.trip_start_country +
+                    ", " +
+                    fright.trip_start_city}{" "}
+                  -{" "}
+                  {fright.trip_end_country +
+                    " " +
+                    fright.trip_end_city}
+                  </Text>
+                  <Text style={{textAlign:'left', width: 250,}}>
+                    {'Start at: '+fright.trip_start_date +
+                    " "}
+                    </Text>
+                  <Text style={{textAlign:'left', width: 250,}}>{"End at "}
+                  {fright.trip_end_date +
+                    " " }
+                  </Text>
+                  <Text style={{textAlign:'left', width: 250,}}>
+                    {'Trip Status: '+fright.trip_status +
+                    " "}
+                    </Text>
+                </View>
+                <View style={{position: "absolute", top: 0, right:0}}>
+                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
+                    <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
+                  </TouchableOpacity>
+                </View>
               </View>
-        </SafeAreaView>
-      </ScrollView>
+            </View>
+          
+          ))
+        }
+        </View>
+      )}
+      {!dashBoardData.ongoing_freights &&(
+          <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+            <Text style={{fontWeight: 'bold'}}>No Data Found</Text>
+          </View> 
+      )}
+    </ScrollView>
     );
 }
 

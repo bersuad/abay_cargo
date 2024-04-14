@@ -149,7 +149,7 @@ export default function App() {
           <Text style={styles.cardText}>WELCOME.., </Text>
           <Text style={{...styles.cardText, fontSize:18, }}>{dashBoardData.user_name}</Text>
           <Image style={styles.cardImage} source={headerImage}/>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>navigation.navigate('OfferLoad')}>
             <Text style={{...styles.cardText, fontSize: 13, marginTop: 90, color: "#1b9be6"}}>GET STARTED! </Text>
           </TouchableOpacity>
         </ImageBackground>
