@@ -87,7 +87,7 @@ export default function App() {
   _checkConnection = async()=>{
     NetInfo.addEventListener(networkState => {
       if(networkState.isConnected){
-        this._requestAccess();
+        // this._requestAccess();
         console.log('connected');
         this.setState({ checkInternet: false });
       }else{
@@ -128,9 +128,14 @@ export default function App() {
         AsyncStorage.clear();
       }
 
+      if (data.json.message === "Wrong password entered") {
+        setState({ ...state, isLoading: false});
+        toastWithDurationHandler('Wrong Username or Password');
+        AsyncStorage.clear();
+      }
       
+      console.log(data.json);
       if (data.json.result) {
-        console.log(data.json);
         setState({ ...state, isLoading: false});
         
         AsyncStorage.setItem("api_key", data.json.api_key);
@@ -162,16 +167,16 @@ export default function App() {
     return (
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
         <View style={styles.container}>
+        <StatusBar barStyle = "white-content" hidden = {false} {...appPageStyle.primaryColor} translucent = {true}/>
           {!state.checkInternet &&(
             <SnackBar visible={true} textMessage="No Internet Connection!" actionHandler={()=>{console.log("snackbar button clicked!")}} actionText="Try Again"/>
           )}
           <View style={styles.logoArea}>
             <Image style={styles.image} source={TruckLogin} /> 
             <Text style={[styles.buttonText, appPageStyle.secondaryTextColor]}>
-              Transporter Login
+              Abay Transporter Login
             </Text>
           </View>
-          <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "rgba(25, 120, 142, 0.3)" translucent = {true}/>
           <View style={styles.inputView}>
             <TextInput
               style={[styles.TextInput, appPageStyle.secondaryTextColor]}

@@ -22,7 +22,7 @@ export default function App() {
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
         <View style={styles.container}>
 
-            <View style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 100}]}>
+            <View style={[styles.boxShadow, styles.offers, {marginTop: 0, minHeight: 150}]}>
                 <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 10, marginLeft: 1, marginTop: 20, top: 1 }}>Get In Touch With Us</Text>
 
                 <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20, top: 45}}>
@@ -30,7 +30,13 @@ export default function App() {
                 </View>
                 <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#121212', marginTop: 55, top: 1 }}>contact@abaylogistics.com</Text>
                 <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>
+
+                <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20, top: 90}}>
+                    <MaterialCommunityIcons name="phone" size={28} color="rgba(25, 120, 142, 0.9)" />
+                </View>
+                <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#121212', marginTop: 100, top: 1 }}>+251 945 434343</Text>
             </View>
+            
 
             <View style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 'auto'}]}>
                 <Text style={{position: "relative", left: 0, top: 20, fontSize:13, textAlign:'left', paddingBottom: 0, fontWeight: 'bold' }}>Subject</Text>
@@ -154,7 +160,7 @@ const styles = StyleSheet.create({
   },
   offers:{
     width: '94%',
-    height: 70,
+    minHeight: 70,
     backgroundColor: '#fff',
     borderRadius: 12,
     marginTop: 30,

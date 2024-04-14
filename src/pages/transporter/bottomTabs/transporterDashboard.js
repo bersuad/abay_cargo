@@ -71,7 +71,7 @@ export default function App() {
   // }, []);
   
   const _getDashboardDetails = async() => {
-    console.log('getting here on loading');
+    setState({ ...state, isLoading: true});  
     const user_id = await AsyncStorage.getItem('user_id');
     const customer_id = await AsyncStorage.getItem('customer_id');
     const api_key = await AsyncStorage.getItem('api_key');
@@ -92,7 +92,6 @@ export default function App() {
       setUserDetails(value);
     });    
 
-    console.log(user_id);
     postWithAuthCallWithErrorResponse(
       ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
     ).then((res) => {
@@ -109,6 +108,10 @@ export default function App() {
       
       if (res.json.result)setDashBoardData(res.json);
       setState({ ...state, isLoading: false});
+      AsyncStorage.getItem('userDetails').then(value =>{
+        setMyUserID(value);
+        // console.log(value);
+      });
     });
     
   };
@@ -185,12 +188,12 @@ export default function App() {
 
         </View>
 
-        <TouchableOpacity style={[styles.boxShadow, styles.offers]}>
+        <TouchableOpacity style={[styles.boxShadow, styles.offers]} onPress={()=>navigation.navigate('OfferLoad')}>
 
           <View style={{...styles.iconArea, backgroundColor: "#1b9be6", position: "absolute", left: 20}}>
             <MaterialCommunityIcons name="notebook-check" size={24} color="#fff" />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offer Goods  
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offer Loads  
             <View style={{...styles.badge, backgroundColor: "#1b9be6", }}>
               <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offer_goods}</Text>
             </View>
@@ -199,7 +202,7 @@ export default function App() {
           
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
+        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('OfferVehicle')}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)", position: "absolute", left: 20}}>
             <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
           </View>
@@ -235,7 +238,7 @@ export default function App() {
               dashBoardData.ongoing_freights.length &&
               dashBoardData.ongoing_freights.map((fright, key) => (
                 
-          <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+          <View style={[styles.boxShadow, {minHeight: 150, width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
             <View
             style={[
               {

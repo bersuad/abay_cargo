@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
+  useNavigation,
   ScrollView,
   View,
   StyleSheet,
   Text,
   MaterialIcons,
   SafeAreaView,
+  TouchableOpacity
 } from './../../../components/index';
 
 export default function ImagePickerExample() {
-  
+  const navigation = useNavigation();
   return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
       <SafeAreaView style={styles.container}>
@@ -18,18 +20,18 @@ export default function ImagePickerExample() {
         <View style={[styles.boxShadow, styles.groupButton, {marginTop: 20, borderTopLeftRadius:10, borderTopRightRadius:10}]}>
             <Text style={{...styles.cardText, fontSize:18, position: "absolute", left: 20, color: "#1b9be6" }}>Direct Order </Text>
         </View>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('OfferLoad')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Offer Load </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('OfferVehicle')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Offer Vehicle </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('OrderConfirm')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Order Confirmation </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
+        </TouchableOpacity>
         
 
         {/* Online */}

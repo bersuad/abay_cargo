@@ -9,12 +9,16 @@ import {
   useNavigation,
   Ionicons,
   AntDesign,
+  MaterialCommunityIcons,
   LogBox,
   AsyncStorage,
   postWithAuthCallWithErrorResponse,
   ApiConfig,
-  ActivityIndicator
-} from './../../../../components/index'
+  ActivityIndicator,
+  StatusBar,
+  appPageStyle
+} from './../../../../components/index';
+import { Badge } from 'react-native-paper';
 
 export default function App() {
   const [state, setState] = useState({
@@ -26,16 +30,18 @@ export default function App() {
   const [customer_id, setMyClientID]        = useState('');
   const [api_key, setAPI_KEY]               = useState('');
   const [user_id, setMyUserID]              = useState('');
-  const [dashBoardData, setDashBoardData ]  = useState([]);
+  const [vehicleList, setVehicleList ]  = useState([]);
   const [user_details, setUserDetails]      = useState('');
 
   const componentWillMount = () => {
         
     useEffect( () => {
-      // Anything in here is fired on component unmount.
+      
         LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
         this.mounted = true;
+        setPage(0);
         _getVehicle();
+
         return () => {
             // Anything in here is fired on component unmount.
             setState({ ...state, isLoading: false, checkInternet:true,});
@@ -69,7 +75,7 @@ const _getVehicle = async() => {
   });  
   
   postWithAuthCallWithErrorResponse(
-    ApiConfig.DRIVER_LIST,
+    ApiConfig.VEHICLE_LIST,
     JSON.stringify({ user_id, api_key, customer_id })
   )
     .then((res) => {
@@ -78,9 +84,10 @@ const _getVehicle = async() => {
       }
       
       if (res.json.result) {
-        setDriverList(res.json.driver_list);
+        setVehicleList(res.json.vehicle_list);
+        // this.makeTable();
       }
-      console.log(res.json.driver_list);
+      setState({ ...state, isLoading: false});
     })
     .catch((err) => console.log(err));
 
@@ -88,23 +95,85 @@ const _getVehicle = async() => {
 
 
 
+const [page, setPage] = React.useState(0);
+const [numberOfItemsPerPageList] = React.useState([2, 3, 4 ]);
+const [itemsPerPage, onItemsPerPageChange] = React.useState(
+  numberOfItemsPerPageList[0]
+);
+
+const items = vehicleList;
+const from = page * itemsPerPage;
+const to = Math.min((page + 1) * itemsPerPage, items.length);
+React.useEffect(() => {
+  setPage(0);
+}, [itemsPerPage]);
+
   return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
-      <View style={styles.container}>        
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Search"
-            placeholderTextColor="#003f5c"
-          /> 
-          <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
-        </View> 
-        <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
-          <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
-            <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Vehicle</Text>
-          </TouchableOpacity>
+      {state.isLoading &&(
+          <View style={styles.container}>
+            <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
+            <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
+            <Text>Getting Drivers List</Text>
+          </View> 
+        )}
+      {!state.isLoading &&(
+        <View style={styles.container}>        
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.TextInput}
+              placeholder="Search"
+              placeholderTextColor="#003f5c"
+            /> 
+            <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
+          </View> 
+          <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
+            <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+              <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Vehicle</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+            {items.map((vehicle, key) => (
+              <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+                <View
+                style={[
+                    {
+                    flexDirection: 'row',
+                    width: '94%',
+                    gap: 15,
+                    paddingTop: 10
+                    },
+                ]}>
+                    <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)"}}>
+                      <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
+                    </View>
+                    <View style={{textAlign: 'justify'}}>
+                        <Text style={{fontWeight: 'bold'}}>Plate No: {vehicle.plate_number}</Text>
+                        <View style={{position: "absolute", left: 100, marginTop: -20}}>
+                          {
+                            vehicle.vehicle_status === 'active' ?
+                              <Badge status='success' style={{backgroundColor: 'green'}}>{vehicle.vehicle_status}</Badge>
+                            : vehicle.vehicle_status === 'vehicle_added' ?
+                              <Badge status='success' style={{backgroundColor: '#ED7014'}}>{vehicle.vehicle_status}</Badge> 
+                            : vehicle.vehicle_status === 'removed' ? 
+                              <Badge status='success' style={{backgroundColor: '#F91717'}}>{vehicle.vehicle_status}</Badge> 
+                            :
+                              <Badge status='primary'>{vehicle.vehicle_status}</Badge> 
+                          }
+                        </View>
+                        <Text style={{textAlign: 'justify'}}>Model: {vehicle.vehicle_model_no}</Text>    
+                        <Text style={{textAlign:'justify'}}>Type: {vehicle.vehicle_type}</Text>
+                        <Text style={{textAlign:'justify'}}>Type: {vehicle.vehicle_type}</Text>
+                        <TouchableOpacity style={{marginTop: 8, marginBottom:8}}>
+                            <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>View More....</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+              </View>
+            ))}
+          </View>
         </View>
-      </View>
+      )}
     </ScrollView>
   );
 }
@@ -129,7 +198,7 @@ const styles = StyleSheet.create({
   inputView: {
     backgroundColor: "rgba(25, 120, 142, 0.3)",
     borderRadius: 30,
-    width: '90%',
+    width: '95%',
     height: 45,
     marginBottom: 20,
     

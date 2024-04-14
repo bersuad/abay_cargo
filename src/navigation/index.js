@@ -32,6 +32,9 @@ import AboutUs from '../pages/transporter/bottomTabs/settings/aboutus';
 import Terms from '../pages/transporter/bottomTabs/settings/termsandconditions';
 import Privacy from '../pages/transporter/bottomTabs/settings/privacy';
 import Report from '../pages/transporter/bottomTabs/settings/report';
+import OfferLoad from '../pages/transporter/bottomTabs/management/offerLoads';
+import OfferVehicle from '../pages/transporter/bottomTabs/management/offerVehicle';
+import OrderConfirm from '../pages/transporter/bottomTabs/management/orderConfirm'
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -48,13 +51,14 @@ export default function App() {
         <Stack.Screen options={{headerShown: false}}  name="HomeRoute"  component={HomeRoute} />
         <Stack.Screen  
           name="TruckLogin" 
+          title="Abay Transporter Login"
           component={TruckLogin} 
           options={{
-            headerShown: true,
-            headerTitle:'Transporter Login',
-            headerBackTitle: 'Back',
+            headerShown: false,
+            headerTitle:'Abay Transporter Login',
             headerStyle: appPageStyle.primaryColor,
-            headerTintColor: '#fff'
+            headerTintColor: '#fff',
+            headerBackTitleVisible: false,
           }}
         />
         <Stack.Screen
@@ -62,13 +66,12 @@ export default function App() {
           title="Driver Login"
           component={DriverLogin} 
           options={{
+            headerBackTitleVisible: false,
             headerShown: true,
             headerTitle:'Driver Login',
-            headerBackTitle: 'Back',
             headerStyle: appPageStyle.primaryColor,
-            headerTintColor: '#fff'
-          }}
-          
+            headerTintColor: '#fff',
+          }}          
         />
 
         <Stack.Screen
@@ -336,6 +339,57 @@ export default function App() {
             },
             headerTintColor: '#19788e',
           }}
+        />
+
+        <Stack.Screen
+          name="OfferLoad"
+          title="Offer Load"
+          component={OfferLoad} 
+          options={{
+            headerShown: true,
+            headerTitle:'Offer Load',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="OfferVehicle"
+          title="Offer Vehicle"
+          component={OfferVehicle} 
+          options={{
+            headerShown: true,
+            headerTitle:'Offer Vehicle',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="OrderConfirm"
+          title="Order Confirmation"
+          component={OrderConfirm} 
+          options={{
+            headerShown: true,
+            headerTitle:'Order Confirmation',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
         />
 
       </Stack.Navigator>

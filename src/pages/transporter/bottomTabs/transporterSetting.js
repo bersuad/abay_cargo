@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   StyleSheet,
@@ -13,24 +13,82 @@ import {
   Entypo,
   useNavigation,
   ScrollView,
-  headerImage
+  headerImage,
+  AsyncStorage,
+  postWithAuthCallWithErrorResponse,
+  ApiConfig,
+  Logo
 } from './../../../components/index';
 
 export default function App() {
   
   const navigation = useNavigation();
+  const [userData, setUserData]        = useState([]);
+  
+  const [dashBoardData, setDashBoardData ]  = useState([]);
+  const [state, setState] = useState({
+    isLoading: true,
+    checkInternet:true,
+  });
+  
+  const gettingUser = async ()=>{
+    setState({ ...state, isLoading: true});  
+    const user_id = await AsyncStorage.getItem('user_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
+    ).then((res) => {
+  
+      if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+        setState({ ...state, isLoading: false});  
+        console.log('Wrong Data here');
+      }
+      if(res.json.message === "Insufficient Parameters"){
+        setState({ ...state, isLoading: false});
+        console.log('no data here')
+      }
+  
+      
+      if (res.json.result)setDashBoardData(res.json);
+      setState({ ...state, isLoading: false});
+      AsyncStorage.getItem('userDetails').then(value =>{
+        setUserData(JSON.parse(value, true));
+      });
+
+    });
+
+
+  }
+  
+  logout=()=>{
+    AsyncStorage.clear();
+    navigation.navigate('TruckLogin')
+  }
+
+  useEffect(() => {
+    // Anything in here is fired on component unmount.
+    this.mounted = true;
+    gettingUser();
+
+    return () => {     
+      setState({ ...state, isLoading: true, checkInternet:true,});
+      this.mounted = false;   
+    }
+  }, []);
 
   return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
         <View style={styles.container}>
         <Text style={styles.HeaderText}>Settings</Text>
-
+        
         <TouchableOpacity onPress={()=>navigation.navigate('ProfileSetting')} style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 110, backgroundColor:'rgba(25, 120, 142, 1)'}]}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <Image style={styles.cardImage} source={headerImage}/>
+            <Image style={styles.cardImage} source={ApiConfig.BASE_URL_FOR_IMAGES + userData.user_profile_pic}/>
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>Besufekade Adane</Text>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#cfcfcf', marginTop: 60, top: 1 }}>bersuadane@gmail.com</Text>
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>{userData.user_name}</Text>
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#cfcfcf', marginTop: 60, top: 1 }}>{userData.user_email}</Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
         
@@ -106,7 +164,7 @@ export default function App() {
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('TruckLogin')}>
+        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>this.logout()}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <AntDesign name="logout" size={24} color="rgba(25, 120, 142, 0.9)"  />
           </View>

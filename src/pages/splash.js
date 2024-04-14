@@ -10,7 +10,8 @@ import {
     Logo,
     AsyncStorage,
     LogBox,
-    useNavigation
+    useNavigation,
+    appPageStyle
 } from './../components/index';
 
 export default function Splash() {
@@ -27,7 +28,7 @@ export default function Splash() {
     });
 
     const componentWillMount = () => {
-        
+        // AsyncStorage.clear();
         useEffect( () => {
           // Anything in here is fired on component unmount.
             LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
@@ -86,7 +87,7 @@ export default function Splash() {
             <View
                 style={styles.container}
             >
-                <StatusBar barStyle = "white-content" hidden = {false} backgroundColor = "#1e73be" translucent = {true}/>
+                <StatusBar barStyle = "white-content" hidden = {false} {...appPageStyle.primaryColor} translucent = {true}/>
                 <Animated.View
                     style={{
                         opacity: state.LogoAnimate,
@@ -108,7 +109,7 @@ export default function Splash() {
     if (MyClientID) {
         navigation.navigate('TransporterDashboard');
     }else{
-        navigation.navigate('HomeRoute');
+        navigation.navigate('TruckLogin');
     }
 }
 
