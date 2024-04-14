@@ -110,8 +110,8 @@ export default function App() {
       setState({ ...state, isLoading: false});
       AsyncStorage.getItem('userDetails').then(value =>{
         setMyUserID(value);
-        // console.log(value);
       });
+      console.log(res.json.notifications);
     });
     
   };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import{
   Ionicons,
@@ -7,13 +7,117 @@ import{
   View,
   ScrollView,
   appPageStyle,
+  AsyncStorage,
+  RefreshControl,
+  useNavigation,
+  LogBox,
+  ApiConfig,
+  postWithAuthCallWithErrorResponse,
+  ActivityIndicator,
 } from './../../components/index';
 
 export default  function App(){
+
+  const navigation = useNavigation();
+  const [state, setState] = useState({
+    isLoading: true,
+    checkInternet:true,
+    tariffExportList:'',
+    tariffImprotList:'',
+    customerData:'',
+    customer_id:'',
+    user_id:'',
+    api_key: '',
+    from_date:'',
+    to_date:''
+  });
+
+  const [dates, setDates] = useState({
+    startDate: "",
+    endDate: "",
+  });
+  const [customer_id, setMyClientID]        = useState('');
+  const [api_key, setAPI_KEY]               = useState('');
+  const [user_id, setMyUserID]              = useState('');
+  const [dashBoardData, setDashBoardData ]  = useState([]);
+  const [user_details, setUserDetails]      = useState('');
+  
+
+  // componentWillMount();
+  
+
+  // refresh page
+  
+  // const [refreshing, setRefreshing] = React.useState(false);
+
+  // const onRefresh = React.useCallback(() => {
+  //   setRefreshing(true);
+  //   setTimeout(() => {
+  //     setRefreshing(false);
+  //   }, 2000);
+  // }, []);
+  
+  const _getDashboardDetails = async() => {
+    setState({ ...state, isLoading: true});  
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    await AsyncStorage.getItem('customer_id').then((myClientID) => {
+      setMyClientID(myClientID);
+    });
+    
+    await AsyncStorage.getItem('api_key').then(value =>{
+      setAPI_KEY(value);
+    });
+
+    await AsyncStorage.getItem('user_id').then(value =>{
+      setMyUserID(value);
+    });
+
+    await AsyncStorage.getItem('userDetails').then(value =>{
+      setUserDetails(value);
+    });    
+
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
+    ).then((res) => {
+  
+      if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+        setState({ ...state, isLoading: false});  
+        console.log('Wrong Data here');
+      }
+      if(res.json.message === "Insufficient Parameters"){
+        setState({ ...state, isLoading: false});
+        console.log('no data here')
+      }
+  
+      
+      if (res.json.result)setDashBoardData(res.json);
+      setState({ ...state, isLoading: false});
+      console.log(dashBoardData);
+    });
+    
+  };
+
+  useEffect(() => {
+      
+    // Anything in here is fired on component unmount.
+    this.mounted = true;
+    _getDashboardDetails();
+
+    return () => {     
+      setState({ ...state, isLoading: true, checkInternet:true,});
+      this.mounted = false;   
+    }
+  }, []);
     
     return(
         <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
             <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+            {dashBoardData.notifications &&
+              dashBoardData.notifications.length &&
+              dashBoardData.notifications.map((notification, key) => (
                 <View style={[styles.boxShadow, {height: 99, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
                     <View
                     style={[
@@ -29,37 +133,17 @@ export default  function App(){
                     </View>
                     <View style={{width: '85%'}}>
                         <Text style={{textAlign:'justify'}}>
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
+                        {notification.notification_text}
                         </Text>
                     </View>
                     </View>
                     <View style={{position: "absolute", bottom: 6, right:20}}>
-                      <Text>02 Oct 2023 03:31 PM</Text>
+                      <Text>{notification.notification_date} {notification.notification_time}</Text>
                     </View>
                 </View>
-                <View style={[styles.boxShadow, {height: 99, width: '94%', backgroundColor: '#fff', marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-                    <View
-                    style={[
-                    {
-                        flexDirection: 'row',
-                        width: '90%',
-                        gap: 15,
-                        
-                    },
-                    ]}>
-                    <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 30, width: 30, borderRadius: 99, marginLeft: 0}}>
-                      <Ionicons name="md-notifications" size={15} color="#fff"/>
-                    </View>
-                    <View style={{width: '85%'}}>
-                        <Text style={{textAlign:'justify'}}>
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.....
-                        </Text>
-                    </View>
-                    </View>
-                    <View style={{position: "absolute", bottom: 6, right:20}}>
-                      <Text>02 Oct 2023 03:31 PM</Text>
-                    </View>
-                </View>
+              )
+              )
+            }
             </View>
         </ScrollView>
     );
