@@ -39,18 +39,18 @@ export default function ImagePickerExample() {
         <View style={[styles.boxShadow, styles.groupButton, {marginTop: 20, borderTopLeftRadius:10, borderTopRightRadius:10}]}>
             <Text style={{...styles.cardText, fontSize:18, position: "absolute", left: 20, color: "#1b9be6" }}>Online Auctions</Text>
         </View>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('OnlineOfferLoad')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Offer Load </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('OnlineOfferVehicle')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Offer Vehicle </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
-        <View style={[styles.boxShadow, styles.groupButton]}>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('OnlineOrderConfirm')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Order Confirmation </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </View>
+        </TouchableOpacity>
         
       </SafeAreaView>
     </ScrollView>

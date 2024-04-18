@@ -67,7 +67,7 @@ export default function App() {
   
   logout=()=>{
     AsyncStorage.clear();
-    navigation.navigate('TruckLogin')
+    navigation.navigate('TruckLogin');
   }
 
   useEffect(() => {

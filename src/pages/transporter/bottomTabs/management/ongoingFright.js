@@ -63,7 +63,7 @@ export default function OnGoingFright() {
       });    
   
       postWithAuthCallWithErrorResponse(
-        ApiConfig.ONGOING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
+        ApiConfig.COMPLETE_FRIGHT, JSON.stringify({ user_id, api_key, customer_id,  }),
       ).then((res) => {
     
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {

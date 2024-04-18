@@ -95,7 +95,7 @@ export default  function App(){
       
       if (res.json.result)setDashBoardData(res.json);
       setState({ ...state, isLoading: false});
-      console.log(dashBoardData);
+      
     });
     
   };

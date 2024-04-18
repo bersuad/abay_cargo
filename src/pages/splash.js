@@ -58,7 +58,8 @@ export default function Splash() {
         });
 
     }
-
+    
+    // const animatedValue = new Animated.Value(0);
     Animated.parallel([
         Animated.spring(state.LogoAnimate,{
             toValue:1,
@@ -67,10 +68,10 @@ export default function Splash() {
             duration: 2500,
             
         }).start(),
-
         Animated.timing(state.LogoText, {
             toValue: 1,
             duration:2600,
+            useNativeDriver: true
         }),
         Animated.timing(state.SimpleText, {
             toValue: 1,

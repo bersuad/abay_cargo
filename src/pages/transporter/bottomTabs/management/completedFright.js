@@ -15,6 +15,7 @@ import {
   AsyncStorage,
   ApiConfig,
   postWithAuthCallWithErrorResponse,
+  RefreshControl
 } from './../../../../components/index';
 export default function OnGoingFright() {
   
@@ -97,8 +98,22 @@ export default function OnGoingFright() {
         this.mounted = false;   
       }
     }, []);
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+      setTimeout(() => {
+        getOngoingFright();
+        setRefreshing(false);
+      }, 2000);
+    }, []);
     return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       {state.isLoading &&(
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>

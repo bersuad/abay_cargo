@@ -96,7 +96,7 @@ export default function OfferLoad() {
             setState({ ...state, isLoading: false});
             console.log('no data here')
         }
-        console.log(res.json);
+        
         if (res.json.result)setOfferLoadData(res.json);
             setState({ ...state, isLoading: false});
         });
@@ -144,8 +144,10 @@ export default function OfferLoad() {
                             <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
                         </View>
                         <View style={{textAlign: 'justify'}}>
-                            <Text style={{fontWeight: 'bold'}}>Ref. No: {loads.load_reference_no}</Text>
-                            <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>2024-02-01{loads.vehicle_availability_date}</Text>    
+                            <TouchableOpacity onPress={()=>navigation.navigate('OfferDetail', {details: loads})}>
+                              <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {loads.load_reference_no}</Text>
+                            </TouchableOpacity>
+                            <Text style={{textAlign: 'justify', fontSize:11}}>{loads.vehicle_availability_date}</Text>    
                             <Text style={{textAlign:'justify'}}>Cargo Type: {loads.cargo_type}</Text>
                             <Text style={{textAlign:'justify'}}>Container Type: {loads.container_type}</Text>
                             <Text style={{textAlign:'justify'}}>Rem Quantity: {loads.trip_container_quantity} {loads.unit}</Text>
@@ -160,19 +162,27 @@ export default function OfferLoad() {
                                 loads.trip_end_city
                             }
                             </Text>
-                            <TouchableOpacity style={{marginTop: 8, marginBottom:8}}>
-                                <Text style={{...appPageStyle.secondaryTextColor}}>View More....</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{position: "absolute", top: 0, right:0, marginTop: 10,justifyContent: "center"}}>
-                            <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
-                                <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{position: "absolute", top: 0, right:0, marginTop: 50,justifyContent: "center"}}>
-                            <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
-                                <Text style={{...appPageStyle.secondaryTextColor}}>Cancel</Text>
-                            </TouchableOpacity>
+                          <View
+                          style={[
+                              {
+                              flexDirection: 'row',
+                              width: '92%',
+                              gap: 15,
+                              paddingTop: 10,
+                              marginBottom:10
+                              },
+                          ]}>
+                            <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+                                <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
+                                    <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+                                <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
+                                    <Text style={{...appPageStyle.secondaryTextColor}}>Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
+                          </View>
                         </View>
                     </View>
                 </View>

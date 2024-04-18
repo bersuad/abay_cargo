@@ -61,14 +61,15 @@ export default function App() {
 
   // refresh page
   
-  // const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
 
-  // const onRefresh = React.useCallback(() => {
-  //   setRefreshing(true);
-  //   setTimeout(() => {
-  //     setRefreshing(false);
-  //   }, 2000);
-  // }, []);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      _getDashboardDetails();
+      setRefreshing(false);
+    }, 2000);
+  }, []);
   
   const _getDashboardDetails = async() => {
     setState({ ...state, isLoading: true});  
@@ -98,7 +99,8 @@ export default function App() {
   
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         setState({ ...state, isLoading: false});  
-        console.log('Wrong Data here');
+        AsyncStorage.clear();
+        navigation.navigate('TruckLogin');
       }
       if(res.json.message === "Insufficient Parameters"){
         setState({ ...state, isLoading: false});
@@ -111,7 +113,7 @@ export default function App() {
       AsyncStorage.getItem('userDetails').then(value =>{
         setMyUserID(value);
       });
-      console.log(res.json.notifications);
+      console.log(dashBoardData);
     });
     
   };
@@ -132,9 +134,9 @@ export default function App() {
   return (
     <ScrollView 
       style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
-      // refreshControl={
-      //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      // }
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
       {state.isLoading &&(
           <View style={styles.container}>
@@ -208,7 +210,7 @@ export default function App() {
           </View>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
             <View style={{...styles.badge, backgroundColor: "rgba(1, 138, 40, 0.88)", }}>
-              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offered_vehicles}</Text>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offer_vehicles_direct}</Text>
             </View>
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { LogBox } from 'react-native';
 import {
   NavigationContainer,
   createStackNavigator,
@@ -34,10 +34,16 @@ import Privacy from '../pages/transporter/bottomTabs/settings/privacy';
 import Report from '../pages/transporter/bottomTabs/settings/report';
 import OfferLoad from '../pages/transporter/bottomTabs/management/offerLoads';
 import OfferVehicle from '../pages/transporter/bottomTabs/management/offerVehicle';
-import OrderConfirm from '../pages/transporter/bottomTabs/management/orderConfirm'
+import OrderConfirm from '../pages/transporter/bottomTabs/management/orderConfirm';
+import OnlineOfferLoad from '../pages/transporter/bottomTabs/management/onlineOfferLoad';
+import OnlineOfferVehicle from '../pages/transporter/bottomTabs/management/onlineVehicle';
+import OnlineOrderConfirm from '../pages/transporter/bottomTabs/management/onlineConfirm';
+import OfferDetail from '../pages/transporter/bottomTabs/management/offerDetail';
+import VehicleDetail from '../pages/transporter/bottomTabs/management/vehicleDetail';
 
 const Stack = createStackNavigator();
 export default function App() {
+  LogBox.ignoreAllLogs();
   return (
     <NavigationContainer>
       <Stack.Navigator 
@@ -382,6 +388,92 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Order Confirmation',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="OnlineOfferLoad"
+          title="Online Offer"
+          component={OnlineOfferLoad} 
+          options={{
+            headerShown: true,
+            headerTitle:'Direct Offer',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="OnlineOfferVehicle"
+          title="Online Offer"
+          component={OnlineOfferVehicle} 
+          options={{
+            headerShown: true,
+            headerTitle:'Direct Vehicle Offer',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="OnlineOrderConfirm"
+          title="Direct Confirmation"
+          component={OnlineOrderConfirm} 
+          options={{
+            headerShown: true,
+            headerTitle:'Direct Confirmation Offer',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+
+        <Stack.Screen
+          name="OfferDetail"
+          title="Offer Detail"
+          component={OfferDetail} 
+          options={{
+            headerShown: true,
+            headerTitle:'Offer Detail',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+      <Stack.Screen
+          name="VehicleDetail"
+          title="Vehicle Detail"
+          component={VehicleDetail} 
+          options={{
+            headerShown: true,
+            headerTitle:'Vehicle Detail',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',
