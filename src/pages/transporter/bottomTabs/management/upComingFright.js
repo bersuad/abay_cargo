@@ -15,6 +15,7 @@ import {
   AsyncStorage,
   ApiConfig,
   postWithAuthCallWithErrorResponse,
+  postMultipartWithAuthCallWithErrorResponse,
   RefreshControl
 } from './../../../../components/index';
 export default function OnGoingFright() {
@@ -62,8 +63,8 @@ export default function OnGoingFright() {
         setUserDetails(value);
       });    
   
-      postWithAuthCallWithErrorResponse(
-        ApiConfig.INITIATE_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
+      postMultipartWithAuthCallWithErrorResponse(
+        ApiConfig.UPCOMMING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
       ).then((res) => {
     
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {

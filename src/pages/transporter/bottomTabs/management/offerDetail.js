@@ -222,9 +222,9 @@ export default function OfferDetail(props) {
                         <Text style={{fontWeight: 'bold', fontSize: 20}}>Good Detail </Text>
                     </View>
                     <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-                        <Image style={styles.cardImage} 
+                      <Image style={styles.cardImage} 
                         source={{
-                            uri: ApiConfig.BASE_URL_FOR_IMAGES+offerLoadData.trip_image_url,
+                          uri: ApiConfig.BASE_URL_FOR_IMAGES+offerLoadData.trip_image_url,
                         }}/>
                     </View>
                     <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>

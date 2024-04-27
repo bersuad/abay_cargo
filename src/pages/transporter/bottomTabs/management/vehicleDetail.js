@@ -149,7 +149,7 @@ export default function VehicleDetail(props) {
                     <View style={{marginTop:-18}}>
                         <Text style={{fontWeight: 'bold', fontSize: 20}}>Offered Vehicles Detail </Text>
                     </View>
-                    <View style={{textAlign: 'justify', fontSize: 15, marginLeft: '-65%', marginTop:15}}>
+                    <View style={{textAlign: 'justify', fontSize: 15, marginLeft: '-45%', marginTop:15}}>
                         <Text>Reference Number (Offer Vehicle): {offerLoadData.trip_id}</Text>  
                         <Text>Company Name: {offerLoadData.trip_company_name}</Text>
                         <Text>Cargo Type: {offerLoadData.cargo_type}</Text>
@@ -179,7 +179,7 @@ export default function VehicleDetail(props) {
                   <View style={{marginTop:-18}}>
                       <Text style={{fontWeight: 'bold', fontSize: 20}}>Transporter Details </Text>
                   </View>
-                  <View style={{textAlign: 'justify', fontSize: 15, marginLeft: '-55%', marginTop:15}}>
+                  <View style={{textAlign: 'justify', fontSize: 15, marginLeft: '-45%', marginTop:15}}>
                       <Text>Transporter’s Name: {offerLoadData.transporter}</Text>  
                       <Text>Loading Truck Plate Number: {offerLoadData.plate_no}</Text>
                       <Text>Driver Name: {offerLoadData.driver_name}</Text>

@@ -38,11 +38,6 @@ export default function App() {
     tariffExportList:'',
     tariffImprotList:'',
     customerData:'',
-    customer_id:'',
-    user_id:'',
-    api_key: '',
-    from_date:'',
-    to_date:''
   });
 
   const [dates, setDates] = useState({
@@ -53,6 +48,8 @@ export default function App() {
   const [api_key, setAPI_KEY]               = useState('');
   const [user_id, setMyUserID]              = useState('');
   const [dashBoardData, setDashBoardData ]  = useState([]);
+  const [tariffImprotList, setTariffImprotList ]  = useState([]);
+  const [tariffExprotList, setTariffExprotList ]  = useState([]);
   const [user_details, setUserDetails]      = useState('');
   
 
@@ -113,16 +110,85 @@ export default function App() {
       AsyncStorage.getItem('userDetails').then(value =>{
         setMyUserID(value);
       });
-      console.log(dashBoardData);
+    });
+    
+    
+    
+  };
+
+  const TarrifImportList = async() => {
+    setState({ ...state, isLoading: true});  
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    await AsyncStorage.getItem('customer_id').then((myClientID) => {
+      setMyClientID(myClientID);
+    });
+    
+    await AsyncStorage.getItem('api_key').then(value =>{
+      setAPI_KEY(value);
+    });
+
+    await AsyncStorage.getItem('user_id').then(value =>{
+      setMyUserID(value);
+    });
+
+    await AsyncStorage.getItem('userDetails').then(value =>{
+      setUserDetails(value);
+    });    
+    
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.TARRIF_IMPORT_LIST,
+      JSON.stringify({customer_id, user_id, api_key }),
+    ).then((res) => {
+      
+      setTariffImprotList(res.json);
+      
+    });
+    
+  };
+
+  const TarrifExportList = async() => {
+    setState({ ...state, isLoading: true});  
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    await AsyncStorage.getItem('customer_id').then((myClientID) => {
+      setMyClientID(myClientID);
+    });
+    
+    await AsyncStorage.getItem('api_key').then(value =>{
+      setAPI_KEY(value);
+    });
+
+    await AsyncStorage.getItem('user_id').then(value =>{
+      setMyUserID(value);
+    });
+
+    await AsyncStorage.getItem('userDetails').then(value =>{
+      setUserDetails(value);
+    });    
+    
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.TARRIF_EXPORT_LIST,
+      JSON.stringify({customer_id, user_id, api_key }),
+    ).then((res) => {
+      
+      setTariffExprotList(res.json.tariff_export_list);
+      
     });
     
   };
 
   useEffect(() => {
-      
+    
     // Anything in here is fired on component unmount.
     this.mounted = true;
     _getDashboardDetails();
+    TarrifImportList();
+    TarrifExportList();
 
     return () => {     
       setState({ ...state, isLoading: true, checkInternet:true,});
@@ -152,7 +218,7 @@ export default function App() {
           <Text style={{...styles.cardText, fontSize:18, }}>{dashBoardData.user_name}</Text>
           <Image style={styles.cardImage} source={headerImage}/>
           <TouchableOpacity onPress={()=>navigation.navigate('OfferLoad')}>
-            <Text style={{...styles.cardText, fontSize: 13, marginTop: 90, color: "#1b9be6"}}>GET STARTED! </Text>
+            <Text style={{...styles.cardText, fontSize: 13, marginTop: 50, color: "#1b9be6"}}>GET STARTED! </Text>
           </TouchableOpacity>
         </ImageBackground>
 
@@ -226,61 +292,46 @@ export default function App() {
             },
           ]}>
           <View style={{alignItems: 'flex-start' }}>
-            <Text style={{fontSize:15, color:'#1f1f1f', fontWeight:"bold"}}>Ongoing Frights</Text>
+            <Text style={{fontSize:15, color:'#1f1f1f', fontWeight:"bold"}}>Import / Export Tariff</Text>
           </View>
-          <TouchableOpacity style={{alignItems: 'flex-end', marginTop: -18 }} onPress={()=>navigation.navigate('transporterFreights')}>
-            <Text style={{fontSize:15, color:'#1b9be6', fontWeight:"bold"}}>View All</Text>
+          <TouchableOpacity style={{alignItems: 'flex-start', marginTop: 5 }}>
+            <Text style={{fontSize:15, color:'#1b9be6', fontWeight:"bold"}}>DEPARTURE--DJIBOUTI</Text>
           </TouchableOpacity>
         </View>
 
         {/* on going Frights area */}
         <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
             
-            {dashBoardData.ongoing_freights &&
-              dashBoardData.ongoing_freights.length &&
-              dashBoardData.ongoing_freights.map((fright, key) => (
+            {tariffImprotList.tariff_import_list &&
+              tariffImprotList.tariff_import_list.length &&
+              tariffImprotList.tariff_import_list.map((tariff, key) => (
                 
-          <View style={[styles.boxShadow, {minHeight: 150, width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+          <View style={[styles.boxShadow, {minHeight: 150, maxHeight: 'auto', width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom:10} ]}>
+              <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 50, width: '100%', borderRadius: 10, margin: 10, marginTop: 0, borderBottomLeftRadius:0, borderBottomRightRadius:0}}>
+                <Text style={{color: '#fff', fontWeight: 'bold'}}>{tariff.tariff_import_destination}</Text>
+              </View>
             <View
             style={[
               {
                 flexDirection: 'row',
                 width: '90%',
                 gap: 15,
-                
+                marginBottom: 5
               },
             ]}>
-              <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
-                <FontAwesome5 name="box-open" size={24} color="#fff" />
+              <View style={{width:'50%'}}>
+                <Text style={{fontStyle:'italic'}}>IMPORT Tariff</Text>
+                <Text style={{fontWeight: 'bold'}}>Price: {tariff.tariff_import_tariff}</Text>
+                <Text style={{fontWeight: 'bold'}}>Currency: {tariff.currency_code}</Text>
+                <Text style={{fontWeight: 'bold'}}>UM: {tariff.unit_name}</Text>
+                <Text style={{fontWeight: 'bold'}}>Km: {tariff.tariff_import_km}</Text>
               </View>
-              <View >
-                <Text style={{fontWeight: 'bold'}}>Ref. No: {fright.trip_reference_no}</Text>
-                <Text style={{textAlign:'left', width: 250,}}>
-                  {fright.trip_start_country +
-                  ", " +
-                  fright.trip_start_city}{" "}
-                -{" "}
-                {fright.trip_end_country +
-                  " " +
-                  fright.trip_end_city}
-                </Text>
-                <Text style={{textAlign:'left', width: 250,}}>
-                  {'Start at: '+fright.trip_start_date +
-                  " "}
-                  </Text>
-                <Text style={{textAlign:'left', width: 250,}}>{"End at "}
-                {fright.trip_end_date +
-                  " " }
-                </Text>
-                <Text style={{textAlign:'left', width: 250,}}>
-                  {'Trip Status: '+fright.trip_status +
-                  " "}
-                  </Text>
-              </View>
-              <View style={{position: "absolute", top: 0, right:0}}>
-                <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                  <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
-                </TouchableOpacity>
+              <View style={{width:'50%'}}>
+                <Text style={{fontStyle:'italic'}}>EXPORT Tariff</Text>
+                <Text style={{fontWeight: 'bold'}}>Price: {tariffExprotList[key].tariff_export_tariff}</Text>
+                <Text style={{fontWeight: 'bold'}}>Currency: {tariffExprotList[key].currency_code}</Text>
+                <Text style={{fontWeight: 'bold'}}>UM: {tariffExprotList[key].unit_name}</Text>
+                <Text style={{fontWeight: 'bold'}}>Km: {tariffExprotList[key].tariff_export_km}</Text>
               </View>
             </View>
           </View>
@@ -360,7 +411,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   welcomeCard:{
-    minHeight: 200,
+    minHeight: 150,
     minWidth: '94%',
     padding: 15,
     alignContent: 'flex-start',

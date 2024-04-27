@@ -15,6 +15,7 @@ import {
   AsyncStorage,
   ApiConfig,
   postWithAuthCallWithErrorResponse,
+  postMultipartWithAuthCallWithErrorResponse,
   RefreshControl
 } from './../../../../components/index';
 export default function OnGoingFright() {
@@ -37,7 +38,7 @@ export default function OnGoingFright() {
     const [customer_id, setMyClientID]        = useState('');
     const [api_key, setAPI_KEY]               = useState('');
     const [user_id, setMyUserID]              = useState('');
-    const [dashBoardData, setDashBoardData ]  = useState([]);
+    const [completed, setCompleted ]  = useState([]);
     const [user_details, setUserDetails]      = useState('');
 
     const getOngoingFright = async() => {
@@ -62,8 +63,8 @@ export default function OnGoingFright() {
         setUserDetails(value);
       });    
   
-      postWithAuthCallWithErrorResponse(
-        ApiConfig.INITIATE_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
+      postMultipartWithAuthCallWithErrorResponse(
+        ApiConfig.COMPLETED_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
       ).then((res) => {
     
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
@@ -80,7 +81,7 @@ export default function OnGoingFright() {
         }
     
         console.log(res.json);
-        if (res.json.result)setDashBoardData(res.json);
+        if (res.json.result)setCompleted(res.json.load_list);
         
         setState({ ...state, isLoading: false});
       });
@@ -122,9 +123,9 @@ export default function OnGoingFright() {
         )}
       {!state.isLoading &&(
         <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-        {dashBoardData.ongoing_freights &&
-          dashBoardData.ongoing_freights.length &&
-          dashBoardData.ongoing_freights.map((fright, key) => (
+        {completed &&
+          completed.length &&
+          completed.map((fright, key) => (
             
             <View style={[styles.boxShadow, {minHeight: 150, width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
               <View
@@ -140,15 +141,13 @@ export default function OnGoingFright() {
                   <FontAwesome5 name="box-open" size={24} color="#fff" />
                 </View>
                 <View >
-                  <Text style={{fontWeight: 'bold'}}>Ref. No: {fright.trip_reference_no}</Text>
+                  <Text style={{fontWeight: 'bold'}}>Driver ID: {fright.driver_id}</Text>
+                  <Text style={{fontWeight: 'bold'}}>Refer No: {fright.trip_reference_no}</Text>
+                  
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {fright.trip_start_country +
-                    ", " +
-                    fright.trip_start_city}{" "}
+                    {fright.trip_start_city}{" "}
                   -{" "}
-                  {fright.trip_end_country +
-                    " " +
-                    fright.trip_end_city}
+                  {fright.trip_end_city}
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
                     {'Start at: '+fright.trip_start_date +
@@ -159,15 +158,11 @@ export default function OnGoingFright() {
                     " " }
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {'Trip Status: '+fright.trip_status +
+                    {'Trip Status: '+fright.vehicle_status +
                     " "}
                     </Text>
                 </View>
-                <View style={{position: "absolute", top: 0, right:0}}>
-                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                    <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
-                  </TouchableOpacity>
-                </View>
+                
               </View>
             </View>
           
@@ -175,7 +170,7 @@ export default function OnGoingFright() {
         }
         </View>
       )}
-      {!dashBoardData.ongoing_freights &&(
+      {!completed &&(
           <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
             <Text style={{fontWeight: 'bold'}}>No Data Found</Text>
           </View> 
