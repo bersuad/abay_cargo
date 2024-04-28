@@ -35,9 +35,6 @@ export default function App() {
   const [state, setState] = useState({
     isLoading: true,
     checkInternet:true,
-    tariffExportList:'',
-    tariffImprotList:'',
-    customerData:'',
   });
 
   const [dates, setDates] = useState({
@@ -112,83 +109,38 @@ export default function App() {
       });
     });
     
-    
-    
-  };
 
-  const TarrifImportList = async() => {
-    setState({ ...state, isLoading: true});  
-    const user_id = await AsyncStorage.getItem('user_id');
-    const customer_id = await AsyncStorage.getItem('customer_id');
-    const api_key = await AsyncStorage.getItem('api_key');
-    
-    await AsyncStorage.getItem('customer_id').then((myClientID) => {
-      setMyClientID(myClientID);
-    });
-    
-    await AsyncStorage.getItem('api_key').then(value =>{
-      setAPI_KEY(value);
-    });
-
-    await AsyncStorage.getItem('user_id').then(value =>{
-      setMyUserID(value);
-    });
-
-    await AsyncStorage.getItem('userDetails').then(value =>{
-      setUserDetails(value);
-    });    
-    
     postWithAuthCallWithErrorResponse(
       ApiConfig.TARRIF_IMPORT_LIST,
       JSON.stringify({customer_id, user_id, api_key }),
     ).then((res) => {
+
+      if (res.json.result)setTariffImprotList(res.json);
+      setState({ ...state, isLoading: false});
       
-      setTariffImprotList(res.json);
-      
-    });
-    
-  };
-
-  const TarrifExportList = async() => {
-    setState({ ...state, isLoading: true});  
-    const user_id = await AsyncStorage.getItem('user_id');
-    const customer_id = await AsyncStorage.getItem('customer_id');
-    const api_key = await AsyncStorage.getItem('api_key');
-    
-    await AsyncStorage.getItem('customer_id').then((myClientID) => {
-      setMyClientID(myClientID);
-    });
-    
-    await AsyncStorage.getItem('api_key').then(value =>{
-      setAPI_KEY(value);
     });
 
-    await AsyncStorage.getItem('user_id').then(value =>{
-      setMyUserID(value);
-    });
-
-    await AsyncStorage.getItem('userDetails').then(value =>{
-      setUserDetails(value);
-    });    
-    
     postWithAuthCallWithErrorResponse(
       ApiConfig.TARRIF_EXPORT_LIST,
       JSON.stringify({customer_id, user_id, api_key }),
     ).then((res) => {
       
-      setTariffExprotList(res.json.tariff_export_list);
+    if (res.json.result)setTariffExprotList(res.json.tariff_export_list);
+    setState({ ...state, isLoading: false});
+      
       
     });
     
+    
   };
+
 
   useEffect(() => {
     
     // Anything in here is fired on component unmount.
     this.mounted = true;
     _getDashboardDetails();
-    TarrifImportList();
-    TarrifExportList();
+    
 
     return () => {     
       setState({ ...state, isLoading: true, checkInternet:true,});
@@ -302,7 +254,7 @@ export default function App() {
         {/* on going Frights area */}
         <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
             
-            {tariffImprotList.tariff_import_list &&
+            {tariffImprotList.tariff_import_list  &&
               tariffImprotList.tariff_import_list.length &&
               tariffImprotList.tariff_import_list.map((tariff, key) => (
                 
@@ -326,13 +278,17 @@ export default function App() {
                 <Text style={{fontWeight: 'bold'}}>UM: {tariff.unit_name}</Text>
                 <Text style={{fontWeight: 'bold'}}>Km: {tariff.tariff_import_km}</Text>
               </View>
-              <View style={{width:'50%'}}>
-                <Text style={{fontStyle:'italic'}}>EXPORT Tariff</Text>
-                <Text style={{fontWeight: 'bold'}}>Price: {tariffExprotList[key].tariff_export_tariff}</Text>
-                <Text style={{fontWeight: 'bold'}}>Currency: {tariffExprotList[key].currency_code}</Text>
-                <Text style={{fontWeight: 'bold'}}>UM: {tariffExprotList[key].unit_name}</Text>
-                <Text style={{fontWeight: 'bold'}}>Km: {tariffExprotList[key].tariff_export_km}</Text>
-              </View>
+              
+                { tariffExprotList && 
+                  tariffExprotList[key].tariff_export_tariff != undefined &&
+                <View style={{width:'50%'}}>
+                    <Text style={{fontStyle:'italic'}}>Export Tariff</Text>
+                    <Text style={{fontWeight: 'bold'}}>Price: {tariffExprotList[key].tariff_export_tariff}</Text>
+                    <Text style={{fontWeight: 'bold'}}>Currency: {tariffExprotList[key].currency_code}</Text>
+                    <Text style={{fontWeight: 'bold'}}>UM: {tariffExprotList[key].unit_name}</Text>
+                    <Text style={{fontWeight: 'bold'}}>Km: {tariffExprotList[key].tariff_export_km}</Text>
+                </View>
+                }
             </View>
           </View>
           

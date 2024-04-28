@@ -16,6 +16,7 @@ import {
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
   ActivityIndicator,
+  PostCallWithErrorResponse,
   StatusBar,
   Image
 } from './../../../../components/index';
@@ -24,7 +25,7 @@ import {
 export default function VehicleDetail(props) {
   
     const navigation = useNavigation();
-    const vehicle = props.route.params.details;
+    const driver = props.route.params.details;
     
     const [state, setState] = useState({
         isLoading: true,
@@ -39,7 +40,7 @@ export default function VehicleDetail(props) {
         to_date:''
     });
     
-    const [vehicleRequest, setVehicleRequest] = useState({ vehicle });
+    const [driverRequest, setDriverRequest] = useState({ driver });
     const [dates, setDates] = useState({
         startDate: "",
         endDate: "",
@@ -51,19 +52,7 @@ export default function VehicleDetail(props) {
       const [user_details, setUserDetails]      = useState('');
       
     
-      // componentWillMount();
-      
-    
-      // refresh page
-      
-      // const [refreshing, setRefreshing] = React.useState(false);
-    
-      // const onRefresh = React.useCallback(() => {
-      //   setRefreshing(true);
-      //   setTimeout(() => {
-      //     setRefreshing(false);
-      //   }, 2000);
-      // }, []);
+    //  console.log(driverRequest);
       
         const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
@@ -89,10 +78,10 @@ export default function VehicleDetail(props) {
         });  
         
         
-        postWithAuthCallWithErrorResponse(
-            ApiConfig.VIEW_ORDER_OFFERED_VEHICLES_DETAILS,
-            JSON.stringify({load_id: vehicleRequest.vehicle.trip_id, user_id, api_key, customer_id})
-        ).then((res) => {
+        PostCallWithErrorResponse(ApiConfig.DRIVER_DETAILS, {
+            user_id, api_key, customer_id,
+            driver_id: driverRequest.driver,
+          }).then((res) => {
 
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
             setState({ ...state, isLoading: false});  
@@ -102,8 +91,8 @@ export default function VehicleDetail(props) {
             setState({ ...state, isLoading: false});
             console.log('no data here')
         }
-        
-        if (res.json.result)setOfferLoadData(res.json.load_details);
+        console.log(res.json);
+        if (res.json.result)setDriverRequest(res.json.driver_details);
             setState({ ...state, isLoading: false});
         })
         .catch((err) => console.log(err));
@@ -130,12 +119,12 @@ export default function VehicleDetail(props) {
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
             <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
-            <Text>Getting Offer Loads</Text>
+            <Text>Getting Driver Detail</Text>
           </View> 
         )}
       {!state.isLoading &&(
         <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-            <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+            <View style={[styles.boxShadow, {minHeight: 200, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
             
                 <View
                 style={[
@@ -147,25 +136,31 @@ export default function VehicleDetail(props) {
                     },
                 ]}>
                     <View style={{marginTop:-18}}>
-                        <Text style={{fontWeight: 'bold', fontSize: 20}}>Offered Vehicles Detail </Text>
+                        <Image style={styles.cardImage} 
+                            source={{
+                                uri: ApiConfig.BASE_URL_FOR_IMAGES +
+                                driverRequest.profile_pic,
+                                headers: { 'Accept': 'image/*'}
+                        }}/>
+                        <Text style={{fontWeight: 'bold', fontSize: 20}}>{driverRequest.driver_name} </Text>
                     </View>
                 </View>
-                <View style={{textAlign: 'left', fontSize: 15, marginTop:15}}>
-                    <Text>Reference Number (Offer Vehicle): {offerLoadData.trip_id}</Text>  
-                    <Text>Company Name: {offerLoadData.trip_company_name}</Text>
-                    <Text>Cargo Type: {offerLoadData.cargo_type}</Text>
-                    <Text>Remaining Quantity: 
-                    {offerLoadData && offerLoadData.cargo_type === "Container" ? 
-                        offerLoadData.trip_pending_quantity === "" ? offerLoadData.quantity : offerLoadData.trip_pending_quantity + " Quintals" : 
-                        offerLoadData.cargo_type === "Vehicle" ? offerLoadData.trip_pending_quantity === "" ? offerLoadData.quantity : offerLoadData.trip_pending_quantity + " Vehicles" : 
-                            (offerLoadData.cargo_type==="Bulk" || offerLoadData.cargo_type === "Break bulk") ?
-                            offerLoadData.trip_pending_quantity === "" ? offerLoadData.quantity : offerLoadData.trip_pending_quantity + " Quintals" : " - "}
-                    </Text>
+                <View style={{textAlign: 'justify', fontSize: 15, marginTop:15, marginLeft: '-25%'}}>
+                    
+                    <Text><Text style={{fontWeight: 'bold'}}>Email:</Text> {driverRequest.email}</Text>  
+                    <Text><Text style={{fontWeight: 'bold'}}>House No: </Text>{driverRequest.house_no}</Text>
+                    <Text><Text style={{fontWeight: 'bold'}}>Mobile Number: </Text>{driverRequest.mobile_number}</Text>
+                    <Text><Text style={{fontWeight: 'bold'}}>P.O Box: </Text>{driverRequest.po_box}</Text>
+                    <Text><Text style={{fontWeight: 'bold'}}>Country: </Text>{driverRequest.user_country}</Text>
+                    <Text><Text style={{fontWeight: 'bold'}}>Region: </Text>{driverRequest.region}</Text>
+                    <Text><Text style={{fontWeight: 'bold'}}>Woreda: </Text>{driverRequest.woreda}</Text>
+                    <Text><Text style={{fontWeight: 'bold'}}>Zone: </Text>{driverRequest.zone} </Text>
+                    <Text><Text style={{fontWeight: 'bold'}}>Birth Date: </Text>{driverRequest.birthdate} </Text>
                 </View>
 
                 
             </View>
-            <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+            <View style={[styles.boxShadow, {minHeight: 250, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
         
               <View
               style={[
@@ -177,16 +172,15 @@ export default function VehicleDetail(props) {
                   },
               ]}>
                   <View style={{marginTop:-18}}>
-                      <Text style={{fontWeight: 'bold', fontSize: 20}}>Transporter Details </Text>
+                      <Text style={{fontWeight: 'bold', fontSize: 20}}>Driver Details </Text>
                   </View>
               </View>
-              <View style={{textAlign: 'justify', fontSize: 15, marginTop:15}}>
-                  <Text>Transporter’s Name: {offerLoadData.transporter}</Text>  
-                  <Text>Loading Truck Plate Number: {offerLoadData.plate_no}</Text>
-                  <Text>Driver Name: {offerLoadData.driver_name}</Text>
-                  <Text>Driver Cell Phone: {offerLoadData.driver_phone_no}</Text>
-                  <Text>Trip Status: {offerLoadData.trip_vehicle_status}</Text>
-              </View>
+                <View style={{textAlign: 'justify', fontSize: 15, marginLeft: '-45%', marginTop:15}}>
+                    <Text>Issue Date: {driverRequest.license_issue_date}</Text>  
+                    <Text>Expire Date: {driverRequest.license_expiry_date}</Text>
+                    <Text>License Grade: {driverRequest.license_grade}</Text>
+                    <Text>License Number: {driverRequest.licence_number}</Text>
+                </View>
               
           </View>
         

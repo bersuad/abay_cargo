@@ -180,6 +180,7 @@ export default function OnGoingFright() {
       {!dashBoardData.ongoing_freights && (
           <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
             <Text style={{fontWeight: 'bold'}}>No Data Found</Text>
+            <Text style={{fontWeight: 'normal', fontSize: 9}}>Pull down to refresh.</Text>
           </View> 
       )}
     </ScrollView>

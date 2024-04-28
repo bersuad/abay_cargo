@@ -16,7 +16,9 @@ import {
   ApiConfig,
   ActivityIndicator,
   StatusBar,
-  appPageStyle
+  appPageStyle,
+  MaterialCommunityIcons,
+  Keyboard
 } from './../../../../components/index';
 import { Badge } from 'react-native-paper';
 
@@ -24,6 +26,7 @@ export default function App() {
   const [state, setState] = useState({
     isLoading: true,
     checkInternet:true,
+    searchData: false
   });
   const navigation = useNavigation();
   const [driverList, setDriverList]         = useState([]);
@@ -93,6 +96,39 @@ const _getVehicle = async() => {
 
 };
 
+const getList=(text)=>{
+  if(text === ''){
+   _getVehicle();
+    setState({  ...state, searchData: false });
+  }else{
+    const newData = vehicleList.filter(
+      function (item) {
+        const itemData = item.driver_name
+          ? item.driver_name.toUpperCase()
+          : ''.toUpperCase();
+        const phone = item.mobile_number
+          ? item.mobile_number.toUpperCase()
+          : ''.toUpperCase();
+        const status = item.status
+          ? item.status.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        
+        return itemData.indexOf(textData) > -1 ?
+        itemData.indexOf(textData) > -1
+        :
+        phone.indexOf(textData) > -1
+    });
+    
+    if(newData.length === 0){
+      setState({  ...state, searchData: true });
+    }else{
+      setVehicleList(newData);
+      setState({  ...state, searchData: false });
+    }
+  }
+}
+
 
 
 const [page, setPage] = React.useState(0);
@@ -124,14 +160,27 @@ React.useEffect(() => {
               style={styles.TextInput}
               placeholder="Search"
               placeholderTextColor="#003f5c"
+              onChangeText={(text) => getList(text) }
+              onSubmitEditing={Keyboard.dismiss}
+              returnKeyType='search'
+              contextMenuHidden={true}
+              disableFullscreenUI={true}
+              cursorColor="#111"
             /> 
             <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
           </View> 
+          <View style={{flex: 1, alignSelf: "flex-start", position: "absolute", top: 68, left: 10, marginBottom:15}}>
+            <TouchableOpacity style={{backgroundColor: 'rgba(1, 138, 40, 0.88)', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+              <Text style={{color: '#fff', fontSize: 15}}><MaterialCommunityIcons name="microsoft-excel" size={20} color="white" /> Download Excel</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
             <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
               <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Driver</Text>
             </TouchableOpacity>
           </View>
+
           <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
 
             {items.map((driver, key) => (
@@ -163,7 +212,7 @@ React.useEffect(() => {
                         <Text style={{textAlign:'justify'}}>License: {driver.licence_number}</Text>
                         
                         <Text style={{textAlign:'justify'}}>Nationality: {driver.nationality}</Text>
-                        <TouchableOpacity style={{marginTop: 8, marginBottom:8}}>
+                        <TouchableOpacity style={{marginTop: 8, marginBottom:8}} onPress={()=>navigation.navigate('DeriverDetail', {details: driver.driver_id})}>
                             <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>View More....</Text>
                         </TouchableOpacity>
                     </View>

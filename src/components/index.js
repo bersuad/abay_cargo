@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   // ToastAndroid,
   RefreshControl,
+  Keyboard
 } from "react-native";
 
 import Toast from 'react-native-root-toast';
@@ -86,6 +87,7 @@ export {
   ImagePicker,
   PermissionsAndroid,
   ActivityIndicator,
+  Keyboard,
 
   createMaterialBottomTabNavigator,
   createAppContainer,  

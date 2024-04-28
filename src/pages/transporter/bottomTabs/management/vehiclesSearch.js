@@ -127,6 +127,11 @@ React.useEffect(() => {
             /> 
             <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
           </View> 
+          <View style={{flex: 1, alignSelf: "flex-start", position: "absolute", top: 68, left: 10, marginBottom:15}}>
+            <TouchableOpacity style={{backgroundColor: 'rgba(1, 138, 40, 0.88)', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+              <Text style={{color: '#fff', fontSize: 15}}><MaterialCommunityIcons name="microsoft-excel" size={20} color="white" /> Download Excel</Text>
+            </TouchableOpacity>
+          </View>
           <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
             <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
               <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Vehicle</Text>
@@ -162,7 +167,6 @@ React.useEffect(() => {
                           }
                         </View>
                         <Text style={{textAlign: 'justify'}}>Model: {vehicle.vehicle_model_no}</Text>    
-                        <Text style={{textAlign:'justify'}}>Type: {vehicle.vehicle_type}</Text>
                         <Text style={{textAlign:'justify'}}>Type: {vehicle.vehicle_type}</Text>
                         <TouchableOpacity style={{marginTop: 8, marginBottom:8}}>
                             <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>View More....</Text>

@@ -100,6 +100,7 @@ export default function App() {
                 uri: ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic,
               }}/>
           </View>
+          {console.log(ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic)}
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>{userData.user_name}</Text>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#cfcfcf', marginTop: 60, top: 1 }}>{userData.user_email}</Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>

@@ -80,7 +80,6 @@ export default function OnGoingFright() {
           setState({ ...state, noData: true});
         }
     
-        console.log(res.json);
         if (res.json.result)setCompleted(res.json.load_list);
         
         setState({ ...state, isLoading: false});
@@ -173,6 +172,7 @@ export default function OnGoingFright() {
       {!completed &&(
           <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
             <Text style={{fontWeight: 'bold'}}>No Data Found</Text>
+            <Text style={{fontWeight: 'normal', fontSize: 9}}>Pull down to refresh.</Text>
           </View> 
       )}
     </ScrollView>
