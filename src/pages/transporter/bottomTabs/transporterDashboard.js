@@ -98,7 +98,6 @@ export default function App() {
       }
       if(res.json.message === "Insufficient Parameters"){
         setState({ ...state, isLoading: false});
-        console.log('no data here')
       }
   
       
@@ -125,8 +124,8 @@ export default function App() {
       JSON.stringify({customer_id, user_id, api_key }),
     ).then((res) => {
       
-    if (res.json.result)setTariffExprotList(res.json.tariff_export_list);
-    setState({ ...state, isLoading: false});
+      if (res.json.result)setTariffExprotList(res.json.tariff_export_list);
+      setState({ ...state, isLoading: false});
       
       
     });
@@ -156,23 +155,25 @@ export default function App() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
+      <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
       {state.isLoading &&(
           <View style={styles.container}>
-            <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
             <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
           </View> 
         )}
       {!state.isLoading &&(
       <View style={styles.container}>
-        <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
-        <ImageBackground imageStyle={{ borderRadius: 10}} source={cardBackground} resizeMode="cover" style={[styles.welcomeCard, styles.boxShadow]}>
-          <Text style={styles.cardText}>WELCOME.., </Text>
-          <Text style={{...styles.cardText, fontSize:18, }}>{dashBoardData.user_name}</Text>
-          <Image style={styles.cardImage} source={headerImage}/>
-          <TouchableOpacity onPress={()=>navigation.navigate('OfferLoad')}>
-            <Text style={{...styles.cardText, fontSize: 13, marginTop: 50, color: "#1b9be6"}}>GET STARTED! </Text>
-          </TouchableOpacity>
-        </ImageBackground>
+        <View>
+          <ImageBackground imageStyle={{ borderRadius: 10}} source={cardBackground} resizeMode="cover" style={[styles.welcomeCard, styles.boxShadow]}>
+            <Text style={styles.cardText}>WELCOME.., </Text>
+            <Text style={{...styles.cardText, fontSize:18, }}>{dashBoardData.user_name}</Text>
+            <Image style={styles.cardImage} source={headerImage}/>
+            <TouchableOpacity onPress={()=>navigation.navigate('OfferLoad')}>
+              <Text style={{...styles.cardText, fontSize: 13, marginTop: 50, color: "#1b9be6"}}>GET STARTED! </Text>
+            </TouchableOpacity>
+          </ImageBackground>
+
+        </View>
 
         <View
           style={[
@@ -272,7 +273,7 @@ export default function App() {
               },
             ]}>
               <View style={{width:'50%'}}>
-                <Text style={{fontStyle:'italic'}}>IMPORT Tariff</Text>
+                <Text style={{fontStyle:'italic'}}>IMPORT TARIFF</Text>
                 <Text style={{fontWeight: 'bold'}}>Price: {tariff.tariff_import_tariff}</Text>
                 <Text style={{fontWeight: 'bold'}}>Currency: {tariff.currency_code}</Text>
                 <Text style={{fontWeight: 'bold'}}>UM: {tariff.unit_name}</Text>
@@ -280,13 +281,14 @@ export default function App() {
               </View>
               
                 { tariffExprotList && 
-                  tariffExprotList[key].tariff_export_tariff != undefined &&
+                  tariffExprotList[key]?.tariff_export_tariff != null &&
+                  tariffExprotList[key]?.tariff_export_tariff != undefined &&
                 <View style={{width:'50%'}}>
-                    <Text style={{fontStyle:'italic'}}>Export Tariff</Text>
-                    <Text style={{fontWeight: 'bold'}}>Price: {tariffExprotList[key].tariff_export_tariff}</Text>
-                    <Text style={{fontWeight: 'bold'}}>Currency: {tariffExprotList[key].currency_code}</Text>
-                    <Text style={{fontWeight: 'bold'}}>UM: {tariffExprotList[key].unit_name}</Text>
-                    <Text style={{fontWeight: 'bold'}}>Km: {tariffExprotList[key].tariff_export_km}</Text>
+                    <Text style={{fontStyle:'italic'}}>EXPORT TARIFF</Text>
+                    <Text style={{fontWeight: 'bold'}}>Price: {tariffExprotList[key]?.tariff_export_tariff}</Text>
+                    <Text style={{fontWeight: 'bold'}}>Currency: {tariffExprotList[key]?.currency_code}</Text>
+                    <Text style={{fontWeight: 'bold'}}>UM: {tariffExprotList[key]?.unit_name}</Text>
+                    <Text style={{fontWeight: 'bold'}}>Km: {tariffExprotList[key]?.tariff_export_km}</Text>
                 </View>
                 }
             </View>

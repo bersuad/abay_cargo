@@ -239,6 +239,7 @@ export default function OfferDetail(props) {
                             uri: ApiConfig.BASE_URL_FOR_IMAGES+offerLoadData.trip_insurance,
                         }}/>
                     </View>
+                    
                 </View>
             </View>
         

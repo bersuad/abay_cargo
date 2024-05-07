@@ -16,7 +16,8 @@ import {
   ApiConfig,
   ActivityIndicator,
   StatusBar,
-  appPageStyle
+  appPageStyle,
+  Keyboard
 } from './../../../../components/index';
 import { Badge } from 'react-native-paper';
 
@@ -93,6 +94,36 @@ const _getVehicle = async() => {
 
 };
 
+const getList=(text)=>{
+  if(text === ''){
+   _getVehicle();
+    setState({  ...state, searchData: false });
+  }else{
+    const newData = vehicleList.filter(
+      function (item) {
+        const itemData = item.plate_number
+          ? item.plate_number.toUpperCase()
+          : ''.toUpperCase();
+        const status = item.vehicle_status
+          ? item.vehicle_status.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        
+        return itemData.indexOf(textData) > -1 ?
+        itemData.indexOf(textData) > -1
+        :
+        status.indexOf(textData) > -1
+    });
+    
+    if(newData.length === 0){
+      setState({  ...state, searchData: true });
+      setVehicleList(newData);
+    }else{
+      setVehicleList(newData);
+      setState({  ...state, searchData: false });
+    }
+  }
+}
 
 
 const [page, setPage] = React.useState(0);
@@ -101,9 +132,9 @@ const [itemsPerPage, onItemsPerPageChange] = React.useState(
   numberOfItemsPerPageList[0]
 );
 
-const items = vehicleList;
+
 const from = page * itemsPerPage;
-const to = Math.min((page + 1) * itemsPerPage, items.length);
+const to = Math.min((page + 1) * itemsPerPage, vehicleList.length);
 React.useEffect(() => {
   setPage(0);
 }, [itemsPerPage]);
@@ -124,6 +155,12 @@ React.useEffect(() => {
               style={styles.TextInput}
               placeholder="Search"
               placeholderTextColor="#003f5c"
+              onChangeText={(text) => getList(text) }
+              onSubmitEditing={Keyboard.dismiss}
+              returnKeyType='search'
+              contextMenuHidden={true}
+              disableFullscreenUI={true}
+              cursorColor="#111"
             /> 
             <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
           </View> 
@@ -138,7 +175,7 @@ React.useEffect(() => {
             </TouchableOpacity>
           </View>
           <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-            {items.map((vehicle, key) => (
+            {vehicleList.map((vehicle, key) => (
               <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
                 <View
                 style={[
@@ -168,7 +205,7 @@ React.useEffect(() => {
                         </View>
                         <Text style={{textAlign: 'justify'}}>Model: {vehicle.vehicle_model_no}</Text>    
                         <Text style={{textAlign:'justify'}}>Type: {vehicle.vehicle_type}</Text>
-                        <TouchableOpacity style={{marginTop: 8, marginBottom:8}}>
+                        <TouchableOpacity style={{marginTop: 8, marginBottom:8}} onPress={()=>navigation.navigate('VehicleDescription', {details: vehicle.vehicle_id})}>
                             <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>View More....</Text>
                         </TouchableOpacity>
                     </View>

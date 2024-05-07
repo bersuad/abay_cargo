@@ -15,7 +15,8 @@ import {
   ApiConfig,
   postWithAuthCallWithErrorResponse,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
+  Toast
 } from './../../../../components/index';
 
 
@@ -60,7 +61,16 @@ export default function OfferLoad() {
       //     setRefreshing(false);
       //   }, 2000);
       // }, []);
-      
+
+      const toastWithDurationHandler = (message) => {
+        // To make Toast with duration
+        let toast = Toast.show(message, {
+          duration: Toast.durations.LONG,
+          backgroundColor: 'red',
+          animation: true,
+        });
+      };
+
         const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
         console.log('getting here on loading');
@@ -101,6 +111,22 @@ export default function OfferLoad() {
             setState({ ...state, isLoading: false});
         });
         
+    };
+
+    const reject = (loads) => {
+      postWithAuthCallWithErrorResponse(
+        ApiConfig.DIRECT_ORDER_OFFER_GOODS_VEHICLE_REJECT,
+        JSON.stringify({ user_id, api_key, customer_id, load_id: loads.trip_id  })
+      ).then((res) => {
+        if (res.json.message === 
+          "Invalid user authentication,Please try to relogin with exact credentials.") {
+            
+        }
+        if (res.json.result) {
+          _getDashboardDetails();
+          toastWithDurationHandler(loads.load_reference_no+' Offer Rejected');
+        }
+      });
     };
 
     useEffect(() => {
@@ -178,7 +204,7 @@ export default function OfferLoad() {
                                 </TouchableOpacity>
                             </View>
                             <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
-                                <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
+                                <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} onPress={()=>{reject(loads)}}>
                                     <Text style={{...appPageStyle.secondaryTextColor}}>Cancel</Text>
                                 </TouchableOpacity>
                             </View>

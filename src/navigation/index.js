@@ -41,6 +41,7 @@ import OnlineOrderConfirm from '../pages/transporter/bottomTabs/management/onlin
 import OfferDetail from '../pages/transporter/bottomTabs/management/offerDetail';
 import VehicleDetail from '../pages/transporter/bottomTabs/management/vehicleDetail';
 import DeriverDetail from '../pages/transporter/bottomTabs/management/driverDetail';
+import VehicleDescription from '../pages/transporter/bottomTabs/management/vehicleDescription';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -491,7 +492,24 @@ export default function App() {
           component={DeriverDetail} 
           options={{
             headerShown: true,
-            headerTitle:'Deriver Detail',
+            headerTitle:'Driver Detail',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="VehicleDescription"
+          title="Vehicle Description"
+          component={VehicleDescription} 
+          options={{
+            headerShown: true,
+            headerTitle:'Vehicle Description',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

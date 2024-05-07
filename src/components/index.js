@@ -21,7 +21,7 @@ import {
 import Toast from 'react-native-root-toast';
 
 import ApiConfig from "./../api/ApiConfig";
-import {PostCallWithErrorResponse, postWithAuthCallWithErrorResponse, postMultipartWithAuthCallWithErrorResponse} from "./../api/ApiServices";
+import {PostCallWithErrorResponse, postWithAuthCallWithErrorResponse, postMultipartWithAuthCallWithErrorResponse, multipartPostCall} from "./../api/ApiServices";
 
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from '@react-navigation/native';
@@ -128,6 +128,7 @@ export {
   PostCallWithErrorResponse,
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
+  multipartPostCall,
   // storage
   AsyncStorage,
 

@@ -122,6 +122,7 @@ const getList=(text)=>{
     
     if(newData.length === 0){
       setState({  ...state, searchData: true });
+      setVehicleList(newData);
     }else{
       setVehicleList(newData);
       setState({  ...state, searchData: false });
