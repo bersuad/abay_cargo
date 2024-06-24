@@ -155,7 +155,7 @@ export default function App() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
+      <StatusBar barStyle = "white-content" hidden = {false} {...appPageStyle.primaryColor} translucent = {true}/>
       {state.isLoading &&(
           <View style={styles.container}>
             <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 

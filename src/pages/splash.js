@@ -71,11 +71,12 @@ export default function Splash() {
         Animated.timing(state.LogoText, {
             toValue: 1,
             duration:2600,
-            useNativeDriver: true
+            useNativeDriver: false
         }),
         Animated.timing(state.SimpleText, {
             toValue: 1,
             duration:3000,
+            useNativeDriver: false
         }),
     ]);
 

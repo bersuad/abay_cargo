@@ -53,7 +53,6 @@ import NetInfo from "@react-native-community/netinfo";
 
 //images
 import Logo from './../../assets/splash_logo.png';
-import Driver from './../../assets/driver.png';
 import Truck from './../../assets/truck.png';
 import ForgetPassword from './../../assets/password.gif';
 import TruckLogin from './../../assets/transporter.gif';
@@ -109,7 +108,6 @@ export {
   Entypo,
 
   //Images
-  Driver,
   Logo,
   Truck,
   ForgetPassword,

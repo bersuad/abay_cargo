@@ -20,12 +20,29 @@ import {
   MaterialCommunityIcons,
   Toast,
   postWithAuthCallWithErrorResponse,
+  postMultipartWithAuthCallWithErrorResponse,
   ApiConfig,
   ActivityIndicator
 } from "./../../../components/index";
-import SelectDropdown from 'react-native-select-dropdown'
+import SelectDropdown from 'react-native-select-dropdown';
+import * as Permissions from 'expo-permissions';
+
 
 export default function ImagePickerExample() {
+  const requestCameraPermission = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    if (status !== 'granted') {
+      alert('Sorry, we need camera permissions to use the camera');
+    }
+  };
+  
+  const requestPhotosPermission = async () => {
+    const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    if (status !== 'granted') {
+      alert('Sorry, we need photos permissions to access your gallery');
+    }
+  };
+
   const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;
   const [image, setImage] = useState(DEFAULT_IMAGE);
   const [companyTypes, setCompanyTyes] = useState([]);
@@ -45,7 +62,11 @@ export default function ImagePickerExample() {
     checkInternet:true,
   });
 
-  const getCompanyTypes = () => {
+  const getCompanyTypes = async () => {
+    if (Platform.OS === 'android') {
+      await requestCameraPermission();
+      await requestPhotosPermission();
+    }
     postWithAuthCallWithErrorResponse(
       ApiConfig.COMPANY_TYPE_DROPDOWN,
     )
@@ -56,7 +77,6 @@ export default function ImagePickerExample() {
         }
         if (res.json.result) {
           setCompanyTyes(res.json.company_type);
-          // console.log(res.json)
         }
       })
       .catch((err) => {
@@ -70,18 +90,20 @@ export default function ImagePickerExample() {
     return () => {};
   }, []);
   const pickImage = async () => {
+    
+  
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [7, 6],
       quality: 1,
     });
-
-    // console.log(result);
+    
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      setDriverDetails({ ...driverDetails, profile_picture: result.assets[0].uri});
     }
   };
 
@@ -90,14 +112,13 @@ export default function ImagePickerExample() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [7, 6],
       quality: 1,
     });
 
-    // console.log(result);
-
     if (!result.canceled) {
       setPlaceholderImage(result.assets[0].uri);
+      setDriverDetails({ ...driverDetails, tn_document: result.assets[0].uri});
     }
   };
 
@@ -106,14 +127,13 @@ export default function ImagePickerExample() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [7, 6],
       quality: 1,
     });
 
-    // console.log(result);
-
     if (!result.canceled) {
       setSecondPlaceholderImage(result.assets[0].uri);
+      setDriverDetails({ ...driverDetails, grade_certificate: result.assets[0].uri});
     }
   };
 
@@ -126,10 +146,9 @@ export default function ImagePickerExample() {
       quality: 1,
     });
 
-    // console.log(result);
-
     if (!result.canceled) {
       setThirdPlaceholderImage(result.assets[0].uri);
+      setDriverDetails({ ...driverDetails, business_license: result.assets[0].uri});
     }
   };
 
@@ -164,6 +183,7 @@ export default function ImagePickerExample() {
   };
   
   const [driverDetails, setDriverDetails] = useState({
+    profile_picture: { uri:  image},
     company_type: "",
     company_name: "",
     contact_person: "",
@@ -175,17 +195,18 @@ export default function ImagePickerExample() {
     password: "",
     confirmPassword: "",
     country: "",
-    region: "",
+    company_region: "",
     city: "",
     phone_no: "",
     email: "",
     po_number: "",
-    tn_document: "",
-    grade_certificate: "",
-    business_license: "",
+    tn_document: {uri: placeholderImage},
+    grade_certificate: {uri: secondPlaceholderImage},
+    business_license: {uri: thirdPlaceholderImage},
   });
 
   const [errMsg, setErrMsg] = useState({
+    profile_picture: "",
     company_type: "",
     company_name: "",
     contact_person: "",
@@ -207,43 +228,112 @@ export default function ImagePickerExample() {
     business_license: "",
   });
 
+  
+  const successWithDurationHandler = (message) => {
+    // To make Toast with duration
+    let toast = Toast.show(message, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.CENTER,
+      backgroundColor: 'green',
+      animation: true,
+    });
+  };
+
+  
+
   _register = async () =>{
-    console.log(driverDetails.company_type); 
-    setState({ ...state, isLoading: true});
     
-    if (empty(driverDetails.company_type) || driverDetails.company_name === "" || driverDetails.contact_person === "") {
+    const uri  = driverDetails.profile_picture;
+    const filename = uri.split('/').pop();
+    
+    const bizz  = driverDetails.profile_picture;
+    const buss = bizz.split('/').pop();
 
-      if (errMsg.company_type === "") {
-        setErrMsg({...errMsg, company_type: "** Please select company type **" });
+    const tn  = driverDetails.tn_document;
+    const tn_img = tn.split('/').pop();
+
+    const gc  = driverDetails.grade_certificate;
+    const gc_img = gc.split('/').pop();
+    
+    const profileImage = { uri: driverDetails.profile_picture, name: filename, type: 'image/jpeg'};
+    const businessImage = { uri: driverDetails.business_license, name: buss, type: 'image/jpeg'};
+    const tnImage = { uri: driverDetails.tn_document, name: tn_img, type: 'image/jpeg'};
+    const gradeImage = { uri: driverDetails.grade_certificate, name: gc_img, type: 'image/jpeg'};
+    
+    setState({ ...state, isLoading: true});    
+    const formData = new FormData();
+    formData.append("company_name", driverDetails.company_name);
+    formData.append("email", driverDetails.email);
+    driverDetails.password && formData.append("password", driverDetails.password);
+    formData.append("phone_no", driverDetails.phone_no);
+    formData.append("city", driverDetails.city);
+    formData.append("region", driverDetails.region);
+    formData.append("country", driverDetails.country ? driverDetails.country : "Ethiopia");
+    formData.append("po_number", driverDetails.po_number);
+    formData.append("contact_person", driverDetails.contact_person);
+    formData.append(
+      "contact_person_responsibility",
+      driverDetails.contact_person_responsibility
+    );
+    formData.append("contact_person_phone", driverDetails.contact_person_phone);
+    formData.append("contact_person_email", driverDetails.contact_person_email);
+    formData.append("total_fleet_size", driverDetails.total_fleet_size);
+    formData.append("alternate_phone", driverDetails.alternate_phone);
+    formData.append("company_type", driverDetails.company_type);
+    
+      formData.append(
+        "profile_picture", profileImage 
+      );
+    
+    
+      formData.append(
+        "business_license", businessImage
+      );
+    
+      formData.append(
+        "grade_certificate", gradeImage
+      );
+    
+      formData.append(
+        "tn_document", tnImage
+      );
+    formData.append(
+      "user_role",
+      driverDetails.user_role ? driverDetails.user_role : "transporter"
+    );
+    
+    
+    postMultipartWithAuthCallWithErrorResponse(
+      ApiConfig.ADD_TRANSPORTER,
+      formData
+    ).then((res) => {
+      if (data.json.message === "Wrong credentials entered") {
         setState({ ...state, isLoading: false});
-        return;
+        toastWithDurationHandler('Wrong inputs');
+        AsyncStorage.clear();
       }
 
-      if (errMsg.company_name === "") {
-        setErrMsg({...errMsg, company_name: "** Please enter company name **" });
+      if (data.json.message === "Registration Rejected , please see check your inbox") {
         setState({ ...state, isLoading: false});
-        return;
+        toastWithDurationHandler('Wrong inputs');
+        AsyncStorage.clear();
       }
 
-      if (errMsg.contact_person === "") {
-        setErrMsg({...errMsg, contact_person: "** Please select company contact person **" });
+      if (data.json.message === "Wrong password entered") {
         setState({ ...state, isLoading: false});
-        return;
+        toastWithDurationHandler('Wrong inputs');
+        AsyncStorage.clear();
       }
 
-      if (errMsg.contact_person_responsibility === "") {
-        setErrMsg({...errMsg, contact_person_responsibility: "** Please enter contact person role **" });
-        setState({ ...state, isLoading: false});
-        return;
+      if (data.json.result == true) {
+        setTimeout(function () {
+          navigation.navigate('TruckLogin');
+          successWithDurationHandler('Registered Successfully, Please contact Abay Logistics! Thank you.');
+        }, 5000);
       }
-
-      if (errMsg.contact_person_responsibility === "") {
-        setErrMsg({...errMsg, contact_person_responsibility: "** Please enter contact person role **" });
-        setState({ ...state, isLoading: false});
-        return;
-      }
-
-    }
+    }).catch((error) => {
+      console.log(error);
+    });
     
 
   }
@@ -313,9 +403,9 @@ export default function ImagePickerExample() {
             style={styles.TextInput}
             placeholder="Contact Person"
             placeholderTextColor="#19788e"
-            onChangeText={(contact_person) =>{
+            onChangeText={(text) =>{
               setErrMsg({ ...errMsg, contact_person: "" });
-              setDriverDetails({ ...driverDetails, contact_person: contact_person})
+              setDriverDetails({ ...driverDetails, contact_person: text})
             }
           }
           />
@@ -329,9 +419,9 @@ export default function ImagePickerExample() {
             style={styles.TextInput}
             placeholder="Contact Person Responsibility"
             placeholderTextColor="#19788e"
-            onChangeText={(contact_person_responsibility) =>{
+            onChangeText={(text) =>{
               setErrMsg({ ...errMsg, contact_person_responsibility: "" });
-              setDriverDetails({contact_person_responsibility: contact_person_responsibility})
+              setDriverDetails({...driverDetails, contact_person_responsibility: text})
               }
             } 
           /> 
@@ -351,9 +441,9 @@ export default function ImagePickerExample() {
               style={styles.TextInput}
               placeholder="Contact Person Phone"
               placeholderTextColor="#19788e"
-              onChangeText={(contact_person_phone) =>{
+              onChangeText={(text) =>{
                 setErrMsg({ ...errMsg, contact_person_phone: "" });
-                setDriverDetails({contact_person_phone: contact_person_phone})
+                setDriverDetails({...driverDetails, contact_person_phone: text})
                 }
               }
             /> 
@@ -366,7 +456,7 @@ export default function ImagePickerExample() {
               placeholderTextColor="#19788e"
               onChangeText={(contact_person_email) =>{
                 setErrMsg({ ...errMsg, contact_person_email: "" });
-                setDriverDetails({contact_person_email: contact_person_email})
+                setDriverDetails({...driverDetails, contact_person_email: contact_person_email})
                 }
               }
             /> 
@@ -379,9 +469,9 @@ export default function ImagePickerExample() {
             style={styles.TextInput}
             placeholder="Total Fleet Size"
             placeholderTextColor="#19788e"
-            onChangeText={(total_fleet_size) =>{
+            onChangeText={(text) =>{
               setErrMsg({ ...errMsg, total_fleet_size: "" });
-              setDriverDetails({total_fleet_size: total_fleet_size})
+              setDriverDetails({...driverDetails, total_fleet_size: text})
               }
             }
           /> 
@@ -406,7 +496,7 @@ export default function ImagePickerExample() {
               secureTextEntry={true}
               onChangeText={(password) =>{
                 setErrMsg({ ...errMsg, password: "" });
-                setDriverDetails({password: password})
+                setDriverDetails({...driverDetails, password: password})
                 }
               }
             /> 
@@ -420,7 +510,7 @@ export default function ImagePickerExample() {
               secureTextEntry={true}
               onChangeText={(confirmPassword) =>{
                 setErrMsg({ ...errMsg, confirmPassword: "" });
-                setDriverDetails({confirmPassword: confirmPassword})
+                setDriverDetails({...driverDetails, confirmPassword: confirmPassword})
                 }
               }
             /> 
@@ -431,11 +521,10 @@ export default function ImagePickerExample() {
         <Text style={styles.HeaderText}>Region</Text>
         <SelectDropdown
           data={regionList}
-          onSelect={(selectedItem, index) => {
+          onSelect={(item, index) => {
             setErrMsg({ ...errMsg, region: "" });
-            setDriverDetails({region: region})
-            }
-          }
+            setDriverDetails({ ...driverDetails, region: item.title})
+          }}
           renderButton={(selectedItem, isOpened) => {
             return (
               <View style={styles.dropdownButtonStyle}>
@@ -477,7 +566,7 @@ export default function ImagePickerExample() {
               placeholderTextColor="#19788e"
               onChangeText={(phone_no) =>{
                 setErrMsg({ ...errMsg, phone_no: "" });
-                setDriverDetails({phone_no: phone_no})
+                setDriverDetails({...driverDetails, phone_no: phone_no})
                 }
               }
             /> 
@@ -490,7 +579,7 @@ export default function ImagePickerExample() {
               placeholderTextColor="#19788e"
               onChangeText={(confirmPassword) =>{
                 setErrMsg({ ...errMsg, confirmPassword: "" });
-                setDriverDetails({confirmPassword: confirmPassword})
+                setDriverDetails({...driverDetails, confirmPassword: confirmPassword})
                 }
               }
             /> 
@@ -513,7 +602,7 @@ export default function ImagePickerExample() {
               placeholderTextColor="#19788e"
               onChangeText={(email) =>{
                 setErrMsg({ ...errMsg, email: "" });
-                setDriverDetails({email: email})
+                setDriverDetails({...driverDetails, email: email})
                 }
               }
             /> 
@@ -526,7 +615,7 @@ export default function ImagePickerExample() {
               placeholderTextColor="#19788e"
               onChangeText={(po_number) =>{
                 setErrMsg({ ...errMsg, po_number: "" });
-                setDriverDetails({po_number: po_number})
+                setDriverDetails({...driverDetails, po_number: po_number})
                 }
               }
             /> 

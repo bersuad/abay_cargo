@@ -96,6 +96,7 @@ const ApiConfig = {
   TRAILER_LIST: CLIENT_BASE_URL + "vehicle/trailerlist",
   TRUCK_LIST: CLIENT_BASE_URL + "dropdown/vehicletypes",
   POWER_PLATE_NO: CLIENT_BASE_URL + "dropdown/powerplatenumbers",
+  AXLES: CLIENT_BASE_URL + "dropdown/axles",
   DELETE_VEHICLE_OFFER: CLIENT_BASE_URL + "vehiclerequest/deletevehicle",
   DELETE_BID_VEHICLE_OFFER: CLIENT_BASE_URL + "bid/deletevehicle",
   CHANGE_PASSWORD: CLIENT_BASE_URL + "changepassword",
