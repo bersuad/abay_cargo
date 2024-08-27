@@ -23,7 +23,6 @@ import {
   AsyncStorage,
   NetInfo,
   LogBox,
-  Animated,
   ActivityIndicator,
   Toast,
   Ionicons,
@@ -59,7 +58,6 @@ export default function App() {
       this.mounted = true;
       this._checkConnection();
       this.index = 0;
-      this.animation = new Animated.Value(0);
       
       return () => {
         // Anything in here is fired on component unmount.
@@ -89,9 +87,9 @@ export default function App() {
       if(networkState.isConnected){
         // this._requestAccess();
         console.log('connected');
-        this.setState({ checkInternet: false });
+        setState({...state, checkInternet: true });
       }else{
-        this.setState({ checkInternet: true });
+        setState({...state, checkInternet: false });
         console.log('not connected');
       }
     });
@@ -128,7 +126,19 @@ export default function App() {
         AsyncStorage.clear();
       }
 
+      if (data.json.message === "Registration in progress") {
+        setState({ ...state, isLoading: false});
+        toastWithDurationHandler('Registration in progress, Please Contact Abay Support!');
+        AsyncStorage.clear();
+      }
+
       if (data.json.message === "Wrong password entered") {
+        setState({ ...state, isLoading: false});
+        toastWithDurationHandler('Wrong Username or Password');
+        AsyncStorage.clear();
+      }
+
+      if (data.json.message === "Undefined variable $output") {
         setState({ ...state, isLoading: false});
         toastWithDurationHandler('Wrong Username or Password');
         AsyncStorage.clear();
@@ -169,7 +179,7 @@ export default function App() {
         <View style={styles.container}>
         <StatusBar barStyle = "white-content" hidden = {false} {...appPageStyle.primaryColor} translucent = {true}/>
           {!state.checkInternet &&(
-            <SnackBar visible={true} textMessage="No Internet Connection!" actionHandler={()=>{console.log("snackbar button clicked!")}} actionText="Try Again"/>
+            <SnackBar visible={true} textMessage="No Internet Connection!" actionHandler={()=>{this._checkConnection()}} actionText="Try Again"/>
           )}
           <View style={styles.logoArea}>
             <Image style={styles.image} source={TruckLogin} /> 

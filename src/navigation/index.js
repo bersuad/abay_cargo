@@ -43,6 +43,8 @@ import VehicleDetail from '../pages/transporter/bottomTabs/management/vehicleDet
 import DeriverDetail from '../pages/transporter/bottomTabs/management/driverDetail';
 import VehicleDescription from '../pages/transporter/bottomTabs/management/vehicleDescription';
 import ReportForm from '../pages/transporter/bottomTabs/settings/reportForm';
+import AddNewDriver from '../pages/transporter/bottomTabs/management/addDriver';
+import AddNewVehicle from '../pages/transporter/bottomTabs/management/addVehicle';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -528,6 +530,39 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Report Form',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#19788e',
+            },
+            headerTintColor: '#fff',
+            
+          }}
+          
+        />
+
+      <Stack.Screen
+          name="AddNewDriver"
+          title="Add New Driver"
+          component={AddNewDriver} 
+          options={{
+            headerShown: true,
+            headerTitle:'Add New Driver',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+            
+          }}
+          
+        />
+        <Stack.Screen
+          name="AddNewVehicle"
+          title="Add New Vehicle"
+          component={AddNewVehicle} 
+          options={{
+            headerShown: true,
+            headerTitle:'Add New Vehicle',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

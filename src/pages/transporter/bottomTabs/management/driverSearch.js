@@ -51,7 +51,7 @@ export default function App() {
             this.mounted = false;
         }
     }, []);
-}
+  }
 
 componentWillMount();
 
@@ -177,7 +177,7 @@ React.useEffect(() => {
           </View>
 
           <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
-            <TouchableOpacity style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+            <TouchableOpacity onPress={()=>navigation.navigate('AddNewDriver')} style={{backgroundColor: '#19788e', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
               <Text style={{color: '#fff'}}><AntDesign name="plus" size={15} color="white" /> Add Driver</Text>
             </TouchableOpacity>
           </View>

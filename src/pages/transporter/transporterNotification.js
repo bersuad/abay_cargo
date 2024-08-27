@@ -92,7 +92,7 @@ export default function NotificationBar() {
 
   return (
     <TouchableOpacity style={{flexDirection: 'row', height: "100%", marginTop: 10}} onPress={()=>navigation.navigate('NotificationList')}>
-      <Ionicons name="md-notifications" size={22} {...appPageStyle.secondaryTextColor} style={{marginRight: 25, marginTop: 6}}/>
+      <Ionicons name="notifications" size={22} {...appPageStyle.secondaryTextColor} style={{marginRight: 25, marginTop: 6}}/>
       <View style={{minWidth: 20, height: 20, ...appPageStyle.primaryColor, alignItems: "center", justifyContent: "center", borderRadius: 100, position: 'absolute', marginLeft: 8, marginTop: 3, paddingLeft: 5, paddingRight: 5}}>
         <Text style={{ fontWeight: 600,...appPageStyle.primaryTextColor , fontSize: 12 }}>{dashBoardData.notification_count ? dashBoardData.notification_count : 0 }</Text>
       </View>

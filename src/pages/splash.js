@@ -30,10 +30,11 @@ export default function Splash() {
     const componentWillMount = () => {
         // AsyncStorage.clear();
         useEffect( () => {
-          // Anything in here is fired on component unmount.
-            LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
             this.mounted = true;
             this._checkUser();
+          // Anything in here is fired on component unmount.
+            LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
+            LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified']);
 
             return () => {
                 // Anything in here is fired on component unmount.
@@ -66,7 +67,7 @@ export default function Splash() {
             tension:8,
             friction:1.13,
             duration: 2500,
-            
+            useNativeDriver: false
         }).start(),
         Animated.timing(state.LogoText, {
             toValue: 1,

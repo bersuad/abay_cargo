@@ -129,7 +129,7 @@ export default  function App(){
                     },
                     ]}>
                     <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 30, width: 30, borderRadius: 99, marginLeft: 0}}>
-                      <Ionicons name="md-notifications" size={15} color="#fff"/>
+                      <Ionicons name="notifications" size={15} color="#fff"/>
                     </View>
                     <View style={{width: '85%'}}>
                         <Text style={{textAlign:'justify'}}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 import {
   StyleSheet,
@@ -8,7 +8,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  StatusBar,
   ImagePicker,
   SafeAreaView,
   useNavigation,
@@ -24,19 +23,23 @@ import {
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
   ApiConfig,
-  ActivityIndicator,
-  AsyncStorage,
-  NetInfo,
-  LogBox
-} from "./../../../components/index";
+  ActivityIndicator
+} from "./../../../../components/index.js";
 import SelectDropdown from 'react-native-select-dropdown';
-import * as DocumentPicker from 'expo-document-picker';
-import SnackBar from 'react-native-snackbar-component';
 
 
-
-export default function NewTransporter() {
+export default function AddNewDriver() {
   const navigation = useNavigation();
+
+
+  const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;
+  const [image, setImage] = useState(DEFAULT_IMAGE);
+  const [companyTypes, setCompanyTyes] = useState([]);
+  const SECOND_DEFAULT_IMAGE = Image.resolveAssetSource(placeholder).uri;
+  const [placeholderImage, setPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
+  const [secondPlaceholderImage, setSecondPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
+  const [thirdPlaceholderImage, setThirdPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
+
   const [state, setState] = useState({
     device_token: "",
     device_id: "",
@@ -47,52 +50,6 @@ export default function NewTransporter() {
     inputFormat: true,
     checkInternet:true,
   });
-
-  const componentWillMount = () => {
-    useEffect( () => {
-      // Anything in here is fired on component unmount.
-      LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
-      this.mounted = true;
-      this._checkConnection();
-      this.index = 0;
-      
-      return () => {
-        // Anything in here is fired on component unmount.
-        setState({ ...state, isLoading: false, checkInternet:true,});
-        this.mounted = false;
-      }
-    }, []);
-  }
-
-  _checkConnection = async()=>{
-    NetInfo.addEventListener(networkState => {
-      if(networkState.isConnected){
-        console.log('connected');
-        setState({...state, checkInternet: true });
-      }else{
-        setState({...state, checkInternet: false });
-        console.log('not connected');
-      }
-    });
-  }
-  componentWillMount();
-  const [fileName, setFileName] = useState('');
-  const [fileName2, setFileName2] = useState('');
-  const [fileName3, setFileName3] = useState('');
-
-  
-  const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;
-  const [image, setImage] = useState(DEFAULT_IMAGE);
-  const [companyTypes, setCompanyTyes] = useState([]);
-  const SECOND_DEFAULT_IMAGE = Image.resolveAssetSource(placeholder).uri;
-  const [placeholderImage, setPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
-  const [secondPlaceholderImage, setSecondPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
-  const [thirdPlaceholderImage, setThirdPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
-
-
-  
-
-  
 
   const getCompanyTypes = async () => {
     
@@ -137,158 +94,129 @@ export default function NewTransporter() {
   };
 
   const pickImage2 = async () => {
-
-    let result = await DocumentPicker.getDocumentAsync({
-      type: ['image/*', 'application/pdf'],
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
+      allowsEditing: true,
+      aspect: [7, 6],
+      quality: 1,
     });
-    
-    if (result.assets[0].mimeType) {
-      setFileName(result.assets[0].name);
-    } else {
-      successWithDurationHandler('Please select PDFs or Images only.');
-    }
-    
+
     if (!result.canceled) {
-      setDriverDetails({ ...driverDetails, tn_document: result.assets[0].uri });
-      if (result.assets[0].mimeType === "application/pdf") {
-        setFileName(result.assets[0].name);
-        setPlaceholderImage(PDFIcon.uri);
-      } else {
-        setPlaceholderImage(result.assets[0].uri);
-      }
+      setPlaceholderImage(result.assets[0].uri);
+      setDriverDetails({ ...driverDetails, tn_document: result.assets[0].uri});
     }
   };
 
   const pickImage3 = async () => {
-
-    let result = await DocumentPicker.getDocumentAsync({
-      type: ['image/*', 'application/pdf'],
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
+      allowsEditing: true,
+      aspect: [7, 6],
+      quality: 1,
     });
-    console.log(result);
-    if (result.assets[0].mimeType) {
-      setFileName2(result.assets[0].name);
-    } else {
-      successWithDurationHandler('Please select PDFs or Images only.');
-    }
-    
 
     if (!result.canceled) {
+      setSecondPlaceholderImage(result.assets[0].uri);
       setDriverDetails({ ...driverDetails, grade_certificate: result.assets[0].uri});
-      if(result.assets[0].mimeType == "application/pdf"){
-        setFileName2(result.assets[0].name);
-        setSecondPlaceholderImage(PDFIcon.uri);
-      }else{
-        setSecondPlaceholderImage(result.assets[0].uri);
-      }
     }
-
-    
   };
 
   const pickImage4 = async () => {
-    let result = await DocumentPicker.getDocumentAsync({
-      type: ['image/*', 'application/pdf'],
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
     });
 
-    if (result.assets[0].mimeType) {
-      setFileName3(result.assets[0].name);
-    } else {
-      successWithDurationHandler('Please select PDFs or Images only.');
-    }
-    
-
-    if (!result.assets[0].canceled) {
+    if (!result.canceled) {
+      setThirdPlaceholderImage(result.assets[0].uri);
       setDriverDetails({ ...driverDetails, business_license: result.assets[0].uri});
-      if(result.assets[0].mimeType == "application/pdf"){
-        setFileName3(result.assets[0].name);
-        setThirdPlaceholderImage(PDFIcon.uri);
-      }else{
-        setThirdPlaceholderImage(result.assets[0].uri);
-      }
     }
+  };
 
+    const companyType = [
+        {title: 'Association',},
+        {title: 'S.Co',},
+        {title: 'PLC',},
+    ];
+
+    const regionList = [
+        {title: 'Addis Ababa',},
+        {title: 'Afar',},
+        {title: 'Amhara',},
+        {title: 'Benshangul Gumuz',},
+        {title: 'Dire Dawa',},
+        {title: 'Gambella',},
+        {title: 'Harari',},
+        {title: 'Oromia',},
+        {title: 'Sidama',},
+        {title: 'Somali',},
+        {title: 'South West Ethiopian People',},
+        {title: 'Southern Nation, Nationalities And People',},
+        {title: 'Tigiray',},
+    ];
+
+    const toastWithDurationHandler = (message) => {
     
-  };
+        let toast = Toast.show(message, {
+            duration: Toast.durations.LONG,
+            backgroundColor: 'red',
+            animation: true,
+        });
 
-  const companyType = [
-    {title: 'Association',},
-    {title: 'S.Co',},
-    {title: 'PLC',},
-  ];
+    };
 
-  const regionList = [
-    {title: 'Addis Ababa',},
-    {title: 'Afar',},
-    {title: 'Amhara',},
-    {title: 'Benshangul Gumuz',},
-    {title: 'Dire Dawa',},
-    {title: 'Gambella',},
-    {title: 'Harari',},
-    {title: 'Oromia',},
-    {title: 'Sidama',},
-    {title: 'Somali',},
-    {title: 'South West Ethiopian People',},
-    {title: 'Southern Nation, Nationalities And People',},
-  ];
-
-  const toastWithDurationHandler = (message) => {
-    let toast = Toast.show(message, {
-      duration: Toast.durations.LONG,
-      backgroundColor: 'red',
-      animation: true,
+    const [driverDetails, setDriverDetails] = useState({
+        profile_picture: { uri:  image},
+        driver_name: "",
+        driver_email: "",
+        driver_phone_no: "",
+        driver_region: "",
+        driver_zone: "",
+        driver_woreda: "",
+        driver_house_no: "",
+        driver_po_number: "",
+        driver_country: "",
+        driver_dob: "",
+        driver_gender: "",
+        license_file: "",
+        license_grade: "",
+        license_issue_date: "",
+        license_no: "",
+        license_expiry_date: "",
+        owner_id: "",
+        driver_city: "",
     });
-  };
-  
-  const [driverDetails, setDriverDetails] = useState({
-    profile_picture: { uri:  image},
-    company_type: "",
-    company_name: "",
-    contact_person: "",
-    total_fleet_size: "",
-    alternate_phone:"",
-    country: "",
-    contact_person_responsibility: "",
-    contact_person_phone: "",
-    contact_person_email: "",
-    password: "",
-    confirmPassword: "",
-    country: "",
-    company_region: "",
-    city: "",
-    phone_no: "",
-    email: "",
-    po_number: "",
-    tn_document: {uri: placeholderImage},
-    grade_certificate: {uri: secondPlaceholderImage},
-    business_license: {uri: thirdPlaceholderImage},
-  });
 
-  const [errMsg, setErrMsg] = useState({
-    profile_picture: "",
-    company_type: "",
-    company_name: "",
-    contact_person: "",
-    total_fleet_size: "",
-    alternate_phone: "",
-    country: "",
-    contact_person_responsibility: "",
-    contact_person_phone: "",
-    contact_person_email: "",
-    password: "",
-    confirmPassword: "",
-    country: "",
-    region: "",
-    city: "",
-    phone_no: "",
-    email: "",
-    po_number: "",
-    tn_document: "",
-    grade_certificate: "",
-    business_license: "",
-  });
+    const [errMsg, setErrMsg] = useState({
+        profile_picture: { uri:  image},
+        driver_name: "",
+        driver_email: "",
+        driver_phone_no: "",
+        driver_region: "",
+        driver_zone: "",
+        driver_woreda: "",
+        driver_house_no: "",
+        driver_po_number: "",
+        driver_country: "",
+        driver_dob: "",
+        driver_gender: "",
+        license_file: "",
+        license_grade: "",
+        license_issue_date: "",
+        license_no: "",
+        license_expiry_date: "",
+        owner_id: "",
+        driver_city: "",
+    });
 
   
   const successWithDurationHandler = (message) => {
+    // To make Toast with duration
     let toast = Toast.show(message, {
       duration: Toast.durations.LONG,
       position: Toast.positions.CENTER,
@@ -301,140 +229,106 @@ export default function NewTransporter() {
 
   _register = async () =>{
     
-    const tn  = driverDetails.tn_document;
-    console.log(driverDetails.tn_document);
-    const tn_img = tn.split('/').pop();
     const uri  = driverDetails.profile_picture;
     const filename = uri.split('/').pop();
-    const bizz  = driverDetails.business_license;
+    
+    const bizz  = driverDetails.profile_picture;
     const buss = bizz.split('/').pop();
 
-
+    const tn  = driverDetails.tn_document;
+    const tn_img = tn.split('/').pop();
 
     const gc  = driverDetails.grade_certificate;
     const gc_img = gc.split('/').pop();
-
-const profileImage = { uri: driverDetails.profile_picture, name: filename, type: 'image/jpeg'};
-
-const businessImage = {
-  uri: driverDetails.business_license, 
-  name: buss, 
-  type: driverDetails.business_license.endsWith('.pdf') 
-    ? "application/pdf" 
-    : driverDetails.business_license.endsWith('.png') || driverDetails.business_license.endsWith('.jpeg') || driverDetails.business_license.endsWith('.jpg')
-    ? "image/png" 
-    : "image/jpeg"
-};
-
-const tnImage = {
-  uri: driverDetails.tn_document, 
-  name: tn_img, 
-  type: driverDetails.tn_document.endsWith('.pdf') 
-    ? "application/pdf" 
-    : driverDetails.tn_document.endsWith('.png') || driverDetails.tn_document.endsWith('.jpeg') || driverDetails.tn_document.endsWith('.jpg')
-    ? "image/png" 
-    : "image/jpeg"
-};
-
-const gradeImage = {
-  uri: driverDetails.grade_certificate, 
-  name: gc_img, 
-  type: driverDetails.grade_certificate.endsWith('.pdf') 
-    ? "application/pdf" 
-    : driverDetails.grade_certificate.endsWith('.png') || driverDetails.grade_certificate.endsWith('.jpeg') || driverDetails.grade_certificate.endsWith('.jpg')
-    ? "image/png" 
-    : "image/jpeg"
-  };
-
-  
-
-  setState({ ...state, isLoading: true });    
-  const formData = new FormData();
-  formData.append("company_name", driverDetails.company_name);
-  formData.append("email", driverDetails.email.replace(/\s+/g, ''));
-  formData.append("password", driverDetails.password);
-  formData.append("phone_no", driverDetails.phone_no);
-  formData.append("city", driverDetails.city);
-  formData.append("region", driverDetails.region);
-  formData.append("country", driverDetails.country ? driverDetails.country : "Ethiopia");
-  formData.append("po_number", driverDetails.po_number);
-  formData.append("contact_person", driverDetails.contact_person);
-  formData.append("contact_person_responsibility", driverDetails.contact_person_responsibility);
-  formData.append("contact_person_phone", driverDetails.contact_person_phone);
-  formData.append("contact_person_email", driverDetails.contact_person_email.replace(/\s+/g, ''));
-  formData.append("total_fleet_size", driverDetails.total_fleet_size);
-  formData.append("alternate_phone", driverDetails.alternate_phone);
-  formData.append("company_type", driverDetails.company_type);
-
-  formData.append("profile_picture", {
-    uri: profileImage.uri,
-    name: profileImage.name,
-    type: profileImage.type
-  });
-
-  formData.append("business_license", {
-    uri: businessImage.uri,
-    name: businessImage.name,
-    type: businessImage.type
-  });
-
-  formData.append("grade_certificate", {
-    uri: gradeImage.uri,
-    name: gradeImage.name,
-    type: gradeImage.type
-  });
-
-  formData.append("tn_document", {
-    uri: tnImage.uri,
-    name: tnImage.name,
-    type: tnImage.type
-  });
-
-  formData.append("user_role", driverDetails.user_role ? driverDetails.user_role : "transporter");
-
+    
+    const profileImage = { uri: driverDetails.profile_picture, name: filename, type: 'image/jpeg'};
+    const businessImage = { uri: driverDetails.business_license, name: buss, type: 'image/jpeg'};
+    const tnImage = { uri: driverDetails.tn_document, name: tn_img, type: 'image/jpeg'};
+    const gradeImage = { uri: driverDetails.grade_certificate, name: gc_img, type: 'image/jpeg'};
+    
+    setState({ ...state, isLoading: true});    
+    const formData = new FormData();
+    formData.append("company_name", driverDetails.company_name);
+    formData.append("email", driverDetails.email);
+    driverDetails.password && formData.append("password", driverDetails.password);
+    formData.append("phone_no", driverDetails.phone_no);
+    formData.append("city", driverDetails.city);
+    formData.append("region", driverDetails.region);
+    formData.append("country", driverDetails.country ? driverDetails.country : "Ethiopia");
+    formData.append("po_number", driverDetails.po_number);
+    formData.append("contact_person", driverDetails.contact_person);
+    formData.append(
+      "contact_person_responsibility",
+      driverDetails.contact_person_responsibility
+    );
+    formData.append("contact_person_phone", driverDetails.contact_person_phone);
+    formData.append("contact_person_email", driverDetails.contact_person_email);
+    formData.append("total_fleet_size", driverDetails.total_fleet_size);
+    formData.append("alternate_phone", driverDetails.alternate_phone);
+    formData.append("company_type", driverDetails.company_type);
+    
+      formData.append(
+        "profile_picture", profileImage 
+      );
+    
+    
+      formData.append(
+        "business_license", businessImage
+      );
+    
+      formData.append(
+        "grade_certificate", gradeImage
+      );
+    
+      formData.append(
+        "tn_document", tnImage
+      );
+    formData.append(
+      "user_role",
+      driverDetails.user_role ? driverDetails.user_role : "transporter"
+    );
+    
     console.log(formData);
+    // return;
     postMultipartWithAuthCallWithErrorResponse(
-      ApiConfig.ADD_TRANSPORTER,formData
+      ApiConfig.ADD_TRANSPORTER,
+      formData
     ).then((res) => {
-      
       console.log(res);
-      if (res.json.message === "Insufficient Parameters") {
+      if (res.json.result === false) {
         setState({ ...state, isLoading: false});
-        successWithDurationHandler("Please Check all the form inputs.");
+        toastWithDurationHandler('Wrong inputs');
+        AsyncStorage.clear();
+      }
+
+      if (res.json.result === false) {
+        setState({ ...state, isLoading: false});
+        toastWithDurationHandler('Wrong inputs');
+        AsyncStorage.clear();
+      }
+
+      if (res.json.result === false) {
+        setState({ ...state, isLoading: false});
+        toastWithDurationHandler('Wrong inputs');
         AsyncStorage.clear();
       }
 
       if (res.json.result == true) {
         setTimeout(function () {
-          AsyncStorage.clear();
-          successWithDurationHandler('Registered Successfully, Abay Logistics Will Contact you soon! Thank you.');
+          successWithDurationHandler('Registered Successfully, Please contact Abay Logistics! Thank you.');
           navigation.navigate('TruckLogin');
-        }, 5000);
+        }, 10000);
       }
-
-      if (res.json.message === "Transporter details added successfully") {
-        setState({ ...state, isLoading: false});
-        AsyncStorage.clear();
-        successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
-        navigation.navigate('TruckLogin');
-      }else{
-        toastWithDurationHandler("Please check your Email, Password and Phone Number carefully!");
-      }
-
     }).catch((error) => {
-      console.log(error);
+      console.log(error+'error here');
     });
     
 
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle = "white-content" hidden = {false} {...appPageStyle.primaryColor} translucent = {true}/>
-        {!state.checkInternet &&(
-          <SnackBar visible={true} textMessage="No Internet Connection!" actionHandler={()=>{this._checkConnection()}} actionText="Try Again"/>
-        )}
         <View style={{marginBottom:10}}>
           {image && <Image source={{ uri: image }} style={styles.image} />}
           <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
@@ -527,7 +421,6 @@ const gradeImage = {
             flexDirection: 'row',
             width: '95%',
             gap: 4,
-            backgroundColor:'#fff',
           },
         ]}>
           <View style={{...styles.inputView, width: '50%',}}>
@@ -535,8 +428,6 @@ const gradeImage = {
               style={styles.TextInput}
               placeholder="Contact Person Phone"
               placeholderTextColor="#19788e"
-              inputMode="numeric"
-              maxLength={10}
               onChangeText={(text) =>{
                 setErrMsg({ ...errMsg, contact_person_phone: "" });
                 setDriverDetails({...driverDetails, contact_person_phone: text})
@@ -580,7 +471,6 @@ const gradeImage = {
             flexDirection: 'row',
             width: '95%',
             gap: 4,
-            backgroundColor:'#fff',
           },
         ]}>
 
@@ -590,11 +480,11 @@ const gradeImage = {
               placeholder="Password"
               placeholderTextColor="#19788e"
               secureTextEntry={true}
-              // onChangeText={(password) =>{
-              //   setErrMsg({ ...errMsg, password: "" });
-              //   handlePasswordChange({password: password})
-              //   }
-              // }
+              onChangeText={(password) =>{
+                setErrMsg({ ...errMsg, password: "" });
+                setDriverDetails({...driverDetails, password: password})
+                }
+              }
             /> 
           </View> 
 
@@ -650,8 +540,8 @@ const gradeImage = {
         <SelectDropdown
           data={regionList}
           onSelect={(item, index) => {
-            setErrMsg({ ...errMsg, city: "" });
-            setDriverDetails({ ...driverDetails, city: item.title})
+            setErrMsg({ ...errMsg, region: "" });
+            setDriverDetails({ ...driverDetails, region: item.title})
           }}
           renderButton={(selectedItem, isOpened) => {
             return (
@@ -685,7 +575,6 @@ const gradeImage = {
             flexDirection: 'row',
             width: '95%',
             gap: 4,
-            backgroundColor:'#fff',
           },
         ]}>
           <View style={{...styles.inputView, width: '50%',}}>
@@ -693,8 +582,6 @@ const gradeImage = {
               style={styles.TextInput}
               placeholder="Phone"
               placeholderTextColor="#19788e"
-              inputMode="numeric"
-              maxLength={10}
               onChangeText={(phone_no) =>{
                 setErrMsg({ ...errMsg, phone_no: "" });
                 setDriverDetails({...driverDetails, phone_no: phone_no})
@@ -708,8 +595,6 @@ const gradeImage = {
               style={styles.TextInput}
               placeholder="Alternate Phone"
               placeholderTextColor="#19788e"
-              inputMode="numeric"
-              maxLength={10}
               onChangeText={(alternate_phone) =>{
                 setErrMsg({ ...errMsg, alternate_phone: "" });
                 setDriverDetails({...driverDetails, alternate_phone: alternate_phone})
@@ -725,7 +610,6 @@ const gradeImage = {
             flexDirection: 'row',
             width: '95%',
             gap: 4,
-            backgroundColor:'#fff',
           },
         ]}>
           <View style={{...styles.inputView, width: '50%',}}>
@@ -746,7 +630,6 @@ const gradeImage = {
               style={styles.TextInput}
               placeholder="P.O Box"
               placeholderTextColor="#19788e"
-              maxLength={4}
               onChangeText={(po_number) =>{
                 setErrMsg({ ...errMsg, po_number: "" });
                 setDriverDetails({...driverDetails, po_number: po_number})
@@ -764,14 +647,15 @@ const gradeImage = {
             gap: 15,
             backgroundColor:'#fff', 
             minHeight: 200,
+            borderRadius: 10
           },
         ]}>
           <View style={{...styles.iconArea, height: 60, width: 80, marginLeft: 20}}>
-            <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15}}>TIN</Text>
+            <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15}}>Tin</Text>
             <View style={{marginLeft: -10, marginTop: 10}}>
             {placeholderImage && <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{ uri:placeholderImage}}/>}
               <TouchableOpacity style={styles.uploadButton} onPress={pickImage2}>
-                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> {fileName ? <Text>{fileName}</Text> : "Upload"}</Text>
+                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload</Text> 
               </TouchableOpacity> 
             </View>
           </View>
@@ -781,7 +665,7 @@ const gradeImage = {
             <View style={{marginLeft: 0, marginTop: 10}}>
             {secondPlaceholderImage && <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{ uri:secondPlaceholderImage}}/>}
               <TouchableOpacity style={styles.uploadButton} onPress={pickImage3}>
-                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> {fileName2 ? <Text>{fileName2}</Text> : "Upload"}</Text> 
+                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload</Text> 
               </TouchableOpacity> 
             </View>
           </View>
@@ -802,7 +686,7 @@ const gradeImage = {
             <View style={{marginLeft: 0, marginTop: 10}}>
               {thirdPlaceholderImage && <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{ uri:thirdPlaceholderImage}}/>}
               <TouchableOpacity style={styles.uploadButton} onPress={pickImage4}>
-                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> {fileName3 ? <Text>{fileName3}</Text> : "Upload"}</Text> 
+                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload</Text> 
               </TouchableOpacity> 
             </View>
           </View>
@@ -810,7 +694,7 @@ const gradeImage = {
 
         <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={()=>this._register()}>
           {!state.isLoading &&(
-            <Text style={appPageStyle.primaryTextColor}><Ionicons name="person-add-outline" size={15} /> Register</Text> 
+            <Text style={appPageStyle.primaryTextColor}><Ionicons name="person-add-outline" size={15} /> Add Driver</Text> 
           )}
           {state.isLoading && (
             <ActivityIndicator size="small" {...appPageStyle.primaryTextColor} />       
@@ -825,7 +709,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     minHeight:'100%',
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
