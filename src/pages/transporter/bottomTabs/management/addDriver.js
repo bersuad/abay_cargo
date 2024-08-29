@@ -23,9 +23,14 @@ import {
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
   ApiConfig,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from "./../../../../components/index.js";
 import SelectDropdown from 'react-native-select-dropdown';
+import * as DocumentPicker from 'expo-document-picker';
+import SnackBar from 'react-native-snackbar-component';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { value } from 'deprecated-react-native-prop-types/DeprecatedTextInputPropTypes.js';
 
 
 export default function AddNewDriver() {
@@ -39,6 +44,68 @@ export default function AddNewDriver() {
   const [placeholderImage, setPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
   const [secondPlaceholderImage, setSecondPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
   const [thirdPlaceholderImage, setThirdPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
+  const [fileName, setFileName] = useState('');
+
+  const [isFromDatePickerVisible, setFromDatePickerVisibility] = useState(false);
+  const [isIssueDatePickerVisible, setIssueDatePickerVisibility] = useState(false);
+  const [isExpireDatePickerVisible, setExpireDatePickerVisibility] = useState(false);
+  const [fromSelectedDate, setFromSelectedDate] = useState(null);
+  const [issueSelectedDate, setIssueSelectedDate] = useState(null);
+  const [expireSelectedDate, setExpireSelectedDate] = useState(null);
+
+  const fromHandleConfirm = (date) => {
+    setDriverDetails({ ...driverDetails, driver_dob: FormatDate(date)})
+    fromHideDatePicker();
+    setFromSelectedDate(date);
+  };
+
+  const fromShowDatePicker = () => {
+    setFromDatePickerVisibility(true);
+  };
+
+  const fromHideDatePicker = () => {
+    setFromDatePickerVisibility(false);
+  };
+
+  const issueHandleConfirm = (date) => {
+    setDriverDetails({ ...driverDetails, license_issue_date: FormatDate(date)})
+    issueHideDatePicker();
+    setIssueSelectedDate(date);
+  };
+
+  const issueShowDatePicker = () => {
+    setIssueDatePickerVisibility(true);
+  };
+
+  const issueHideDatePicker = () => {
+    setIssueDatePickerVisibility(false);
+  };
+
+  const expireHandleConfirm = (date) => {
+    setDriverDetails({ ...driverDetails, license_expiry_date: FormatDate(date)})
+    expireHideDatePicker();
+    setExpireSelectedDate(date);
+  };
+
+  const expireShowDatePicker = () => {
+    setExpireDatePickerVisibility(true);
+  };
+
+  const expireHideDatePicker = () => {
+    setExpireDatePickerVisibility(false);
+  };
+
+  const FormatDate = (data) => {
+    let dateTimeString =
+    (
+      data.getMonth() + 1) +
+      '/' +
+      data.getDate() +
+      '/' +
+      data.getFullYear()
+  
+    return dateTimeString; // It will look something like this 3-5-2021 16:23
+  };
 
   const [state, setState] = useState({
     device_token: "",
@@ -75,6 +142,8 @@ export default function AddNewDriver() {
 
     return () => {};
   }, []);
+  
+
   const pickImage = async () => {
     
   
@@ -92,56 +161,36 @@ export default function AddNewDriver() {
       setDriverDetails({ ...driverDetails, profile_picture: result.assets[0].uri});
     }
   };
-
+  
   const pickImage2 = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
-      allowsEditing: true,
-      aspect: [7, 6],
-      quality: 1,
+    let result = await DocumentPicker.getDocumentAsync({
+      type: ['image/*', 'application/pdf'],
     });
-
-    if (!result.canceled) {
-      setPlaceholderImage(result.assets[0].uri);
-      setDriverDetails({ ...driverDetails, tn_document: result.assets[0].uri});
+  
+    if (result.assets[0].mimeType) {
+      setDriverDetails({ ...driverDetails, license_file: result.assets[0].uri});
+      if (!result.assets[0].canceled) {
+        if (result.assets[0].mimeType === "application/pdf") {
+          setFileName(result.assets[0].name);
+        } else {
+          setPlaceholderImage(result.assets[0].uri);
+        }
+      } else {
+        successWithDurationHandler('Please select PDFs or Images only.');
+      }
     }
   };
 
-  const pickImage3 = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
-      allowsEditing: true,
-      aspect: [7, 6],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setSecondPlaceholderImage(result.assets[0].uri);
-      setDriverDetails({ ...driverDetails, grade_certificate: result.assets[0].uri});
-    }
-  };
-
-  const pickImage4 = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, //All can be added for all type of media
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setThirdPlaceholderImage(result.assets[0].uri);
-      setDriverDetails({ ...driverDetails, business_license: result.assets[0].uri});
-    }
-  };
 
     const companyType = [
         {title: 'Association',},
         {title: 'S.Co',},
         {title: 'PLC',},
+    ];
+
+    const genderList = [
+      {title: 'Male', value: 'M'},
+      {title: 'Female', value: 'F'},
     ];
 
     const regionList = [
@@ -171,25 +220,26 @@ export default function AddNewDriver() {
     };
 
     const [driverDetails, setDriverDetails] = useState({
-        profile_picture: { uri:  image},
-        driver_name: "",
-        driver_email: "",
-        driver_phone_no: "",
-        driver_region: "",
-        driver_zone: "",
-        driver_woreda: "",
-        driver_house_no: "",
-        driver_po_number: "",
-        driver_country: "",
-        driver_dob: "",
-        driver_gender: "",
-        license_file: "",
-        license_grade: "",
-        license_issue_date: "",
-        license_no: "",
-        license_expiry_date: "",
-        owner_id: "",
-        driver_city: "",
+      profile_picture: "",
+      driver_name: "",
+      driver_email: "",
+      driver_phone_no: "",
+      driver_region: "",
+      driver_zone: "",
+      driver_woreda: "",
+      driver_house_no: "",
+      driver_po_number: "",
+      driver_country: "",
+      driver_dob: "",
+      driver_gender: "",
+      license_file: "",
+      license_grade: "",
+      license_issue_date: "",
+      license_no: "",
+      license_expiry_date: "",
+      owner_id: "",
+      driver_city: "",
+      // password: "",
     });
 
     const [errMsg, setErrMsg] = useState({
@@ -229,72 +279,66 @@ export default function AddNewDriver() {
 
   _register = async () =>{
     
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
     const uri  = driverDetails.profile_picture;
     const filename = uri.split('/').pop();
     
-    const bizz  = driverDetails.profile_picture;
-    const buss = bizz.split('/').pop();
-
-    const tn  = driverDetails.tn_document;
+    const tn  = driverDetails.license_file;
     const tn_img = tn.split('/').pop();
-
-    const gc  = driverDetails.grade_certificate;
-    const gc_img = gc.split('/').pop();
     
     const profileImage = { uri: driverDetails.profile_picture, name: filename, type: 'image/jpeg'};
-    const businessImage = { uri: driverDetails.business_license, name: buss, type: 'image/jpeg'};
-    const tnImage = { uri: driverDetails.tn_document, name: tn_img, type: 'image/jpeg'};
-    const gradeImage = { uri: driverDetails.grade_certificate, name: gc_img, type: 'image/jpeg'};
-    
-    setState({ ...state, isLoading: true});    
+
+    const licenseFile = {
+      uri: driverDetails.license_file, 
+      name: tn_img, 
+      type: driverDetails.license_file.endsWith('.pdf') 
+        ? "application/pdf" 
+        : driverDetails.license_file.endsWith('.png') || driverDetails.license_file.endsWith('.jpeg') || driverDetails.license_file.endsWith('.jpg')
+        ? "image/png" 
+        : "image/jpeg"
+    };
     const formData = new FormData();
-    formData.append("company_name", driverDetails.company_name);
-    formData.append("email", driverDetails.email);
-    driverDetails.password && formData.append("password", driverDetails.password);
-    formData.append("phone_no", driverDetails.phone_no);
-    formData.append("city", driverDetails.city);
-    formData.append("region", driverDetails.region);
-    formData.append("country", driverDetails.country ? driverDetails.country : "Ethiopia");
-    formData.append("po_number", driverDetails.po_number);
-    formData.append("contact_person", driverDetails.contact_person);
-    formData.append(
-      "contact_person_responsibility",
-      driverDetails.contact_person_responsibility
-    );
-    formData.append("contact_person_phone", driverDetails.contact_person_phone);
-    formData.append("contact_person_email", driverDetails.contact_person_email);
-    formData.append("total_fleet_size", driverDetails.total_fleet_size);
-    formData.append("alternate_phone", driverDetails.alternate_phone);
-    formData.append("company_type", driverDetails.company_type);
+    formData.append("api_key", api_key);
+    formData.append("user_id", user_id);
+    formData.append("customer_id", customer_id);
+    formData.append("driver_name", driverDetails.driver_name);
+    formData.append("driver_email", driverDetails.driver_email);
+    formData.append("driver_phone_no", driverDetails.driver_phone_no);
+    formData.append("driver_gender", driverDetails.driver_gender);
+    formData.append("owner_id", user_id);
+    formData.append("driver_city", driverDetails.driver_region);
+    formData.append("driver_country", driverDetails.driver_country ? driverDetails.driver_country : "Ethiopia");
+    formData.append("driver_dob", driverDetails.driver_dob);
+    formData.append("license_no", driverDetails.license_no);
+    formData.append("license_grade", driverDetails.license_grade);
+    formData.append("license_issue_date", driverDetails.license_issue_date);
+    formData.append("license_expiry_date", driverDetails.license_expiry_date);
+    formData.append("driver_zone", driverDetails.driver_zone);
+    formData.append("driver_region", driverDetails.driver_region);
+    formData.append("driver_woreda", driverDetails.driver_woreda);
+    formData.append("driver_house_no", driverDetails.driver_house_no);
+    formData.append("driver_po_number", driverDetails.driver_po_number);
+    customer_id && formData.append("driver_id", customer_id);
     
-      formData.append(
-        "profile_picture", profileImage 
-      );
+    driverDetails.profile_picture &&
+    formData.append("profile_picture", profileImage);
     
+    formData.append("license_file", {
+      uri: licenseFile.uri,
+      name: licenseFile.name,
+      type: licenseFile.type
+    });
+
+    setState({ ...state, isLoading: true});    
     
-      formData.append(
-        "business_license", businessImage
-      );
-    
-      formData.append(
-        "grade_certificate", gradeImage
-      );
-    
-      formData.append(
-        "tn_document", tnImage
-      );
-    formData.append(
-      "user_role",
-      driverDetails.user_role ? driverDetails.user_role : "transporter"
-    );
-    
-    console.log(formData);
-    // return;
     postMultipartWithAuthCallWithErrorResponse(
-      ApiConfig.ADD_TRANSPORTER,
+      customer_id ? ApiConfig.EDIT_DRIVER : ApiConfig.ADD_DRIVER,
       formData
     ).then((res) => {
-      console.log(res);
+      
       if (res.json.result === false) {
         setState({ ...state, isLoading: false});
         toastWithDurationHandler('Wrong inputs');
@@ -315,8 +359,8 @@ export default function AddNewDriver() {
 
       if (res.json.result == true) {
         setTimeout(function () {
-          successWithDurationHandler('Registered Successfully, Please contact Abay Logistics! Thank you.');
-          navigation.navigate('TruckLogin');
+          successWithDurationHandler('Registered Successfully, Driver updated successfully,Please wait for approval from Administration.');
+          navigation.navigate('transporterDriverSearch');
         }, 10000);
       }
     }).catch((error) => {
@@ -332,89 +376,28 @@ export default function AddNewDriver() {
         <View style={{marginBottom:10}}>
           {image && <Image source={{ uri: image }} style={styles.image} />}
           <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-            <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload Logo</Text> 
+            <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload Profile Image</Text> 
           </TouchableOpacity> 
         </View>
-        <Text style={styles.HeaderText}>Company Type</Text>
-        <SelectDropdown
-          data={companyTypes}
-          onSelect={(companyTypes, index) => {
-            setErrMsg({ ...errMsg, company_type: "" });
-            setDriverDetails({ ...driverDetails, company_type: companyTypes.company_type_id})
-          }}
-          value={driverDetails.company_type}
-          renderButton={(companyTypes, isOpened) => {
-            return (
-              <View style={styles.dropdownButtonStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(companyTypes && companyTypes.company_type_name) || 'Select Company Type'}
-                </Text>
-                <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
-              </View>
-            );
-          }}
-          renderItem={(companyTypes, index, isSelected) => {
-            return (
-              <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-                <Text style={styles.dropdownItemTxtStyle}>{companyTypes.company_type_name}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-          dropdownStyle={styles.dropdownMenuStyle}
-        />
-          {errMsg.company_type && errMsg.company_type.length > 0 && (
-              <Text style={{color: '#FF5151'}}>{errMsg.company_type}</Text>
-          )}
 
-        <Text style={styles.HeaderText}>Company Name</Text>
+        <Text style={styles.HeaderText}>Full Name</Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
-            placeholder="Company Name"
+            placeholder="Driver Name"
             placeholderTextColor="#19788e"
-            value={driverDetails.company_name}
+            value={driverDetails.driver_name}
             onChangeText={(text) =>{
-              setErrMsg({ ...errMsg, company_name: "" });
-              setDriverDetails({ ...driverDetails, company_name: text})
+              setErrMsg({ ...errMsg, driver_name: "" });
+              setDriverDetails({ ...driverDetails, driver_name: text})
             }
           } 
           /> 
         </View> 
-          {errMsg.company_name && errMsg.company_name.length > 0 && (
-            <Text style={{color: '#FF5151'}}>{errMsg.company_name}</Text>
+          {errMsg.driver_name && errMsg.driver_name.length > 0 && (
+            <Text style={{color: '#FF5151'}}>{errMsg.driver_name}</Text>
           )}
-
-        <Text style={styles.HeaderText}>Contact Person</Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Contact Person"
-            placeholderTextColor="#19788e"
-            onChangeText={(text) =>{
-              setErrMsg({ ...errMsg, contact_person: "" });
-              setDriverDetails({ ...driverDetails, contact_person: text})
-            }
-          }
-          />
-        </View> 
-          {errMsg.contact_person && errMsg.contact_person.length > 0 && (
-            <Text style={{color: '#FF5151'}}>{errMsg.contact_person}</Text>
-          )} 
-        <Text style={styles.HeaderText}>Contact Person Responsibility</Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Contact Person Responsibility"
-            placeholderTextColor="#19788e"
-            onChangeText={(text) =>{
-              setErrMsg({ ...errMsg, contact_person_responsibility: "" });
-              setDriverDetails({...driverDetails, contact_person_responsibility: text})
-              }
-            } 
-          /> 
-        </View> 
-        <Text style={styles.HeaderText}>Contact Info</Text>
+        <Text style={styles.HeaderText}>Driver Info</Text>
         <View
         style={[
           {
@@ -426,11 +409,11 @@ export default function AddNewDriver() {
           <View style={{...styles.inputView, width: '50%',}}>
             <TextInput
               style={styles.TextInput}
-              placeholder="Contact Person Phone"
+              placeholder="Driver Phone"
               placeholderTextColor="#19788e"
               onChangeText={(text) =>{
-                setErrMsg({ ...errMsg, contact_person_phone: "" });
-                setDriverDetails({...driverDetails, contact_person_phone: text})
+                setErrMsg({ ...errMsg, driver_phone: "" });
+                setDriverDetails({...driverDetails, driver_phone: text})
                 }
               }
             /> 
@@ -439,77 +422,22 @@ export default function AddNewDriver() {
           <View style={{...styles.inputView, width: '50%',}}>
             <TextInput
               style={styles.TextInput}
-              placeholder="Company Person Email"
+              placeholder="Driver Email"
               placeholderTextColor="#19788e"
-              onChangeText={(contact_person_email) =>{
-                setErrMsg({ ...errMsg, contact_person_email: "" });
-                setDriverDetails({...driverDetails, contact_person_email: contact_person_email})
+              onChangeText={(text) =>{
+                setErrMsg({ ...errMsg, driver_email: "" });
+                setDriverDetails({...driverDetails, driver_email: text})
                 }
               }
             /> 
           </View> 
         </View>
-
-        <Text style={styles.HeaderText}>Total Fleet Size</Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Total Fleet Size"
-            placeholderTextColor="#19788e"
-            onChangeText={(text) =>{
-              setErrMsg({ ...errMsg, total_fleet_size: "" });
-              setDriverDetails({...driverDetails, total_fleet_size: text})
-              }
-            }
-          /> 
-        </View>
-
-        <Text style={styles.HeaderText}>Password</Text>
-        <View
-        style={[
-          {
-            flexDirection: 'row',
-            width: '95%',
-            gap: 4,
-          },
-        ]}>
-
-          <View style={{...styles.inputView, width: '50%',}}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Password"
-              placeholderTextColor="#19788e"
-              secureTextEntry={true}
-              onChangeText={(password) =>{
-                setErrMsg({ ...errMsg, password: "" });
-                setDriverDetails({...driverDetails, password: password})
-                }
-              }
-            /> 
-          </View> 
-
-          <View style={{...styles.inputView, width: '50%',}}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Confirm Password"
-              placeholderTextColor="#19788e"
-              secureTextEntry={true}
-              onChangeText={(confirmPassword) =>{
-                setErrMsg({ ...errMsg, confirmPassword: "" });
-                setDriverDetails({...driverDetails, confirmPassword: confirmPassword})
-                }
-              }
-            /> 
-          </View>  
-        </View>
-
-
         <Text style={styles.HeaderText}>Region</Text>
         <SelectDropdown
           data={regionList}
           onSelect={(item, index) => {
-            setErrMsg({ ...errMsg, region: "" });
-            setDriverDetails({ ...driverDetails, region: item.title})
+            setErrMsg({ ...errMsg, driver_region: "" });
+            setDriverDetails({ ...driverDetails, driver_region: item.title})
           }}
           renderButton={(selectedItem, isOpened) => {
             return (
@@ -536,12 +464,84 @@ export default function AddNewDriver() {
           dropdownStyle={styles.dropdownMenuStyle}
         />
 
-        <Text style={styles.HeaderText}>City</Text>
+        <Text style={styles.HeaderText}>Zone</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Zone"
+            placeholderTextColor="#19788e"
+            onChangeText={(text) =>{
+              setErrMsg({ ...errMsg, driver_zone: "" });
+              setDriverDetails({...driverDetails, driver_zone: text})
+              }
+            }
+          /> 
+        </View>
+        <Text style={styles.HeaderText}>Woreda</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Woreda"
+            placeholderTextColor="#19788e"
+            onChangeText={(text) =>{
+              setErrMsg({ ...errMsg, driver_woreda: "" });
+              setDriverDetails({...driverDetails, driver_woreda: text})
+              }
+            }
+          /> 
+        </View>
+        <Text style={styles.HeaderText}>House No.</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="House No"
+            placeholderTextColor="#19788e"
+            onChangeText={(text) =>{
+              setErrMsg({ ...errMsg, driver_house_no: "" });
+              setDriverDetails({...driverDetails, driver_house_no: text})
+              }
+            }
+          /> 
+        </View>     
+        <Text style={styles.HeaderText}>P.O Box</Text>   
+        <View style={{...styles.inputView,}}>
+            <TextInput
+              style={styles.TextInput}
+              placeholder="P.O Box"
+              placeholderTextColor="#19788e"
+              inputMode="numeric"
+              maxLength={4}
+              onChangeText={(text) =>{
+                setErrMsg({ ...errMsg, driver_po_number: "" });
+                setDriverDetails({...driverDetails, driver_po_number: text})
+                }
+              }
+            /> 
+        </View> 
+        <Text style={styles.HeaderText}>Date of Birth</Text>
+        <View style={styles.inputView}>
+          
+          <TouchableOpacity onPress={fromShowDatePicker} style={styles.TextInput}>
+            {fromSelectedDate && (
+              <Text>Selected Date: {fromSelectedDate.toDateString()}</Text>
+            )}
+            {!fromSelectedDate && (
+              <Text>Select a date</Text>
+            )}
+          </TouchableOpacity> 
+          <DateTimePickerModal
+            isVisible={isFromDatePickerVisible}
+            mode="date"
+            onConfirm={fromHandleConfirm}
+            onCancel={fromHideDatePicker}
+          />
+        </View>
+        <Text style={styles.HeaderText}>Gender</Text>
         <SelectDropdown
-          data={regionList}
+          data={genderList}
           onSelect={(item, index) => {
-            setErrMsg({ ...errMsg, region: "" });
-            setDriverDetails({ ...driverDetails, region: item.title})
+            setErrMsg({ ...errMsg, driver_gender: "" });
+            setDriverDetails({ ...driverDetails, driver_gender: item.value})
           }}
           renderButton={(selectedItem, isOpened) => {
             return (
@@ -550,7 +550,7 @@ export default function AddNewDriver() {
                   <MaterialCommunityIcons name={selectedItem.icon} style={styles.dropdownButtonIconStyle} />
                 )}
                 <Text style={styles.dropdownButtonTxtStyle}>
-                  {(selectedItem && selectedItem.title) || 'Select City'}
+                  {(selectedItem && selectedItem.title) || 'Select Your Gender'}
                 </Text>
                 <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
               </View>
@@ -567,78 +567,72 @@ export default function AddNewDriver() {
           showsVerticalScrollIndicator={false}
           dropdownStyle={styles.dropdownMenuStyle}
         />
-
-        <Text style={styles.HeaderText}>Address Phone</Text>
-        <View
-        style={[
-          {
-            flexDirection: 'row',
-            width: '95%',
-            gap: 4,
-          },
-        ]}>
-          <View style={{...styles.inputView, width: '50%',}}>
+        <Text style={styles.HeaderText}>License Grade</Text>   
+        <View style={{...styles.inputView,}}>
             <TextInput
               style={styles.TextInput}
-              placeholder="Phone"
+              placeholder="License Grade"
               placeholderTextColor="#19788e"
-              onChangeText={(phone_no) =>{
-                setErrMsg({ ...errMsg, phone_no: "" });
-                setDriverDetails({...driverDetails, phone_no: phone_no})
+              inputMode="numeric"
+              maxLength={4}
+              onChangeText={(text) =>{
+                setErrMsg({ ...errMsg, license_grade: "" });
+                setDriverDetails({...driverDetails, license_grade: text})
                 }
               }
             /> 
-          </View> 
+        </View> 
+        <Text style={styles.HeaderText}>License Number</Text>   
+        <View style={{...styles.inputView,}}>
+            <TextInput
+              style={styles.TextInput}
+              placeholder="License Number"
+              placeholderTextColor="#19788e"
+              inputMode="numeric"
+              maxLength={4}
+              onChangeText={(text) =>{
+                setErrMsg({ ...errMsg, license_no: "" });
+                setDriverDetails({...driverDetails, license_no: text})
+                }
+              }
+            /> 
+        </View> 
+        <Text style={styles.HeaderText}>License Issue Date</Text>
+        <View style={styles.inputView}>
           
-          <View style={{...styles.inputView, width: '50%',}}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Alternate Phone"
-              placeholderTextColor="#19788e"
-              onChangeText={(alternate_phone) =>{
-                setErrMsg({ ...errMsg, alternate_phone: "" });
-                setDriverDetails({...driverDetails, alternate_phone: alternate_phone})
-                }
-              }
-            /> 
-          </View> 
+          <TouchableOpacity onPress={issueShowDatePicker} style={styles.TextInput}>
+            {issueSelectedDate && (
+              <Text>Selected Date: {issueSelectedDate.toDateString()}</Text>
+            )}
+            {!issueSelectedDate && (
+              <Text>Select a date</Text>
+            )}
+          </TouchableOpacity> 
+          <DateTimePickerModal
+            isVisible={isIssueDatePickerVisible}
+            mode="date"
+            onConfirm={issueHandleConfirm}
+            onCancel={issueHideDatePicker}
+          />
         </View>
-        <Text style={styles.HeaderText}>Address List</Text>
-        <View
-        style={[
-          {
-            flexDirection: 'row',
-            width: '95%',
-            gap: 4,
-          },
-        ]}>
-          <View style={{...styles.inputView, width: '50%',}}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Email"
-              placeholderTextColor="#19788e"
-              onChangeText={(email) =>{
-                setErrMsg({ ...errMsg, email: "" });
-                setDriverDetails({...driverDetails, email: email})
-                }
-              }
-            /> 
-          </View> 
+        <Text style={styles.HeaderText}>License Expire Date</Text>
+        <View style={styles.inputView}>
           
-          <View style={{...styles.inputView, width: '50%',}}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="P.O Box"
-              placeholderTextColor="#19788e"
-              onChangeText={(po_number) =>{
-                setErrMsg({ ...errMsg, po_number: "" });
-                setDriverDetails({...driverDetails, po_number: po_number})
-                }
-              }
-            /> 
-          </View> 
+          <TouchableOpacity onPress={expireShowDatePicker} style={styles.TextInput}>
+            {expireSelectedDate && (
+              <Text>Selected Date: {expireSelectedDate.toDateString()}</Text>
+            )}
+            {!expireSelectedDate && (
+              <Text>Select a date</Text>
+            )}
+          </TouchableOpacity> 
+          <DateTimePickerModal
+            isVisible={isExpireDatePickerVisible}
+            mode="date"
+            onConfirm={expireHandleConfirm}
+            onCancel={expireHideDatePicker}
+          />
         </View>
-
         <View
         style={[
           {
@@ -650,47 +644,17 @@ export default function AddNewDriver() {
             borderRadius: 10
           },
         ]}>
-          <View style={{...styles.iconArea, height: 60, width: 80, marginLeft: 20}}>
-            <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15}}>Tin</Text>
+          <View style={{...styles.iconArea, height: 60, width: 150, marginLeft: 20}}>
+            <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15}}>Upload License</Text>
             <View style={{marginLeft: -10, marginTop: 10}}>
             {placeholderImage && <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{ uri:placeholderImage}}/>}
               <TouchableOpacity style={styles.uploadButton} onPress={pickImage2}>
-                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload</Text> 
-              </TouchableOpacity> 
-            </View>
-          </View>
-
-          <View style={{...styles.iconArea, height: 60, width: 120, marginLeft: 90}}>
-            <Text style={{fontWeight: 500, fontSize: 14, marginTop: 15, }}>Grade Certificate</Text>
-            <View style={{marginLeft: 0, marginTop: 10}}>
-            {secondPlaceholderImage && <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{ uri:secondPlaceholderImage}}/>}
-              <TouchableOpacity style={styles.uploadButton} onPress={pickImage3}>
-                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload</Text> 
+                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> {fileName ? <Text>{fileName}</Text> : "Upload <= 5MB"}</Text>
               </TouchableOpacity> 
             </View>
           </View>
           
-        </View>        
-        <View
-        style={[
-          {
-            flexDirection: 'row',
-            width: '94%',
-            gap: 15,
-            backgroundColor:'#fff', 
-            minHeight: 200,
-          },
-        ]}>
-          <View style={{...styles.iconArea, height: 60, width: 120, marginLeft: 20}}>
-            <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 0}}>Business License</Text>
-            <View style={{marginLeft: 0, marginTop: 10}}>
-              {thirdPlaceholderImage && <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{ uri:thirdPlaceholderImage}}/>}
-              <TouchableOpacity style={styles.uploadButton} onPress={pickImage4}>
-                <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload</Text> 
-              </TouchableOpacity> 
-            </View>
-          </View>
-        </View>  
+        </View>
 
         <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={()=>this._register()}>
           {!state.isLoading &&(
@@ -768,7 +732,7 @@ const styles = StyleSheet.create({
   },
   uploadButton:{
     backgroundColor: "#f1f1f1",
-    height: 30,
+    height: 35,
     width: 'auto',
     shadowColor: '#1f1f1f',
     shadowOffset: {width: -2, height: 4},

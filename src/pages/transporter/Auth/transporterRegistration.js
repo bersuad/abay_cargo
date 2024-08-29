@@ -67,11 +67,9 @@ export default function NewTransporter() {
   _checkConnection = async()=>{
     NetInfo.addEventListener(networkState => {
       if(networkState.isConnected){
-        console.log('connected');
         setState({...state, checkInternet: true });
       }else{
         setState({...state, checkInternet: false });
-        console.log('not connected');
       }
     });
   }
@@ -164,7 +162,7 @@ export default function NewTransporter() {
     let result = await DocumentPicker.getDocumentAsync({
       type: ['image/*', 'application/pdf'],
     });
-    console.log(result);
+
     if (result.assets[0].mimeType) {
       setFileName2(result.assets[0].name);
     } else {
@@ -302,7 +300,6 @@ export default function NewTransporter() {
   _register = async () =>{
     
     const tn  = driverDetails.tn_document;
-    console.log(driverDetails.tn_document);
     const tn_img = tn.split('/').pop();
     const uri  = driverDetails.profile_picture;
     const filename = uri.split('/').pop();
@@ -392,12 +389,10 @@ const gradeImage = {
 
   formData.append("user_role", driverDetails.user_role ? driverDetails.user_role : "transporter");
 
-    console.log(formData);
     postMultipartWithAuthCallWithErrorResponse(
       ApiConfig.ADD_TRANSPORTER,formData
     ).then((res) => {
       
-      console.log(res);
       if (res.json.message === "Insufficient Parameters") {
         setState({ ...state, isLoading: false});
         successWithDurationHandler("Please Check all the form inputs.");

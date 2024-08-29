@@ -121,51 +121,7 @@ export default function NewVehicle() {
 
   componentWillMount();
 
-  const getDropDownList = async() => {
-    
-    const user_id = await AsyncStorage.getItem('user_id');
-    const customer_id = await AsyncStorage.getItem('customer_id');
-    const api_key = await AsyncStorage.getItem('api_key');
-
-    await AsyncStorage.getItem('customer_id').then((myClientID) => {
-      setMyClientID(myClientID);
-    });
-    
-    await AsyncStorage.getItem('api_key').then(value =>{
-      setAPI_KEY(value);
-    });
-
-    await AsyncStorage.getItem('user_id').then(value =>{
-      setMyUserID(value);
-    });
-
-    await AsyncStorage.getItem('userDetails').then(value =>{
-      setUserDetails(value);
-    });  
-
-    postWithAuthCallWithErrorResponse(
-      ApiConfig.VEHICLE_DROPDOWNLIST,
-      JSON.stringify({ user_id, api_key, customer_id })
-    ).then((res) => {
-      console.log(user_id);
-      console.log("here is the data");
-
-      if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-        setState({ ...state, isLoading: false});  
-        AsyncStorage.clear();
-        navigation.navigate('TruckLogin');
-      }
-
-      if (res.json.result) {
-        setDropDownList(res.json); 
-        let containers = []; 
-        res.json.vehicle_container.map(e=> {
-          containers.push({label: e.container_type_name, value: e.container_type_id});
-        })
-        setContainerNames(containers);
-      }
-    });
-  };
+  
 
   _checkConnection = async()=>{
     NetInfo.addEventListener(networkState => {
@@ -184,62 +140,40 @@ export default function NewVehicle() {
   
   const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;
   const [image, setImage] = useState(DEFAULT_IMAGE);
-  const [companyTypes, setCompanyTyes] = useState([]);
+  const [vehicleType, setVehicleType] = useState([]);
   const SECOND_DEFAULT_IMAGE = Image.resolveAssetSource(placeholder).uri;
   const [placeholderImage, setPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
   const [secondPlaceholderImage, setSecondPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
   const [thirdPlaceholderImage, setThirdPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
-
-
   
 
-  
-
-  const getCompanyTypes = async () => {
-    
-    postWithAuthCallWithErrorResponse(
-      ApiConfig.COMPANY_TYPE_DROPDOWN,
-    )
-      .then((res) => {
+    const getDropDownList = async() => {
+      
+      const user_id = await AsyncStorage.getItem('user_id');
+      const customer_id = await AsyncStorage.getItem('customer_id');
+      const api_key = await AsyncStorage.getItem('api_key');
+      
+      postWithAuthCallWithErrorResponse(
+        ApiConfig.VEHICLE_DROPDOWNLIST,
+        JSON.stringify({ user_id, api_key, customer_id })
+      ).then((res) => {
+        console.log(res.json);
         if (res.json.message === 
           "Invalid user authentication,Please try to relogin with exact credentials.") {
-            navigation.navigate('Registration')
+            navigation.navigate('TruckLogin');
         }
         if (res.json.result) {
-          setCompanyTyes(res.json.company_type);
+          setVehicleType(res.json.vehicle_name); 
+          let containers = []; 
+          res.json.vehicle_name.map(e=> {
+            containers.push({label: e.vehicle_name_id, value: e.vehicle_name_value});
+          })
+          setContainerNames(containers);
         }
-      })
-      .catch((err) => {
-        navigation.navigate('Registration')
-        console.log(err)
       });
-  };
-  useEffect(() => {
-    getCompanyTypes();
+    };
 
-    return () => {};
-  }, []);
-
-  const companyType = [
-    {title: 'Association',},
-    {title: 'S.Co',},
-    {title: 'PLC',},
-  ];
-
-  const regionList = [
-    {title: 'Addis Ababa',},
-    {title: 'Afar',},
-    {title: 'Amhara',},
-    {title: 'Benshangul Gumuz',},
-    {title: 'Dire Dawa',},
-    {title: 'Gambella',},
-    {title: 'Harari',},
-    {title: 'Oromia',},
-    {title: 'Sidama',},
-    {title: 'Somali',},
-    {title: 'South West Ethiopian People',},
-    {title: 'Southern Nation, Nationalities And People',},
-  ];
+  
 
   const toastWithDurationHandler = (message) => {
     let toast = Toast.show(message, {
@@ -356,6 +290,7 @@ export default function NewVehicle() {
   
     console.log(result);
     if (result.assets[0].mimeType) {
+      setVehicleDetails({ ...vehiclesDetails, insurance_file: result.assets[0].uri});
       if (result.assets[0].mimeType) {
         setFileName(result.assets[0].name);
   
@@ -366,9 +301,6 @@ export default function NewVehicle() {
         }
   
         
-        setVehicleDetails({ ...vehiclesDetails, insurance_file: result.assets[0].uri});
-  
-        console.log(result.assets[0].uri);
       } else {
         successWithDurationHandler('Please select PDFs or Images only.');
       }
@@ -378,27 +310,12 @@ export default function NewVehicle() {
   
 
   _register = async () =>{
-    console.log(vehiclesDetails);
-  const user_id = await AsyncStorage.getItem('user_id');
-  const customer_id = await AsyncStorage.getItem('customer_id');
-  const api_key = await AsyncStorage.getItem('api_key');
-  
-  await AsyncStorage.getItem('customer_id').then((myClientID) => {
-    setMyClientID(myClientID);
-  });
-  
-  await AsyncStorage.getItem('api_key').then(value =>{
-    setAPI_KEY(value);
-  });
-
-  await AsyncStorage.getItem('user_id').then(value =>{
-    setMyUserID(value);
-  });
-
-  await AsyncStorage.getItem('userDetails').then(value =>{
-    setUserDetails(value);
-  });
-
+    
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    
     const tn  = vehiclesDetails.insurance_file;
     const tn_img = tn.split('/').pop();
     
@@ -406,14 +323,15 @@ export default function NewVehicle() {
       uri: vehiclesDetails.insurance_file, 
       name: tn_img, 
       type: vehiclesDetails.insurance_file.endsWith('.pdf') 
-        ? "application/pdf" 
-        : vehiclesDetails.insurance_file.endsWith('.png') || vehiclesDetails.insurance_file.endsWith('.jpeg') || vehiclesDetails.insurance_file.endsWith('.jpg')
-        ? "image/png" 
-        : "image/jpeg"
+      ? "application/pdf" 
+      : vehiclesDetails.insurance_file.endsWith('.png') || vehiclesDetails.insurance_file.endsWith('.jpeg') || vehiclesDetails.insurance_file.endsWith('.jpg')
+      ? "image/png" 
+      : "image/jpeg"
     };
     
-    setState({ ...state, isLoading: true});    
-    let formData = new FormData();
+      
+      setState({ ...state, isLoading: true });    
+      const formData = new FormData();
       formData.append("api_key", api_key);
       formData.append("user_id", user_id);
       formData.append("customer_id", customer_id);
@@ -428,9 +346,9 @@ export default function NewVehicle() {
       formData.append("capacity", vehiclesDetails.capacity);
       formData.append("vehicle_name", vehiclesDetails.vehicle_name);
       formData.append("vehicle_axle", vehiclesDetails.vehicle_axle);
-      formData.append("vehicle_container_type", JSON.stringify(container));
-      formData.append("vehicle_bulk", selectedBulk);
-      formData.append("vehicle_breakBulk", selectedBreakBulk);
+      formData.append("vehicle_container_type", "1");
+      formData.append("vehicle_bulk", "selectedBulk");
+      formData.append("vehicle_breakBulk", "selectedBreakBulk");
       formData.append("vehicle_type", vehiclesDetails.vehicle_type);
       formData.append(
         "insurance_issue_date",
@@ -451,6 +369,7 @@ export default function NewVehicle() {
       formData.append("insurance_file", insurance_file);
       vehiclesDetails?.vehicle_images?.map((img) => {
         formData.append("vehicle_images[]", img);
+        console.log(img);
       });
 
       customer_id && formData.append("vehicle_id", customer_id);
@@ -459,30 +378,30 @@ export default function NewVehicle() {
       customer_id ? ApiConfig.EDIT_VEHICLE : ApiConfig.AddVehicle,
         formData
     ).then((res) => {
-      console.log(res);
+      console.log(res.json);
       
-      // if (res.json.message === "Insufficient Parameters") {
-      //   setState({ ...state, isLoading: false});
-      //   successWithDurationHandler("Please Check all the form inputs.");
-      //   AsyncStorage.clear();
-      // }
+      if (res.json.message === "An internal server error occurred.") {
+        setState({ ...state, isLoading: false});
+        toastWithDurationHandler("An internal server error occurred. Please Try again!");
+        AsyncStorage.clear();
+      }
 
-      // if (res.json.result == true) {
-      //   setTimeout(function () {
-      //     AsyncStorage.clear();
-      //     successWithDurationHandler('Registered Successfully, Abay Logistics Will Contact you soon! Thank you.');
-      //     navigation.navigate('TruckLogin');
-      //   }, 5000);
-      // }
+      if (res.json.result == true) {
+        setTimeout(function () {
+          AsyncStorage.clear();
+          successWithDurationHandler('Registered Successfully, Abay Logistics Will Contact you soon! Thank you.');
+          navigation.navigate('TruckLogin');
+        }, 5000);
+      }
 
-      // if (res.json.message === "Transporter details added successfully") {
-      //   setState({ ...state, isLoading: false});
-      //   AsyncStorage.clear();
-      //   successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
-      //   navigation.navigate('TruckLogin');
-      // }else{
-      //   toastWithDurationHandler("Please check your Email, Password and Phone Number carefully!");
-      // }
+      if (res.json.message === "Transporter details added successfully") {
+        setState({ ...state, isLoading: false});
+        AsyncStorage.clear();
+        successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
+        navigation.navigate('TruckLogin');
+      }else{
+        toastWithDurationHandler("An internal server error occurred. Please Try again!");
+      }
 
     }).catch((error) => {
       console.log(error);
@@ -546,19 +465,33 @@ export default function NewVehicle() {
         </View>
 
         <Text style={styles.HeaderText}>Vehicle Type</Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Vehicle Type"
-            placeholderTextColor="#19788e"
-            value={vehiclesDetails.vehicle_type}
-            onChangeText={(text) =>{
-              setErrMsg({ ...errMsg, company_name: "" });
-              setVehicleDetails({ ...vehiclesDetails, vehicle_type: text})
-            }
-          } 
-          /> 
-        </View> 
+        <SelectDropdown
+          data={vehicleType}
+          onSelect={(vehicleType, index) => {
+            setErrMsg({ ...errMsg, vehicle_type: "" });
+            setVehicleDetails({ ...vehiclesDetails, vehicle_type: vehicleType.vehicle_name_id})
+          }}
+          value={vehiclesDetails.vehicle_type}
+          renderButton={(vehicleType, isOpened) => {
+            return (
+              <View style={styles.dropdownButtonStyle}>
+                <Text style={styles.dropdownButtonTxtStyle}>
+                  {(vehicleType && vehicleType.vehicle_name_value) || 'Select Vehicle Type'}
+                </Text>
+                <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
+              </View>
+            );
+          }}
+          renderItem={(vehicleType, index, isSelected) => {
+            return (
+              <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+                <Text style={styles.dropdownItemTxtStyle}>{vehicleType.vehicle_name_value}</Text>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+          dropdownStyle={styles.dropdownMenuStyle}
+        />
           {errMsg.company_name && errMsg.company_name.length > 0 && (
             <Text style={{color: '#FF5151'}}>{errMsg.company_name}</Text>
           )}

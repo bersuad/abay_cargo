@@ -85,13 +85,13 @@ export default function VehicleDetail(props) {
 
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
             setState({ ...state, isLoading: false});  
-            console.log('Wrong Data here');
+            navigation.navigate('TruckLogin');    
         }
         if(res.json.message === "Insufficient Parameters"){
             setState({ ...state, isLoading: false});
             console.log('no data here')
         }
-        console.log(res.json);
+        
         if (res.json.result)setDriverRequest(res.json.driver_details);
             setState({ ...state, isLoading: false});
         })

@@ -69,7 +69,8 @@ export default function OnGoingFright() {
     
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
-          console.log('Wrong Data here');
+          setState({ ...state, isLoading: false});  
+          navigation.navigate('TruckLogin');   
         }
         if(res.json.message === "Insufficient Parameters"){
           setState({ ...state, isLoading: false});

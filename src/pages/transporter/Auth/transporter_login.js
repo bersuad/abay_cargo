@@ -144,7 +144,7 @@ export default function App() {
         AsyncStorage.clear();
       }
       
-      console.log(data.json);
+      
       if (data.json.result) {
         setState({ ...state, isLoading: false});
         
