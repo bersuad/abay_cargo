@@ -47,24 +47,9 @@ export default function OrderConfirm() {
       const [offerLoadData, setOfferLoadData ]  = useState([]);
       const [user_details, setUserDetails]      = useState('');
       
-    
-      // componentWillMount();
-      
-    
-      // refresh page
-      
-      // const [refreshing, setRefreshing] = React.useState(false);
-    
-      // const onRefresh = React.useCallback(() => {
-      //   setRefreshing(true);
-      //   setTimeout(() => {
-      //     setRefreshing(false);
-      //   }, 2000);
-      // }, []);
-      
         const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
-        console.log('getting here on loading');
+
         const user_id = await AsyncStorage.getItem('user_id');
         const customer_id = await AsyncStorage.getItem('customer_id');
         const api_key = await AsyncStorage.getItem('api_key');
@@ -87,18 +72,15 @@ export default function OrderConfirm() {
     
         postMultipartWithAuthCallWithErrorResponse(
             ApiConfig.DIRECT_ORDERS_ORDER_CONFIRMATION_, JSON.stringify({ user_id, api_key, customer_id })
-            // ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES_ONLINE, JSON.stringify({ ...customerData }) ** for direct order options **
         ).then((res) => {
-
+        
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-            setState({ ...state, isLoading: false});  
-            console.log('Wrong Data here');
+          setState({ ...state, isLoading: false});  
         }
         if(res.json.message === "Insufficient Parameters"){
-            setState({ ...state, isLoading: false});
-            console.log('no data here')
+          setState({ ...state, isLoading: false});
         }
-        console.log(res.json);
+        
         if (res.json.result)setOfferLoadData(res.json);
             setState({ ...state, isLoading: false});
         });
@@ -123,7 +105,7 @@ export default function OrderConfirm() {
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
             <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
-            <Text>Getting Order Confirmation</Text>
+            <Text>Loading</Text>
           </View> 
         )}
       {!state.isLoading &&(
@@ -144,18 +126,18 @@ export default function OrderConfirm() {
                         },
                     ]}>
                         <View style={{textAlign: 'justify'}}>
-                            <Text style={{fontWeight: 'bold'}}>Ref. No: {load.trip_reference_no}</Text>
-                            <Text style={{textAlign: 'justify'}}>Operation No: {load.trip_operation_no}</Text>    
-                            <Text style={{textAlign:'justify'}}>Transporter: {load.transporter}</Text>
-                            <Text style={{textAlign:'justify'}}>Shipper: {load.shipper}</Text>
-                            <Text style={{textAlign:'justify'}}>Quantity: {load.quantity} {load.unit}</Text>
-                            <Text style={{textAlign:'justify'}}>Loading Place: {load.loading_place}</Text>
-                            <Text style={{textAlign:'justify'}}>Received On  : {load.received_on}</Text>
-                            <Text style={{textAlign:'justify'}}>Expected Loading Time  : {load.trip_start_date}</Text>
+                            <Text><Text style={{fontWeight:'bold', fontSize:15}}>Reference Number (Offer Vehicle):</Text> {load.trip_reference_no}</Text>
+                            <Text><Text style={{fontWeight:'bold', fontSize:15}}>Operation Number:</Text> {load.trip_operation_no}</Text>    
+                            <Text><Text style={{fontWeight:'bold', fontSize:15}}>Transporter:</Text> {load.transporter}</Text>
+                            <Text><Text style={{fontWeight:'bold', fontSize:15}}>Shipper:</Text> {load.shipper}</Text>
+                            <Text><Text style={{fontWeight:'bold', fontSize:15}}>Quantity:</Text> {load.quantity} {load.unit}</Text>
+                            <Text><Text style={{fontWeight:'bold', fontSize:15}}>Loading Place:</Text> {load.loading_place}</Text>
+                            <Text><Text style={{fontWeight:'bold', fontSize:15}}>Received On  :</Text> {load.received_on}</Text>
+                            <Text><Text style={{fontWeight:'bold', fontSize:15}}>Expected Loading Time  :</Text> {load.trip_start_date}</Text>
                         </View>
                         
                     </View>
-                    <TouchableOpacity style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('ViewOfferLoad', {details: load.trip_id})} style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
                         <Text style={{...appPageStyle.primaryTextColor}}>View More</Text>
                     </TouchableOpacity>
                 </View>

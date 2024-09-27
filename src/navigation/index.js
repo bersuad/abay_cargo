@@ -45,6 +45,8 @@ import VehicleDescription from '../pages/transporter/bottomTabs/management/vehic
 import ReportForm from '../pages/transporter/bottomTabs/settings/reportForm';
 import AddNewDriver from '../pages/transporter/bottomTabs/management/addDriver';
 import AddNewVehicle from '../pages/transporter/bottomTabs/management/addVehicle';
+import ViewOfferLoad from '../pages/transporter/bottomTabs/management/viewOfferLoad';
+import TransporterAuction from '../pages/transporter/bottomTabs/management/transporterAuction';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -388,11 +390,11 @@ export default function App() {
 
         <Stack.Screen
           name="OrderConfirm"
-          title="Order Confirmation"
+          title="Direct Order Confirmation"
           component={OrderConfirm} 
           options={{
             headerShown: true,
-            headerTitle:'Order Confirmation',
+            headerTitle:'Direct Order Confirmation',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',
@@ -409,7 +411,7 @@ export default function App() {
           component={OnlineOfferLoad} 
           options={{
             headerShown: true,
-            headerTitle:'Direct Offer',
+            headerTitle:'Online Offer',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',
@@ -439,11 +441,11 @@ export default function App() {
 
         <Stack.Screen
           name="OnlineOrderConfirm"
-          title="Direct Confirmation"
+          title="Online Direct Confirmation"
           component={OnlineOrderConfirm} 
           options={{
             headerShown: true,
-            headerTitle:'Direct Confirmation Offer',
+            headerTitle:'Online Confirmation Offer',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',
@@ -569,6 +571,36 @@ export default function App() {
             },
             headerTintColor: '#19788e',
             
+          }}
+          
+        />
+        <Stack.Screen
+          name="ViewOfferLoad"
+          title="View Offer Detail"
+          component={ViewOfferLoad} 
+          options={{
+            headerShown: true,
+            headerTitle:'View Offer Detail',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+          }}
+          
+        />
+        <Stack.Screen
+          name="TransporterAuction"
+          title="Transporter Auction"
+          component={TransporterAuction} 
+          options={{
+            headerShown: true,
+            headerTitle:'Transporter Auction',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
           }}
           
         />

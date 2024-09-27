@@ -26,6 +26,7 @@ export default function OfferLoad() {
 
     const [state, setState] = useState({
         isLoading: true,
+        actionLoading: false,
         checkInternet:true,
         tariffExportList:'',
         tariffImprotList:'',
@@ -48,19 +49,14 @@ export default function OfferLoad() {
       const [user_details, setUserDetails]      = useState('');
       
     
-      // componentWillMount();
-      
-    
-      // refresh page
-      
-      // const [refreshing, setRefreshing] = React.useState(false);
-    
-      // const onRefresh = React.useCallback(() => {
-      //   setRefreshing(true);
-      //   setTimeout(() => {
-      //     setRefreshing(false);
-      //   }, 2000);
-      // }, []);
+      const [refreshing, setRefreshing] = React.useState(false);
+      const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+          _getDashboardDetails();
+          setRefreshing(false);
+        }, 2000);
+      }, []);
 
       const toastWithDurationHandler = (message) => {
         // To make Toast with duration
@@ -71,67 +67,66 @@ export default function OfferLoad() {
         });
       };
 
-        const _getDashboardDetails = async() => {
-        setState({ ...state, isLoading: true});  
-        console.log('getting here on loading');
-        const user_id = await AsyncStorage.getItem('user_id');
-        const customer_id = await AsyncStorage.getItem('customer_id');
-        const api_key = await AsyncStorage.getItem('api_key');
-        
-        await AsyncStorage.getItem('customer_id').then((myClientID) => {
-            setMyClientID(myClientID);
-        });
-        
-        await AsyncStorage.getItem('api_key').then(value =>{
-            setAPI_KEY(value);
-        });
-    
-        await AsyncStorage.getItem('user_id').then(value =>{
-            setMyUserID(value);
-        });
-    
-        await AsyncStorage.getItem('userDetails').then(value =>{
-            setUserDetails(value);
-        });    
-    
-        postWithAuthCallWithErrorResponse(
-            ApiConfig.DRIRECT_ORDER_OFFER_GOODS, JSON.stringify({ user_id, api_key, customer_id }),
-        ).then((res) => {
+    const _getDashboardDetails = async() => {
+      setState({ ...state, isLoading: true});  
+      const user_id = await AsyncStorage.getItem('user_id');
+      const customer_id = await AsyncStorage.getItem('customer_id');
+      const api_key = await AsyncStorage.getItem('api_key');
+      
+      await AsyncStorage.getItem('customer_id').then((myClientID) => {
+          setMyClientID(myClientID);
+      });
+      
+      await AsyncStorage.getItem('api_key').then(value =>{
+          setAPI_KEY(value);
+      });
+  
+      await AsyncStorage.getItem('user_id').then(value =>{
+          setMyUserID(value);
+      });
+  
+      await AsyncStorage.getItem('userDetails').then(value =>{
+          setUserDetails(value);
+      });    
+  
+      postWithAuthCallWithErrorResponse(
+          ApiConfig.DRIRECT_ORDER_OFFER_GOODS, JSON.stringify({ user_id, api_key, customer_id }),
+      ).then((res) => {
 
-        if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-            setState({ ...state, isLoading: false});  
-            console.log('Wrong Data here');
-        }
-        if(res.json.message === "Insufficient Parameters"){
-            setState({ ...state, isLoading: false});
-            console.log('no data here')
-        }
-        
-        if (res.json.result)setOfferLoadData(res.json);
-            setState({ ...state, isLoading: false});
-        });
-        
+      if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+          setState({ ...state, isLoading: false});  
+      }
+      if(res.json.message === "Insufficient Parameters"){
+          setState({ ...state, isLoading: false});
+      }
+      
+      if (res.json.result)setOfferLoadData(res.json);
+          setState({ ...state, isLoading: false});
+      });
+      
     };
 
     const reject = (loads) => {
+      console.log(loads);
+      setState({ ...state, actionLoading: true});
       postWithAuthCallWithErrorResponse(
         ApiConfig.DIRECT_ORDER_OFFER_GOODS_VEHICLE_REJECT,
-        JSON.stringify({ user_id, api_key, customer_id, load_id: loads.trip_id  })
+        JSON.stringify({ user_id, api_key, customer_id,  load_id: loads.trip_id  })
       ).then((res) => {
+        console.log(res);
         if (res.json.message === 
           "Invalid user authentication,Please try to relogin with exact credentials.") {
-            
+            navigation.navigate('Registration');
         }
         if (res.json.result) {
           _getDashboardDetails();
+          setState({ ...state, actionLoading: false});
           toastWithDurationHandler(loads.load_reference_no+' Offer Rejected');
         }
       });
     };
 
     useEffect(() => {
-      
-        // Anything in here is fired on component unmount.
         this.mounted = true;
         _getDashboardDetails();
     
@@ -142,7 +137,11 @@ export default function OfferLoad() {
     }, []);
     
     return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
+    refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }
+    >
         {state.isLoading &&(
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
@@ -205,7 +204,12 @@ export default function OfferLoad() {
                             </View>
                             <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
                                 <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} onPress={()=>{reject(loads)}}>
-                                    <Text style={{...appPageStyle.secondaryTextColor}}>Cancel</Text>
+                                    {!state.actionLoading &&(
+                                        <Text style={appPageStyle.secondaryTextColor}>Cancel</Text>
+                                    )}
+                                    {state.actionLoading && (
+                                        <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
+                                    )}
                                 </TouchableOpacity>
                             </View>
                           </View>

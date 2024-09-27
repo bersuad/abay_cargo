@@ -18,9 +18,13 @@ import {
   StatusBar,
   appPageStyle,
   MaterialCommunityIcons,
-  Keyboard
+  Keyboard,
+  RefreshControl,
 } from './../../../../components/index';
 import { Badge } from 'react-native-paper';
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 export default function App() {
   const [state, setState] = useState({
@@ -55,6 +59,27 @@ export default function App() {
 
 componentWillMount();
 
+const _getTheExcel = async () =>{
+  var data = vehicleList;
+  var ws = XLSX.utils.json_to_sheet(data);
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Derivers List");
+  const wbout = XLSX.write(wb, {
+    type: 'base64',
+    bookType: "xlsx"
+  });
+  const uri = FileSystem.cacheDirectory + 'DeriversList.xlsx';
+  await FileSystem.writeAsStringAsync(uri, wbout, {
+    encoding: FileSystem.EncodingType.Base64
+  });
+
+  await Sharing.shareAsync(uri, {
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    dialogTitle: 'MyWater data',
+    UTI: 'com.microsoft.excel.xlsx'
+  });
+}
+
 const _getVehicle = async() => {
 
   const user_id = await AsyncStorage.getItem('user_id');
@@ -76,7 +101,7 @@ const _getVehicle = async() => {
   await AsyncStorage.getItem('userDetails').then(value =>{
     setUserDetails(value);
   });  
-  
+  setState({ ...state, isLoading: true});
   postWithAuthCallWithErrorResponse(
     ApiConfig.DRIVER_LIST,
     JSON.stringify({ user_id, api_key, customer_id })
@@ -88,7 +113,6 @@ const _getVehicle = async() => {
       
       if (res.json.result) {
         setVehicleList(res.json.driver_list);
-        // this.makeTable();
       }
       setState({ ...state, isLoading: false});
     })
@@ -98,7 +122,7 @@ const _getVehicle = async() => {
 
 const getList=(text)=>{
   if(text === ''){
-   _getVehicle();
+    _getVehicle();
     setState({  ...state, searchData: false });
   }else{
     const newData = vehicleList.filter(
@@ -130,7 +154,14 @@ const getList=(text)=>{
   }
 }
 
-
+const [refreshing, setRefreshing] = React.useState(false);
+const onRefresh = React.useCallback(() => {
+  setRefreshing(true);
+  setTimeout(() => {
+    _getVehicle();
+    setRefreshing(false);
+  }, 2000);
+}, []);
 
 const [page, setPage] = React.useState(0);
 const [numberOfItemsPerPageList] = React.useState([2, 3, 4 ]);
@@ -146,7 +177,11 @@ React.useEffect(() => {
 }, [itemsPerPage]);
 
   return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       {state.isLoading &&(
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
@@ -171,7 +206,7 @@ React.useEffect(() => {
             <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
           </View> 
           <View style={{flex: 1, alignSelf: "flex-start", position: "absolute", top: 68, left: 10, marginBottom:15}}>
-            <TouchableOpacity style={{backgroundColor: 'rgba(1, 138, 40, 0.88)', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+            <TouchableOpacity onPress={()=>_getTheExcel()} style={{backgroundColor: 'rgba(1, 138, 40, 0.88)', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
               <Text style={{color: '#fff', fontSize: 15}}><MaterialCommunityIcons name="microsoft-excel" size={20} color="white" /> Download Excel</Text>
             </TouchableOpacity>
           </View>

@@ -22,6 +22,7 @@ import {
   Toast,
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
+  multipartPostCallWithErrorResponse,
   ApiConfig,
   ActivityIndicator,
   AsyncStorage
@@ -133,7 +134,6 @@ export default function AddNewDriver() {
         }
       })
       .catch((err) => {
-        navigation.navigate('Registration')
         console.log(err)
       });
   };
@@ -321,7 +321,7 @@ export default function AddNewDriver() {
     formData.append("driver_woreda", driverDetails.driver_woreda);
     formData.append("driver_house_no", driverDetails.driver_house_no);
     formData.append("driver_po_number", driverDetails.driver_po_number);
-    customer_id && formData.append("driver_id", customer_id);
+    
     
     driverDetails.profile_picture &&
     formData.append("profile_picture", profileImage);
@@ -333,28 +333,24 @@ export default function AddNewDriver() {
     });
 
     setState({ ...state, isLoading: true});    
-    
-    postMultipartWithAuthCallWithErrorResponse(
-      customer_id ? ApiConfig.EDIT_DRIVER : ApiConfig.ADD_DRIVER,
+    console.log(formData);
+    multipartPostCallWithErrorResponse(
+      ApiConfig.ADD_DRIVER,
       formData
     ).then((res) => {
       
-      if (res.json.result === false) {
-        setState({ ...state, isLoading: false});
-        toastWithDurationHandler('Wrong inputs');
+      if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+        navigation.navigate('TruckLogin');
+        setState({ ...state, isLoading: false});  
         AsyncStorage.clear();
       }
-
-      if (res.json.result === false) {
+      
+      if (res.json.message === "Same email id or mobile number exists for another user") {
         setState({ ...state, isLoading: false});
-        toastWithDurationHandler('Wrong inputs');
-        AsyncStorage.clear();
-      }
-
-      if (res.json.result === false) {
+        toastWithDurationHandler(res.json.message);
+      }else if (res.json.result === false) {
         setState({ ...state, isLoading: false});
-        toastWithDurationHandler('Wrong inputs');
-        AsyncStorage.clear();
+        toastWithDurationHandler(res.json.message);
       }
 
       if (res.json.result == true) {
@@ -412,8 +408,8 @@ export default function AddNewDriver() {
               placeholder="Driver Phone"
               placeholderTextColor="#19788e"
               onChangeText={(text) =>{
-                setErrMsg({ ...errMsg, driver_phone: "" });
-                setDriverDetails({...driverDetails, driver_phone: text})
+                setErrMsg({ ...errMsg, driver_phone_no: "" });
+                setDriverDetails({...driverDetails, driver_phone_no: text})
                 }
               }
             /> 

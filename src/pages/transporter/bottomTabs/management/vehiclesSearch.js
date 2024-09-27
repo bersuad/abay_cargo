@@ -20,6 +20,9 @@ import {
   Keyboard
 } from './../../../../components/index';
 import { Badge } from 'react-native-paper';
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 export default function App() {
   const [state, setState] = useState({
@@ -53,6 +56,27 @@ export default function App() {
 
 componentWillMount();
 
+const _getTheExcel = async () =>{
+  var data = vehicleList;
+  var ws = XLSX.utils.json_to_sheet(data);
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Vehicles List");
+  const wbout = XLSX.write(wb, {
+    type: 'base64',
+    bookType: "xlsx"
+  });
+  const uri = FileSystem.cacheDirectory + 'VehiclesList.xlsx';
+  await FileSystem.writeAsStringAsync(uri, wbout, {
+    encoding: FileSystem.EncodingType.Base64
+  });
+
+  await Sharing.shareAsync(uri, {
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    dialogTitle: 'MyWater data',
+    UTI: 'com.microsoft.excel.xlsx'
+  });
+}
+
 const _getVehicle = async() => {
 
   const user_id = await AsyncStorage.getItem('user_id');
@@ -82,6 +106,7 @@ const _getVehicle = async() => {
     .then((res) => {
       if (res.json.message === 
         "Invalid user authentication,Please try to relogin with exact credentials.") {
+          navigation.navigate('Registration')
       }
       
       if (res.json.result) {
@@ -145,7 +170,7 @@ React.useEffect(() => {
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
             <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
-            <Text>Getting Drivers List</Text>
+            <Text>Getting Vehicles List</Text>
           </View> 
         )}
       {!state.isLoading &&(
@@ -165,7 +190,7 @@ React.useEffect(() => {
             <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
           </View> 
           <View style={{flex: 1, alignSelf: "flex-start", position: "absolute", top: 68, left: 10, marginBottom:15}}>
-            <TouchableOpacity style={{backgroundColor: 'rgba(1, 138, 40, 0.88)', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+            <TouchableOpacity onPress={()=>_getTheExcel()} style={{backgroundColor: 'rgba(1, 138, 40, 0.88)', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
               <Text style={{color: '#fff', fontSize: 15}}><MaterialCommunityIcons name="microsoft-excel" size={20} color="white" /> Download Excel</Text>
             </TouchableOpacity>
           </View>

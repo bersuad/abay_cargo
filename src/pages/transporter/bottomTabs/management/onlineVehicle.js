@@ -146,7 +146,9 @@ export default function OnlineOfferVehicle() {
                             <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
                         </View>
                         <View style={{textAlign: 'justify'}}>
-                            <Text style={{fontWeight: 'bold'}}>Ref. No: {offer.load_reference_no}</Text>
+                          <TouchableOpacity onPress={()=>navigation.navigate('OfferDetail', {details: offer})}>
+                            <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {offer.load_reference_no}</Text>
+                          </TouchableOpacity>
                             <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>{offer.estimated_start_date}</Text>    
                             <Text style={{textAlign:'justify'}}>Cargo Type: {offer.cargo_type}</Text>
                             <Text style={{textAlign:'justify'}}>Container Type: {offer.container_type}</Text>
@@ -162,7 +164,8 @@ export default function OnlineOfferVehicle() {
                                 offer.trip_end_city
                             }
                             </Text>
-                            <TouchableOpacity style={{marginTop: 8, marginBottom:8}}>
+                            
+                            <TouchableOpacity style={{marginTop: 8, marginBottom:8}} onPress={()=>navigation.navigate('VehicleDetail', {details: offer})}>
                                 <Text style={{...appPageStyle.secondaryTextColor, fontWeight:'bold'}}>View More....</Text>
                             </TouchableOpacity>
                         </View>

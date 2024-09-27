@@ -86,19 +86,16 @@ export default function OnlineOrderConfirm() {
         });    
     
         postMultipartWithAuthCallWithErrorResponse(
-            ApiConfig.DIRECT_ORDERS_ORDER_CONFIRMATION_, JSON.stringify({ user_id, api_key, customer_id })
-            // ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES_ONLINE, JSON.stringify({ ...customerData }) ** for direct order options **
+            ApiConfig.DIRECT_ORDERS_ORDER_CONFIRMATION_Online_, JSON.stringify({ user_id, api_key, customer_id })
         ).then((res) => {
 
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-            setState({ ...state, isLoading: false});  
-            console.log('Wrong Data here');
+          setState({ ...state, isLoading: false});  
+          console.log('Wrong Data here');
         }
         if(res.json.message === "Insufficient Parameters"){
-            setState({ ...state, isLoading: false});
-            console.log('no data here')
+          setState({ ...state, isLoading: false});
         }
-        console.log(res.json);
         if (res.json.result)setOfferLoadData(res.json);
             setState({ ...state, isLoading: false});
         });
@@ -155,7 +152,7 @@ export default function OnlineOrderConfirm() {
                         </View>
                         
                     </View>
-                    <TouchableOpacity style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
+                    <TouchableOpacity onPress={()=>navigation.navigate('ViewOfferLoad', {details: load.trip_id})} style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
                         <Text style={{...appPageStyle.primaryTextColor}}>View More</Text>
                     </TouchableOpacity>
                 </View>

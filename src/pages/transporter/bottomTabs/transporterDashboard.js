@@ -92,9 +92,9 @@ export default function App() {
     ).then((res) => {
   
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+        navigation.navigate('TruckLogin');
         setState({ ...state, isLoading: false});  
         AsyncStorage.clear();
-        navigation.navigate('TruckLogin');
       }
       if(res.json.message === "Insufficient Parameters"){
         setState({ ...state, isLoading: false});

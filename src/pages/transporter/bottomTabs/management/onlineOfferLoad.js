@@ -14,6 +14,8 @@ import {
   LogBox,
   ApiConfig,
   postWithAuthCallWithErrorResponse,
+  postMultipartWithAuthCallWithErrorResponse,
+  PostCallWithErrorResponse,
   ActivityIndicator,
   StatusBar
 } from './../../../../components/index';
@@ -46,24 +48,8 @@ export default function OnlineOfferLoad() {
       const [offerLoadData, setOfferLoadData ]  = useState([]);
       const [user_details, setUserDetails]      = useState('');
       
-    
-      // componentWillMount();
-      
-    
-      // refresh page
-      
-      // const [refreshing, setRefreshing] = React.useState(false);
-    
-      // const onRefresh = React.useCallback(() => {
-      //   setRefreshing(true);
-      //   setTimeout(() => {
-      //     setRefreshing(false);
-      //   }, 2000);
-      // }, []);
-      
         const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
-        console.log('getting here on loading');
         const user_id = await AsyncStorage.getItem('user_id');
         const customer_id = await AsyncStorage.getItem('customer_id');
         const api_key = await AsyncStorage.getItem('api_key');
@@ -83,20 +69,22 @@ export default function OnlineOfferLoad() {
         await AsyncStorage.getItem('userDetails').then(value =>{
             setUserDetails(value);
         });    
-    
-        postWithAuthCallWithErrorResponse(
-            ApiConfig.DRIRECT_ORDER_OFFER_GOODS, JSON.stringify({ user_id, api_key, customer_id }),
-        ).then((res) => {
-
+        const customerData = {
+          customer_id: customer_id,
+          user_id: user_id,
+          api_key: api_key
+        }
+        PostCallWithErrorResponse(ApiConfig.ONLINE_AUCTION_OFFER_GOODS, customerData)
+        
+        .then((res) => {
+        
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-            setState({ ...state, isLoading: false});  
-            console.log('Wrong Data here');
+            setState({ ...state, isLoading: false});
         }
         if(res.json.message === "Insufficient Parameters"){
             setState({ ...state, isLoading: false});
-            console.log('no data here')
         }
-        console.log(res.json);
+
         if (res.json.result)setOfferLoadData(res.json);
             setState({ ...state, isLoading: false});
         });
@@ -140,40 +128,30 @@ export default function OnlineOfferLoad() {
                         paddingTop: 10
                         },
                     ]}>
-                        <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 50, width: 50, borderRadius: 100, marginLeft: 0}}>
-                            <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
-                        </View>
-                        <View style={{textAlign: 'justify'}}>
-                            <Text style={{fontWeight: 'bold'}}>Ref. No: {loads.load_reference_no}</Text>
-                            <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>2024-02-01{loads.vehicle_availability_date}</Text>    
-                            <Text style={{textAlign:'justify'}}>Cargo Type: {loads.cargo_type}</Text>
-                            <Text style={{textAlign:'justify'}}>Container Type: {loads.container_type}</Text>
-                            <Text style={{textAlign:'justify'}}>Rem Quantity: {loads.trip_container_quantity} {loads.unit}</Text>
-                            <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
-                            From: {loads.trip_start_country +
-                                ", " +
-                                loads.trip_start_city}{" "}
-                            </Text>
-                            <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
-                                To: {loads.trip_end_country +
-                                " " +
-                                loads.trip_end_city
-                            }
-                            </Text>
-                            <TouchableOpacity style={{marginTop: 8, marginBottom:8}}>
-                                <Text style={{...appPageStyle.secondaryTextColor}}>View More....</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{position: "absolute", top: 0, right:0, marginTop: 10,justifyContent: "center"}}>
-                            <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
-                                <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{position: "absolute", top: 0, right:0, marginTop: 50,justifyContent: "center"}}>
-                            <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
-                                <Text style={{...appPageStyle.secondaryTextColor}}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View>
+                      <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 50, width: 50, borderRadius: 100, marginLeft: 0}}>
+                          <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
+                      </View>
+                      <View style={{textAlign: 'justify',}}>
+                          <Text style={{fontWeight: 'bold'}}>Ref. No: {loads.load_reference_no}</Text>
+                          <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>2024-02-01{loads.vehicle_availability_date}</Text>    
+                          <Text style={{textAlign:'justify'}}>Cargo Type: {loads.cargo_type}</Text>
+                          <Text style={{textAlign:'justify'}}>Container Type: {loads.container_type}</Text>
+                          <Text style={{textAlign:'justify'}}>Rem Quantity: {loads.trip_container_quantity} {loads.unit}</Text>
+                          <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
+                          From: {loads.trip_start_country +
+                              ", " +
+                              loads.trip_start_city}{" "}
+                          </Text>
+                          <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
+                              To: {loads.trip_end_country +
+                              " " +
+                              loads.trip_end_city
+                          }
+                          </Text>
+                          <TouchableOpacity onPress={()=>navigation.navigate('TransporterAuction', {details: loads.trip_id})} style={{...appPageStyle.primaryColor, marginBottom: 8, height: 35, width: "100%", borderRadius: 10, alignItems: "center", justifyContent: "center", marginTop: 5}}>
+                              <Text style={{...appPageStyle.primaryTextColor}}>Bid</Text>
+                          </TouchableOpacity>
+                      </View>
                     </View>
                 </View>
         ) )}

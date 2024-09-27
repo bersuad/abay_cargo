@@ -585,11 +585,11 @@ const gradeImage = {
               placeholder="Password"
               placeholderTextColor="#19788e"
               secureTextEntry={true}
-              // onChangeText={(password) =>{
-              //   setErrMsg({ ...errMsg, password: "" });
-              //   handlePasswordChange({password: password})
-              //   }
-              // }
+              onChangeText={(text) =>{
+                setErrMsg({ ...errMsg, password: "" });
+                setDriverDetails({...driverDetails, password: text})
+                }
+              }
             /> 
           </View> 
 
