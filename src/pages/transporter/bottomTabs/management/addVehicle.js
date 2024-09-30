@@ -17,6 +17,7 @@ import {
   Logo,
   //Icons
   Ionicons,
+  MaterialIcons as Icon,
   // main styling
   appPageStyle,
   placeholder,
@@ -36,6 +37,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import SnackBar from 'react-native-snackbar-component';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Checkbox from 'expo-checkbox';
+import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 
 
 
@@ -57,6 +59,8 @@ export default function NewVehicle() {
     vehicle_axle: [],
     vehicle_insurance_type: []
   });
+
+   
   const [customer_id, setMyClientID] = useState('');
   const [api_key, setAPI_KEY] = useState('');
   const [user_id, setMyUserID] = useState('');
@@ -95,6 +99,8 @@ export default function NewVehicle() {
     fromHideDatePicker();
     setFromSelectedDate(date);
   };
+
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const FormatDate = (data) => {
     let dateTimeString =
@@ -152,6 +158,7 @@ export default function NewVehicle() {
   const [placeholderImage, setPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
   const [secondPlaceholderImage, setSecondPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
   const [thirdPlaceholderImage, setThirdPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
+  const [container, setContainer] = useState([]);
 
 
   const getDropDownList = async () => {
@@ -178,7 +185,6 @@ export default function NewVehicle() {
         res.json.vehicle_name.map(e => {
           containers.push({ label: e.vehicle_name_id, value: e.vehicle_name_value });
         })
-        setContainerNames(containers);
       }
     });
   };
@@ -260,8 +266,12 @@ export default function NewVehicle() {
     });
   };
 
-
+  
+  
   const [selectedImages, setSelectedImages] = useState([]);
+
+  const [containerList, setSelectedContainers] = useState([]);
+
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -293,6 +303,10 @@ export default function NewVehicle() {
     setVehicleDetails({ ...vehiclesDetails, vehicle_images: selectedImages });
   };
 
+  const removeContainer = (name) => {
+    setSelectedContainers((containerList) => containerList.filter((containerList) => containerList.value !== name));
+  };
+
 
   const pickImage2 = async () => {
 
@@ -320,6 +334,7 @@ export default function NewVehicle() {
 
 
 
+
   _register = async () => {
 
     const user_id = await AsyncStorage.getItem('user_id');
@@ -338,6 +353,9 @@ export default function NewVehicle() {
           ? "image/png"
           : "image/jpeg"
     };
+    
+    
+    
     console.log(vehiclesDetails);
 
     setState({ ...state, isLoading: true });
@@ -356,14 +374,14 @@ export default function NewVehicle() {
     formData.append("capacity", vehiclesDetails.vehicle_capacity);
     formData.append("vehicle_name", vehiclesDetails.vehicle_name);
     formData.append("vehicle_axle", vehiclesDetails.vehicle_axle);
-    formData.append("vehicle_container_type", JSON.stringify([{"label":"Open top 20fet", "value":1}]));
+    formData.append("vehicle_container_type", JSON.stringify(containerList));
     formData.append("vehicle_bulk", isBulkChecked);
     formData.append("vehicle_breakBulk", isBreakBulkChecked);
     formData.append("vehicle_type", vehiclesDetails.vehicle_type);
     formData.append("insurance_issue_date", vehiclesDetails.insurance_issue_date);
     formData.append("insurance_expiry_date", vehiclesDetails.insurance_expiry_date);
     formData.append("insurance_company", vehiclesDetails.insurance_company);
-    formData.append("insurance_type", 2);
+    formData.append("insurance_type", vehiclesDetails.insurance_type);
     formData.append("sum_insured", vehiclesDetails.sum_insured);
     formData.append("vendor_name", vehiclesDetails.vendor_name);
     formData.append("vendor_address", vehiclesDetails.vendor_address);
@@ -378,28 +396,28 @@ export default function NewVehicle() {
       type: insurance_file.type
     });
 
-    vehiclesDetails.vehicle_images?.map((img) => {
-      const vProfile = img.uri;
-      const v_img = vProfile.split('/').pop();
+    // vehiclesDetails.vehicle_images?.map((img) => {
+    //   const vProfile = img.uri;
+    //   const v_img = vProfile.split('/').pop();
 
-      const vechicle_file = {
-        uri: img.uri,
-        name: v_img,
-        type: img.mimeType.endsWith('.pdf')
-          ? "application/pdf"
-          : img.mimeType.endsWith('.png') || img.mimeType.endsWith('.jpeg') || img.mimeType.endsWith('.jpg')
-            ? "image/png"
-            : "image/jpeg"
-      };
+    //   const vechicle_file = {
+    //     uri: img.uri,
+    //     name: v_img,
+    //     type: img.mimeType.endsWith('.pdf')
+    //       ? "application/pdf"
+    //       : img.mimeType.endsWith('.png') || img.mimeType.endsWith('.jpeg') || img.mimeType.endsWith('.jpg')
+    //         ? "image/png"
+    //         : "image/jpeg"
+    //   };
 
 
-    });
-
-    // formData.append("vehicle_images[]", {
-    //   uri: insurance_file.uri,
-    //   name: insurance_file.name,
-    //   type: insurance_file.type
     // });
+
+    formData.append("vehicle_images[]", {
+      uri: insurance_file.uri,
+      name: insurance_file.name,
+      type: insurance_file.type
+    });
 
     console.log(formData);
     multipartPostCallWithErrorResponse(
@@ -746,11 +764,30 @@ export default function NewVehicle() {
         ?
         <>
           <Text style={styles.HeaderText}>Container</Text>
+          <Text style={{...styles.HeaderText, paddingTop: 0}}>
+            {console.log(containerList)}
+            {
+            containerList.map((name, index) => (
+              <View key={index} style={styles.selectedContainer}>
+                <TouchableOpacity
+                  style={styles.removeContainer}
+                  onPress={() => removeContainer(name.value)}
+                >
+                  <Text style={styles.removeButtonText}>X</Text>
+                </TouchableOpacity>
+                <Text>{name.label}</Text>
+              </View>
+            ))
+          }</Text>
           <SelectDropdown
             data={vehicleContainer}
             onSelect={(vehicleContainer, index) => {
               setErrMsg({ ...errMsg, container_type: "" });
-              setVehicleDetails({ ...vehiclesDetails, container_type: vehicleContainer.container_type_id })
+              const newContainerType = [
+                { label: vehicleContainer.container_type_name, value: vehicleContainer.container_type_id },
+              ];
+          
+              setSelectedContainers((containerList) => [...containerList, ...newContainerType]);
             }}
             
             value={vehiclesDetails.container_type}
@@ -784,10 +821,10 @@ export default function NewVehicle() {
         {vehiclesDetails && vehiclesDetails.vehicle_name === 1 ||
                       (vehiclesDetails.vehicle_type=== 1 &&
                           vehiclesDetails.vehicle_name===4) ||
-                       (vehiclesDetails.vehicle_type===3 &&
+                      (vehiclesDetails.vehicle_type===3 &&
                           vehiclesDetails.vehicle_name===4) ||
                           ((vehiclesDetails.vehicle_name===3) ||
-                       (vehiclesDetails.vehicle_name === 4 &&
+                      (vehiclesDetails.vehicle_name === 4 &&
                           ((vehiclesDetails.vehicle_type===5 
                           && vehiclesDetails.vehicle_axle===2) ||
                           (vehiclesDetails.vehicle_type===5 
@@ -904,6 +941,7 @@ export default function NewVehicle() {
               style={styles.TextInput}
               placeholder="Insurance No"
               placeholderTextColor="#19788e"
+              inputMode="numeric"
               onChangeText={(insurance_no) => {
                 setErrMsg({ ...errMsg, insurance_no: "" });
                 setVehicleDetails({ ...vehiclesDetails, insurance_no: insurance_no })
@@ -976,9 +1014,9 @@ export default function NewVehicle() {
 
           <SelectDropdown
             data={insuranceType}
-            onSelect={(vehicleType, index) => {
+            onSelect={(insuranceType, index) => {
               setErrMsg({ ...errMsg, insurance_type: "" });
-              setVehicleDetails({ ...vehiclesDetails, insurance_type: insuranceType.vehicle_insurance_type_id })
+              setVehicleDetails({ ...vehiclesDetails, insurance_type: insuranceType.vehicle_insurance_type_value })
             }}
             value={vehiclesDetails.insurance_type}
             renderButton={(insuranceType, isOpened) => {
@@ -1194,10 +1232,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  
   removeButtonText: {
     color: 'white',
     fontWeight: 'bold',
   },
+
+  removeContainer:{
+    position: 'absolute',
+    top: 0,
+    right: -12,
+    backgroundColor: "rgba(25, 120, 142, 0.99)",
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex:1000
+  },
+
   section: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1208,4 +1261,11 @@ const styles = StyleSheet.create({
   checkbox: {
     margin: 8,
   },
+  selectedContainer:{
+    minWidth: "100%",
+    backgroundColor: "rgba(25, 120, 142, 0.2)",
+    borderRadius: 10,
+    paddingLeft:10,
+    minHeight:20,
+  }
 });
