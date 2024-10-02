@@ -13,17 +13,20 @@ import {
   RefreshControl,
   LogBox,
   ApiConfig,
+  Toast,
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
   PostCallWithErrorResponse,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
+  Modal,
+  TextInput,
 } from './../../../../components/index';
 
 
 export default function OnlineOfferLoad() {
   
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
     const [state, setState] = useState({
         isLoading: true,
@@ -47,49 +50,127 @@ export default function OnlineOfferLoad() {
       const [user_id, setMyUserID]              = useState('');
       const [offerLoadData, setOfferLoadData ]  = useState([]);
       const [user_details, setUserDetails]      = useState('');
+    
+      const _getDashboardDetails = async() => {
+      setState({ ...state, isLoading: true});  
+      const user_id = await AsyncStorage.getItem('user_id');
+      const customer_id = await AsyncStorage.getItem('customer_id');
+      const api_key = await AsyncStorage.getItem('api_key');
       
-        const _getDashboardDetails = async() => {
-        setState({ ...state, isLoading: true});  
-        const user_id = await AsyncStorage.getItem('user_id');
-        const customer_id = await AsyncStorage.getItem('customer_id');
-        const api_key = await AsyncStorage.getItem('api_key');
-        
-        await AsyncStorage.getItem('customer_id').then((myClientID) => {
-            setMyClientID(myClientID);
-        });
-        
-        await AsyncStorage.getItem('api_key').then(value =>{
-            setAPI_KEY(value);
-        });
-    
-        await AsyncStorage.getItem('user_id').then(value =>{
-            setMyUserID(value);
-        });
-    
-        await AsyncStorage.getItem('userDetails').then(value =>{
-            setUserDetails(value);
-        });    
-        const customerData = {
-          customer_id: customer_id,
-          user_id: user_id,
-          api_key: api_key
-        }
-        PostCallWithErrorResponse(ApiConfig.ONLINE_AUCTION_OFFER_GOODS, customerData)
-        
-        .then((res) => {
-        
-        if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-            setState({ ...state, isLoading: false});
-        }
-        if(res.json.message === "Insufficient Parameters"){
-            setState({ ...state, isLoading: false});
-        }
+      await AsyncStorage.getItem('customer_id').then((myClientID) => {
+          setMyClientID(myClientID);
+      });
+      
+      await AsyncStorage.getItem('api_key').then(value =>{
+          setAPI_KEY(value);
+      });
+  
+      await AsyncStorage.getItem('user_id').then(value =>{
+          setMyUserID(value);
+      });
+  
+      await AsyncStorage.getItem('userDetails').then(value =>{
+          setUserDetails(value);
+      });    
+      const customerData = {
+        customer_id: customer_id,
+        user_id: user_id,
+        api_key: api_key
+      }
+      PostCallWithErrorResponse(ApiConfig.ONLINE_AUCTION_OFFER_GOODS, customerData)
+      
+      .then((res) => {
+      if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+          setState({ ...state, isLoading: false});
+      }
+      if(res.json.message === "Insufficient Parameters"){
+          setState({ ...state, isLoading: false});
+      }
 
-        if (res.json.result)setOfferLoadData(res.json);
-            setState({ ...state, isLoading: false});
-        });
+      if (res.json.result)setOfferLoadData(res.json);
+          setState({ ...state, isLoading: false});
+      });
         
     };
+
+
+    const [errMsg, setErrMsg] = useState({ bidAmount: ""});
+
+    const sendTheBid = async (trip_id) => {
+      console.log(modalState.modalBidAmount);
+      if(modalState.modalBidAmount === undefined || modalState.modalBidAmount === ''){
+        setErrMsg({ ...errMsg, bidAmount: "** Please Enter Your Bid **" });
+        return;
+      }
+      const user_id = await AsyncStorage.getItem('user_id');
+      const customer_id = await AsyncStorage.getItem('customer_id');
+      const api_key = await AsyncStorage.getItem('api_key');
+      
+      await AsyncStorage.getItem('customer_id').then((myClientID) => {
+          setMyClientID(myClientID);
+      });
+      
+      await AsyncStorage.getItem('api_key').then(value =>{
+          setAPI_KEY(value);
+      });
+  
+      await AsyncStorage.getItem('user_id').then(value =>{
+          setMyUserID(value);
+      });
+  
+      await AsyncStorage.getItem('userDetails').then(value =>{
+          setUserDetails(value);
+      });
+      
+      let details = JSON.stringify({
+        customer_id: customer_id,
+        api_key: api_key,
+        user_id: user_id,
+        load_id: trip_id ,
+        amount: modalState.modalBidAmount,
+      });
+  
+      await postMultipartWithAuthCallWithErrorResponse(ApiConfig.MAKEBID, details)
+        .then((res) => {
+          console.log(res);
+          navigation.navigate('OfferNewVehicle', {trip_id: trip_id, amount:modalState.modalBidAmount })
+        })
+        .catch((err) => console.log(err));
+    };
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalState, setModalState] = useState({
+      modalRf: '',
+      modalCompany:'',
+      modalCargo:'',
+      modalQuantity:'',
+      modalExpectedDate:'',
+      modalAuctionName:'',
+      modalAuctionDuration:'',
+      modalAuctionType: '',
+      modalStartDate:'',
+      modalExpireDate:'',
+      modalBidAmount:''
+    });
+
+
+    const makeBid = async (loads) =>{    
+        setModalState({ ...modalState, 
+          modalRf: loads.load_reference_no,
+          modalCompany: loads.trip_company_name,
+          modalCargo:loads.cargo_type,
+          modalQuantity: loads.quantity,
+          modalExpectedDate:loads.trip_end_date,
+          modalAuctionName: loads.auction_details.auction_name,
+          modalAuctionDuration: loads.auction_details.duration,
+          modalAuctionType: loads.auction_details.auction_type,
+          modalStartDate: loads.auction_details.auction_start_date,
+          modalExpireDate: loads.auction_details.auction_end_date,
+          modalBidAmount:'',
+          modalLoadId:loads.trip_id,
+        });
+        setModalVisible(true);
+      };
 
     useEffect(() => {
       
@@ -105,6 +186,60 @@ export default function OnlineOfferLoad() {
     
     return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+        <View style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            backgroundColor={'rgba(0,0,0,0.2)'}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Ref No: {modalState.modalRf}</Text>
+                <Text style={styles.modalText}>Company Name: {modalState.modalCompany}</Text>
+                <Text style={styles.modalText}>Cargo Type: {modalState.modalCargo}</Text>
+                <Text style={styles.modalText}>Quantity: {modalState.modalQuantity}</Text>
+                <Text style={styles.modalText}>Expected Arrival Time: {modalState.modalExpireDate}</Text>
+                <Text style={styles.modalText}>Auction Name: {modalState.modalAuctionName}</Text>
+                <Text style={styles.modalText}>Auction Duration: {modalState.modalAuctionDuration}</Text>
+                <Text style={styles.modalText}>Auction Type: {modalState.modalAuctionType}</Text>
+                <Text style={styles.modalText}>Start Date: {modalState.modalStartDate}</Text>
+                <Text style={styles.modalText}>Expiry Date: {modalState.modalExpireDate}</Text>
+
+                <Text style={styles.HeaderText}>Enter Bid Amount </Text>
+                <View style={styles.inputView}>
+                  
+                  <TextInput
+                    style={styles.TextInput}
+                    placeholder="Bid Amount"
+                    placeholderTextColor="#19788e"
+                    inputMode="numeric"
+                    onChangeText={(text) => {
+                      setErrMsg({ ...errMsg, bidAmount: "" });
+                      setModalState({ ...modalState,  modalBidAmount: text })
+                    }
+                    }
+                  />
+                  {errMsg.bidAmount.length > 0 && (
+                    <Text style={{color: '#FF5151', marginTop: 0, position: "relative"}}>{errMsg.bidAmount}</Text>
+                  )}
+                </View>
+                <TouchableOpacity
+                  onPress={() => sendTheBid(modalState.modalLoadId)}
+                  style={[styles.button, appPageStyle.primaryColor]}>
+                  <Text style={[styles.textStyle, appPageStyle.primaryTextColor]}>Make a Bid</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        </View>
         {state.isLoading &&(
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
@@ -117,7 +252,6 @@ export default function OnlineOfferLoad() {
         {offerLoadData.load_list &&
               offerLoadData.load_list.length &&
               offerLoadData.load_list.map((loads, key) => (
-                
                 <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
                     <View
                     style={[
@@ -132,8 +266,10 @@ export default function OnlineOfferLoad() {
                           <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
                       </View>
                       <View style={{textAlign: 'justify',}}>
-                          <Text style={{fontWeight: 'bold'}}>Ref. No: {loads.load_reference_no}</Text>
-                          <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>2024-02-01{loads.vehicle_availability_date}</Text>    
+                          <TouchableOpacity onPress={()=>navigation.navigate('OfferDetail', {details: loads})}>
+                            <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {loads.load_reference_no}</Text>
+                          </TouchableOpacity>
+                          <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>{loads.trip_end_date}</Text>    
                           <Text style={{textAlign:'justify'}}>Cargo Type: {loads.cargo_type}</Text>
                           <Text style={{textAlign:'justify'}}>Container Type: {loads.container_type}</Text>
                           <Text style={{textAlign:'justify'}}>Rem Quantity: {loads.trip_container_quantity} {loads.unit}</Text>
@@ -148,7 +284,7 @@ export default function OnlineOfferLoad() {
                               loads.trip_end_city
                           }
                           </Text>
-                          <TouchableOpacity onPress={()=>navigation.navigate('TransporterAuction', {details: loads.trip_id})} style={{...appPageStyle.primaryColor, marginBottom: 8, height: 35, width: "100%", borderRadius: 10, alignItems: "center", justifyContent: "center", marginTop: 5}}>
+                          <TouchableOpacity onPress={()=>makeBid (loads)} style={{...appPageStyle.primaryColor, marginBottom: 8, height: 35, width: "100%", borderRadius: 10, alignItems: "center", justifyContent: "center", marginTop: 5}}>
                               <Text style={{...appPageStyle.primaryTextColor}}>Bid</Text>
                           </TouchableOpacity>
                       </View>
@@ -183,7 +319,7 @@ const styles = StyleSheet.create({
     inputView: {
       backgroundColor: "rgba(25, 120, 142, 0.3)",
       borderRadius: 30,
-      width: '90%',
+      width: '100%',
       height: 45,
       marginBottom: 20,
       alignItems: "center",
@@ -191,9 +327,7 @@ const styles = StyleSheet.create({
     },
     TextInput: {
       height: 50,
-      flex: 1,
-      padding: 10,
-      // marginLeft: 20,
+      marginTop: 5,
     },
     forgot_button: {
       height: 30,
@@ -278,5 +412,47 @@ const styles = StyleSheet.create({
       alignItems: "center", 
       justifyContent: "center", 
       borderRadius: 100,
-    }
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'left',
+      marginTop: 22,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'left',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    button: {
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+    },
+    buttonOpen: {
+      backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+      marginTop:20,
+      backgroundColor: '#fff',
+    },
+    textStyle: {
+      color: '#777',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'left',
+    },
   });

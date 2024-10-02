@@ -47,6 +47,7 @@ import AddNewDriver from '../pages/transporter/bottomTabs/management/addDriver';
 import AddNewVehicle from '../pages/transporter/bottomTabs/management/addVehicle';
 import ViewOfferLoad from '../pages/transporter/bottomTabs/management/viewOfferLoad';
 import TransporterAuction from '../pages/transporter/bottomTabs/management/transporterAuction';
+import OfferNewVehicle from '../pages/transporter/bottomTabs/management/offerNewVehicle';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -596,6 +597,21 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Transporter Auction',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+          }}
+          
+        />
+        <Stack.Screen
+          name="OfferNewVehicle"
+          title="Offer Vehicle"
+          component={OfferNewVehicle} 
+          options={{
+            headerShown: true,
+            headerTitle:'Offer Vehicle',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

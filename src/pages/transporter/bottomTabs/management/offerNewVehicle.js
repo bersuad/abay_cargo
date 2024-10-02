@@ -41,9 +41,10 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 
 
 
-export default function NewVehicle() {
-  const navigation = useNavigation();
-  const [state, setState] = useState({
+export default function NewVehicle(props) {
+    const navigation = useNavigation();
+    const offerInfo = props.route.params;
+    const [state, setState] = useState({
     device_token: "",
     device_id: "",
     app_version: "",
@@ -120,7 +121,7 @@ export default function NewVehicle() {
       LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
       this.mounted = true;
       this.index = 0;
-
+    console.log(offerInfo);
       getDropDownList();
       return () => {
         setState({ ...state, isLoading: false, checkInternet: true, });

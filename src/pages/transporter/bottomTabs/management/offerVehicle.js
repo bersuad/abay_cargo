@@ -64,7 +64,6 @@ export default function OfferVehicle() {
       
         const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
-        console.log('getting here on loading');
         const user_id = await AsyncStorage.getItem('user_id');
         const customer_id = await AsyncStorage.getItem('customer_id');
         const api_key = await AsyncStorage.getItem('api_key');
@@ -91,8 +90,10 @@ export default function OfferVehicle() {
         ).then((res) => {
 
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-            setState({ ...state, isLoading: false});  
-            console.log('Wrong Data here');
+          setState({ ...state, isLoading: false});  
+          navigation.navigate('TruckLogin');
+          setState({ ...state, isLoading: false});  
+          AsyncStorage.clear();
         }
         if(res.json.message === "Insufficient Parameters"){
             setState({ ...state, isLoading: false});
