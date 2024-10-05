@@ -61,18 +61,43 @@ export default function NewVehicle(props) {
     vehicle_insurance_type: []
   });
 
-   
+
   const [customer_id, setMyClientID] = useState('');
   const [api_key, setAPI_KEY] = useState('');
   const [user_id, setMyUserID] = useState('');
   const [isBreakBulkChecked, setBreakBulkChecked] = useState(false);
   const [isBulkChecked, setBulkChecked] = useState(false);
-  
+  const [vehicleList, setVehicleList] = useState([]);
+  const [driverList, setDriverList] = useState([]);
+  const [addedVehicleList, setAddedVehicleList] = useState([]);
+  const [plateNoList, setPlateNoList] = useState([]);
+  const [selectedDriver, setSelectedDriver] = useState([]);
+  const [axleType, setAxleType] = useState("");
+  const [vehicleNameValue, setVehicleNameValue] = useState("");
+  const [trailerList, setTrailerList] = useState([]);
+  const [selectedVehicleType, setSelectedVehicleType] = useState("");
+  const [selectedtrailer, setSelectedtrailer] = useState({
+    vehicle_images: [],
+  });
+  const [checkTrailer, setCheckTrailer] = useState([]);
+  const [trailerContainer, setTrailerContainer] = useState([]);
+
 
   const [isFromDatePickerVisible, setFromDatePickerVisibility] = useState(false);
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const [fromSelectedDate, setFromSelectedDate] = useState(null);
   const [toSelectedDate, setToSelectedDate] = useState(null);
+  const [selectVehicle, setSelectVehicle] = useState({ vehicle_images: [] });
+
+  const [vehicleDetails, setVehicleDetails] = useState({
+    truck_id: "",
+    trailer_id: "",
+    driver_id: "",
+    bid_id: (offerInfo?.bid_id),
+    trip_id: offerInfo?.trip_id,
+  });
+
+  
 
   const fromShowDatePicker = () => {
     setFromDatePickerVisibility(true);
@@ -90,13 +115,13 @@ export default function NewVehicle(props) {
   };
 
   const toHandleConfirm = (date) => {
-    setVehicleDetails({ ...vehiclesDetails, insurance_issue_date: FormatDate(date) })
+    setVehicleDetails({ ...vehicleList, insurance_issue_date: FormatDate(date) })
     toHideDatePicker();
     setToSelectedDate(date);
   };
 
   const fromHandleConfirm = (date) => {
-    setVehicleDetails({ ...vehiclesDetails, insurance_expiry_date: FormatDate(date) })
+    setVehicleDetails({ ...vehicleList, insurance_expiry_date: FormatDate(date) })
     fromHideDatePicker();
     setFromSelectedDate(date);
   };
@@ -115,14 +140,145 @@ export default function NewVehicle(props) {
     return dateTimeString; // It will look something like this 3-5-2021 16:23
   };
 
+
+  const getAddVehicleList = async()=>{
+    
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.ONLINE_LISTVEHICLEOFFER,
+      JSON.stringify({
+        user_id, customer_id, api_key, reference_no: offerInfo.modalRf, bid_id: offerInfo.bid_id
+      })
+    )
+      .then((res) => {
+        if (res.json.message === 
+          "Invalid user authentication,Please try to relogin with exact credentials.") {
+          AsyncStorage.clear();
+          navigation.navigate('TruckLogin');
+        }
+        // setLoading(false);
+        if (res.json.result) {
+          setAddedVehicleList(res.json.vehicle_list);
+          setLoadCategoryType(res.json.load_category);
+        }
+      })
+      .catch((err) => {
+        console.log("Ex :: ", err);
+      });
+  }
+
+  const getTrucks = async() =>{
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    
+    let vehicle_list = [];
+    postMultipartWithAuthCallWithErrorResponse(
+      ApiConfig.TRUCK_LIST,
+      JSON.stringify({ user_id, customer_id, api_key })
+    ).then((res) => {
+      const data = res?.json?.vehicle_types;
+      
+      const filteredTruckList = data.filter((truck) => {
+        return !addedVehicleList.some(
+          (vehicle) => {if (vehicle.vehicle_id == truck.vehicle_name_id) {
+              vehicle_list.push(truck.vehicle_name);
+              return true;
+          }}
+        );
+      });
+      setVehicleList(filteredTruckList);
+    })
+    getAddVehicleList();
+  }
+
+
+  
+  const getTrailerList = async() =>{
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    
+
+    postMultipartWithAuthCallWithErrorResponse(
+      ApiConfig.TRAILER_LIST,
+      JSON.stringify({ 
+        user_id, 
+        customer_id, 
+        api_key, 
+        vehicle_type: selectedVehicleType,
+        cargo_type: offerInfo?.modalCargo, 
+        container_type: offerInfo?.modalContainer, 
+        container_quantity: offerInfo?.modalQuantity, 
+        axle_type: axleType 
+      })
+    )
+      .then((res) => {
+        if (res.json.message === 
+          "Invalid user authentication,Please try to relogin with exact credentials.") {
+            AsyncStorage.clear();
+            navigation.navigate('TruckLogin');
+          }
+          const data = res?.json?.vehicle_list;
+          
+          const filteredTrailerList = data.filter((trailer) => {
+            return !addedVehicleList.some(
+              (vehicle) => vehicle.trailer_id == trailer.vehicle_id,
+          );
+        });
+        
+        setTrailerList(filteredTrailerList);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  const getDriverList = async() => {
+    
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.ACTIVE_DRIVER_LIST,
+      JSON.stringify({ user_id, customer_id,api_key })
+    )
+      .then((res) => {
+        if (res.json.message === 
+          "Invalid user authentication,Please try to relogin with exact credentials.") {
+            AsyncStorage.clear();
+            navigation.navigate('TruckLogin');
+        }
+        if (res.json.result) {
+          const data = res?.json?.driver_list;
+          const filteredDriverList = data.filter((driver) => {
+            return !addedVehicleList.some(
+              (vehicle) => vehicle.driver_id === driver.driver_id
+            );
+          });
+          
+          setDriverList(filteredDriverList);
+        }
+      })
+      .catch((err) => {
+        console.log("Ex :: ", err);
+      });
+  };
+
   const componentWillMount = () => {
     useEffect(() => {
       this._checkConnection();
       LogBox.ignoreLogs(['componentWillReceiveProps', 'componentWillMount']);
       this.mounted = true;
       this.index = 0;
-    console.log(offerInfo);
-      getDropDownList();
+      getTrucks();
+      getDriverList();
+      getTrailerList();
+      
       return () => {
         setState({ ...state, isLoading: false, checkInternet: true, });
         this.mounted = false;
@@ -175,7 +331,8 @@ export default function NewVehicle(props) {
 
       if (res.json.message ===
         "Invalid user authentication,Please try to relogin with exact credentials.") {
-        navigation.navigate('TruckLogin');
+          AsyncStorage.clear();
+          navigation.navigate('TruckLogin');
       }
       if (res.json.result) {
         setInsuranceType(res.json.vehicle_insurance_type);
@@ -200,35 +357,7 @@ export default function NewVehicle(props) {
     });
   };
 
-  const [vehiclesDetails, setVehicleDetails] = useState({
-    vehicle_images: [],
-    owner_id: "",
-    plate_no: "",
-    vehicle_name: "",
-    vehicle_axle: "",
-    vehicle_type: "",
-    vehicle_container_type: "",
-    chassis_no: "",
-    gross_weight: "",
-    initial_km: "",
-    model: "",
-    insurance_no: "",
-    year_manufacture: "",
-    motor_no: "",
-    vehicle_capacity: "",
-    vendor_name: "",
-    vendor_contact: "",
-    vendor_platform: "",
-    vendor_address: "",
-    insurance_file: null,
-    insurance_issue_date: null,
-    insurance_expiry_date: "",
-    insurance_company: "",
-    insurance_type: "",
-    sum_insured: "",
-    container_type:"",
-    vehicle_axle:"",
-  });
+  
 
   const [errMsg, setErrMsg] = useState({
     // vehicle_images: "",
@@ -274,183 +403,161 @@ export default function NewVehicle(props) {
   const [containerList, setSelectedContainers] = useState([]);
 
 
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Sorry, we need camera roll permissions to make this work!');
-      return;
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      allowsMultipleSelection: true,
-    });
-
-    if (!result.assets[0].canceled) {
-
-      setSelectedImages((prevImages) => [...prevImages, ...result.assets]);
-
-      setVehicleDetails({ ...vehiclesDetails, vehicle_images: selectedImages });
-
-    }
-
-  };
-
-
-
-  const removeImage = (uri) => {
-    setSelectedImages((prevImages) => prevImages.filter((image) => image.uri !== uri));
-    setVehicleDetails({ ...vehiclesDetails, vehicle_images: selectedImages });
-  };
-
-  const removeContainer = (name) => {
-    setSelectedContainers((containerList) => containerList.filter((containerList) => containerList.value !== name));
-  };
-
-
-  const pickImage2 = async () => {
-
-    let result = await DocumentPicker.getDocumentAsync({
-      type: ['image/*', 'application/pdf'],
-    });
-
-    if (result.assets[0].mimeType) {
-      setVehicleDetails({ ...vehiclesDetails, insurance_file: result.assets[0].uri });
-      if (result.assets[0].mimeType) {
-        setFileName(result.assets[0].name);
-
-        if (result.assets[0].mimeType === "application/pdf") {
-          setPlaceholderImage(PDFIcon.uri);
-        } else {
-          setPlaceholderImage(result.assets[0].uri);
-        }
-
-
-      } else {
-        successWithDurationHandler('Please select PDFs or Images only.');
-      }
-    }
-  };
-
-
-
-
-  _register = async () => {
-
+  const getPowerPlateNoList = async (vehicle_id) => {
+    
+    setSelectVehicle({});
     const user_id = await AsyncStorage.getItem('user_id');
     const customer_id = await AsyncStorage.getItem('customer_id');
     const api_key = await AsyncStorage.getItem('api_key');
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.POWER_PLATE_NO,
+      JSON.stringify({ user_id, customer_id, api_key, vehicle_name_id: vehicle_id, 
+          cargo_type: offerInfo?.modalCargo, container_type: offerInfo?.modalContainer, 
+          container_quantity: offerInfo?.modalQuantity})
+    )
+      .then((res) => {
+        if (res.json.message === 
+          "Invalid user authentication,Please try to relogin with exact credentials.") {
+            AsyncStorage.clear();
+            navigation.navigate('TruckLogin');
+        }
+        if (res.json.result) {
+          
+          const data = res?.json?.vehicle_list;
+          const filteredPlateNumberList = data.filter((plate) => {
+            
+            return !addedVehicleList.some(
+              (vehicle) => vehicle.vehicle_id == plate.vehicle_id
+            );
+          });
+          // const filteredArray = dataArray.filter((item) => item.plate_number !== plateNumberToRemove);
+          setPlateNoList(filteredPlateNumberList);
+          setVehicleDetails({
+            ...vehicleDetails,
+            truck_id: filteredPlateNumberList[0]?.vehicle_id,
+          });
+          filteredPlateNumberList?.map(e=>           
+            {e?.vehicle_container_id.split(",")[3].replace("{", "").replace("}", "")}
+          )
+          
+          
+        }
+      })
+      .catch((err) => {
+        console.log("Ex :: ", err);
+      });
+  };
 
-    const tn = vehiclesDetails.insurance_file;
-    const tn_img = tn.split('/').pop();
-
-    const insurance_file = {
-      uri: vehiclesDetails.insurance_file,
-      name: tn_img,
-      type: vehiclesDetails.insurance_file.endsWith('.pdf')
-        ? "application/pdf"
-        : vehiclesDetails.insurance_file.endsWith('.png') || vehiclesDetails.insurance_file.endsWith('.jpeg') || vehiclesDetails.insurance_file.endsWith('.jpg')
-          ? "image/png"
-          : "image/jpeg"
-    };
+  const setCurrenttrailer = (trailer_id) => {
+    setSelectedtrailer({});
+    setCheckTrailer([]);
+    
+    let trailer_id_val = trailer_id;
+    
+    let trailer = trailerList.filter(
+      (vehicle) => { 
+        if (vehicle.vehicle_id == trailer_id) {  
+          return true;
+      }}
+    )[0];
+    setCheckTrailer([{ ...trailer }]);
+    setSelectedtrailer({
+      ...trailer,
+      load_reference_no: offerInfo && offerInfo.modalRf,
+    });
+    let cont_array = [];
+    if (offerInfo?.modalCargo === "Container"){
+      cont_array.push(trailer?.container_type_value_id[0]);
+    }
+    
+    if (offerInfo?.modalCargo === "Container" && trailer?.container_type_value_id[1]) {
+      cont_array.push(trailer?.container_type_value_id[1]);
+    }
     
     
-    
-    console.log(vehiclesDetails);
+    setTrailerContainer(cont_array);
+    setVehicleDetails({
+      ...vehicleDetails,
+      // truck_id: vehicle?.vehicle_id,
+      trailer_id: trailer_id_val,
+    });
+  };
 
+  const setCurrentPlateNo = (v_id) => {
+    
+    let vehicle = plateNoList.filter(
+      (vehicle) => vehicle.vehicle_id == v_id
+    )[0];
+    
+    setSelectVehicle({
+      ...vehicle,
+      load_reference_no: offerInfo && offerInfo.modalRf,
+    });
+    let cont_array = [];
+    cont_array.push(vehicle?.container_type_value_id);
+    setContainer(cont_array)
+    setVehicleDetails({
+      ...vehicleDetails,
+      truck_id: vehicle?.vehicle_id,
+    });
+    if (selectVehicle?.vehicle_type === "Truck Trailer") {
+      setVehicleDetails({ ...vehicleDetails, trailer_id: null });
+    }
+    setAxleType(vehicle.vehicle_axle_type);
+  };
+
+
+  addVehicleOffer = async () => {
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
     setState({ ...state, isLoading: true });
-    const formData = new FormData();
-    formData.append("api_key", api_key);
-    formData.append("user_id", user_id);
-    formData.append("customer_id", customer_id);
-    formData.append("plate_no", vehiclesDetails.plate_no);
-    formData.append("chassis_no", vehiclesDetails.chassis_no);
-    formData.append("model", vehiclesDetails.model);
-    formData.append("year_manufacture", vehiclesDetails.year_manufacture);
-    formData.append("motor_no", vehiclesDetails.motor_no);
-    formData.append("gross_weight", vehiclesDetails.gross_weight);
-    formData.append("initial_km", vehiclesDetails.initial_km);
-    formData.append("insurance_no", vehiclesDetails.insurance_no);
-    formData.append("capacity", vehiclesDetails.vehicle_capacity);
-    formData.append("vehicle_name", vehiclesDetails.vehicle_name);
-    formData.append("vehicle_axle", vehiclesDetails.vehicle_axle);
-    formData.append("vehicle_container_type", JSON.stringify(containerList));
-    formData.append("vehicle_bulk", isBulkChecked);
-    formData.append("vehicle_breakBulk", isBreakBulkChecked);
-    formData.append("vehicle_type", vehiclesDetails.vehicle_type);
-    formData.append("insurance_issue_date", vehiclesDetails.insurance_issue_date);
-    formData.append("insurance_expiry_date", vehiclesDetails.insurance_expiry_date);
-    formData.append("insurance_company", vehiclesDetails.insurance_company);
-    formData.append("insurance_type", vehiclesDetails.insurance_type);
-    formData.append("sum_insured", vehiclesDetails.sum_insured);
-    formData.append("vendor_name", vehiclesDetails.vendor_name);
-    formData.append("vendor_address", vehiclesDetails.vendor_address);
-    formData.append("vendor_contact", vehiclesDetails.vendor_contact);
-    formData.append("vendor_platform", vehiclesDetails.vendor_platform);
-    formData.append("owner_id", user_id);
+    let online_details = JSON.stringify({
+      customer_id: customer_id,
+      api_key: api_key,
+        user_id: user_id,
+        truck_id: vehicleDetails?.truck_id,
+        trailer_id: Number(vehicleDetails?.trailer_id)
+          ? Number(vehicleDetails?.trailer_id)
+          : "",
+          driver_id: vehicleDetails?.driver_id,
+          reference_no: offerInfo?.modalRf,
+          bid_id: offerInfo?.bid_id,
+          vehicle_container_id: container,
+          trailer_vehicle_container_id: trailerContainer,
+          cargo_type: offerInfo?.modalCargo,        
+        });
+        
+        console.log(online_details);
+      postMultipartWithAuthCallWithErrorResponse(
+        ApiConfig.ADD_ONLINE_VEHICLEOFFER,
+        online_details
+      )
+        .then((res) => {
+          if (res.json.message === 
+            "Invalid user authentication,Please try to relogin with exact credentials.") {
+              setState({ ...state, isLoading: false });
+          }
+          if (res.json.message === "An internal server error occurred.") {
+            setState({ ...state, isLoading: false });
+            toastWithDurationHandler("An internal server error occurred. Please Try again!");
+          }
+          if (res.json.message === "Vehicle offer added") {
+            setState({ ...state, isLoading: false });
+            successWithDurationHandler("Vehicle offer added Successfully, Abay Logistics Will Contact you soon. Thank you!");
+            navigation.navigate('OnlineOfferLoad');
+          } else {
+            setState({ ...state, isLoading: false });
+            toastWithDurationHandler("Please Try again!");
+          }
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+    
+  };
 
 
-    formData.append("insurance_file", {
-      uri: insurance_file.uri,
-      name: insurance_file.name,
-      type: insurance_file.type
-    });
-
-    vehiclesDetails.vehicle_images?.map((img) => {
-      const vProfile = img.uri;
-      const v_img = vProfile.split('/').pop();
-
-      const vechicle_file = {
-        uri: img.uri,
-        name: v_img,
-        type: img.mimeType.endsWith('.pdf')
-          ? "application/pdf"
-          : img.mimeType.endsWith('.png') || img.mimeType.endsWith('.jpeg') || img.mimeType.endsWith('.jpg')
-            ? "image/png"
-            : "image/jpeg"
-      };
-
-
-    });
-
-    // formData.append("vehicle_images[]", {
-    //   uri: insurance_file.uri,
-    //   name: insurance_file.name,
-    //   type: insurance_file.type
-    // });
-
-    console.log(formData);
-    multipartPostCallWithErrorResponse(
-      ApiConfig.AddVehicle, formData
-    ).then((res) => {
-      console.log(res);
-      if (res.json.message === "An internal server error occurred.") {
-        setState({ ...state, isLoading: false });
-        toastWithDurationHandler("An internal server error occurred. Please Try again!");
-      }
-
-      if (res.json.result == true) {
-        setTimeout(function () {
-          successWithDurationHandler('Registered Successfully, Abay Logistics Will Contact you soon! Thank you.');
-          navigation.navigate('transporterVehiclesSearch');
-        }, 5000);
-      }
-
-      if (res.json.message === "Transporter details added successfully") {
-        setState({ ...state, isLoading: false });
-        successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
-        navigation.navigate('');
-      } else {
-        toastWithDurationHandler("An internal server error occurred. Please Try again!");
-      }
-
-    }).catch((error) => {
-      console.log(error);
-    });
-
-
-  }
+  
 
   return (
     <ScrollView style={{ backgroundColor: 'rgba(27, 155, 230, 0.1)' }}>
@@ -459,75 +566,63 @@ export default function NewVehicle(props) {
         {!state.checkInternet && (
           <SnackBar visible={true} textMessage="No Internet Connection!" actionHandler={() => { this._checkConnection() }} actionText="Try Again" />
         )}
-        <ScrollView horizontal style={{ marginTop: 20 }}>
-          {selectedImages.length === 0 ? (
-            <Image source={{ uri: image }} style={styles.image} />
-          ) : (
-            selectedImages.map((image, index) => (
-              <View key={index} style={styles.imageContainer}>
-                <TouchableOpacity
-                  style={styles.removeButton}
-                  onPress={() => removeImage(image.uri)}
-                >
-                  <Text style={styles.removeButtonText}>X</Text>
-                </TouchableOpacity>
-                <Image
-                  source={{ uri: image.uri }}
-                  style={styles.image}
-                />
-              </View>
-            ))
-          )}
-        </ScrollView>
-        <View style={{ marginBottom: 10 }}>
-          <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-            <Text style={{ ...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor }}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload Vehicle Images</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ flex: 1, padding: 20 }}>
-          {/* <Button title="Select Images" onPress={pickImage} /> */}
-
-        </View>
-        <Text style={styles.HeaderText}>Plate Number </Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Plate Number"
-            placeholderTextColor="#19788e"
-            value={vehiclesDetails.plate_no}
-            onChangeText={(text) => {
-              setErrMsg({ ...errMsg, plate_no: "" });
-              setVehicleDetails({ ...vehiclesDetails, plate_no: text })
-            }
-            }
-          />
-          {errMsg.company_type && errMsg.company_type.length > 0 && (
-            <Text style={{ color: '#FF5151' }}>{errMsg.company_type}</Text>
-          )}
+        <Text style={styles.HeaderText}>Reference Number - Cargo Type</Text>
+        <View
+          style={[
+            {
+              flexDirection: 'row',
+              width: '95%',
+              gap: 4,
+              backgroundColor: '#fff',
+            },
+          ]}>
+          <View style={{ ...styles.inputView, width: '50%', }}>
+            <TextInput
+              style={styles.TextInput}
+              placeholder="Reference Number"
+              placeholderTextColor="#19788e"
+              value={offerInfo.modalRf}
+              editable={false} 
+              selectTextOnFocus={false}
+            />
+          </View>
+          <View style={{ ...styles.inputView, width: '50%', }}>
+            <TextInput
+              style={styles.TextInput}
+              placeholder="Model"
+              placeholderTextColor="#19788e"
+              value={offerInfo.modalCargo}
+              editable={false} 
+              selectTextOnFocus={false}
+            />
+          </View>
         </View>
 
         <Text style={styles.HeaderText}>Vehicle Type</Text>
+        
         <SelectDropdown
-          data={vehicleType}
-          onSelect={(vehicleType, index) => {
-            setErrMsg({ ...errMsg, vehicle_name: "" });
-            setVehicleDetails({ ...vehiclesDetails, vehicle_name: vehicleType.vehicle_name_id })
+          data={vehicleList}
+          onSelect={(vehicleList, index) => {
+            setVehicleNameValue(vehicleList.vehicle_name_value);
+            setSelectedVehicleType(vehicleList.vehicle_name_value);
+            setVehicleDetails({ ...vehicleList, vehicle_name: vehicleList.vehicle_name_id });
+            getPowerPlateNoList(vehicleList.vehicle_name_id);
           }}
-          value={vehiclesDetails.vehicle_name}
-          renderButton={(vehicleType, isOpened) => {
+          value={vehicleList.vehicle_name}
+          renderButton={(vehicleList, isOpened) => {
             return (
               <View style={styles.dropdownButtonStyle}>
                 <Text style={styles.dropdownButtonTxtStyle}>
-                  {(vehicleType && vehicleType.vehicle_name_value) || 'Select Vehicle Type'}
+                  {(vehicleList && vehicleList.vehicle_name_value) || 'Select Vehicle Type'}
                 </Text>
                 <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
               </View>
             );
           }}
-          renderItem={(vehicleType, index, isSelected) => {
+          renderItem={(vehicleList, index, isSelected) => {
             return (
               <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
-                <Text style={styles.dropdownItemTxtStyle}>{vehicleType.vehicle_name_value}</Text>
+                <Text style={styles.dropdownItemTxtStyle}>{vehicleList.vehicle_name_value}</Text>
               </View>
             );
           }}
@@ -537,18 +632,50 @@ export default function NewVehicle(props) {
         {errMsg.company_name && errMsg.company_name.length > 0 && (
           <Text style={{ color: '#FF5151' }}>{errMsg.company_name}</Text>
         )}
+        
+        <Text style={styles.HeaderText}>Plate Number</Text>
+        
+        <SelectDropdown
+          data={plateNoList}
+          onSelect={(plateNoList, index) => {
+            setErrMsg({ ...errMsg, plate_number: "" });
+            setCurrentPlateNo(plateNoList.vehicle_id);
+          }}
+          
+          value={plateNoList.plate_number}
+          renderButton={(plateNoList, isOpened) => {
+            return (
+              <View style={styles.dropdownButtonStyle}>
+                <Text style={styles.dropdownButtonTxtStyle}>
+                  {(plateNoList && plateNoList.plate_number) || 'Select Vehicle Plate'}
+                </Text>
+                <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
+              </View>
+            );
+          }}
+          renderItem={(plateNoList, index, isSelected) => {
+            return (
+              <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                <Text style={styles.dropdownItemTxtStyle}>{plateNoList.plate_number}</Text>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+          dropdownStyle={styles.dropdownMenuStyle}
+        />
 
-        {vehiclesDetails.vehicle_name && 
-        (vehiclesDetails.vehicle_name===4) ?
+        
+        {vehicleList.vehicle_name && 
+        (vehicleList.vehicle_name===4) ?
           <>
             <Text style={styles.HeaderText}>Trailer Vehicle Type</Text>
             <SelectDropdown
               data={vehicleType}
               onSelect={(vehicleType, index) => {
                 setErrMsg({ ...errMsg, vehicle_type: "" });
-                setVehicleDetails({ ...vehiclesDetails, vehicle_type: vehicleType.vehicle_name_id })
+                setVehicleDetails({ ...vehicleList, vehicle_type: vehicleType.vehicle_name_id })
               }}
-              value={vehiclesDetails.vehicle_type}
+              value={vehicleList.vehicle_type}
               renderButton={(vehicleType, isOpened) => {
                 return (
                   <View style={styles.dropdownButtonStyle}>
@@ -584,45 +711,30 @@ export default function NewVehicle(props) {
         }
 
 
-{vehiclesDetails.vehicle_name && 
-        (vehiclesDetails.vehicle_name===5 ||
-        (vehiclesDetails.vehicle_name===4 &&
-        vehiclesDetails.vehicle_type===5)) ?
+{selectedVehicleType && ( selectedVehicleType !== "High Bed" ? (
+                    <></>
+                  ) : 
         <>
           <Text style={styles.HeaderText}>Vehicle Axle</Text>
-          <SelectDropdown
-            data={vehicleAxle}
-            onSelect={(vehicleAxle, index) => {
-              setErrMsg({ ...errMsg, vehicle_axle: "" });
-              setVehicleDetails({ ...vehiclesDetails, vehicle_axle: vehicleAxle.vehicle_axle_id })
-            }}
-            value={vehiclesDetails.vehicleAxle}
-            renderButton={(vehicleAxle, isOpened) => {
-              return (
-                <View style={styles.dropdownButtonStyle}>
-                  <Text style={styles.dropdownButtonTxtStyle}>
-                    {(vehicleAxle && vehicleAxle.vehicle_axle_type) || 'Select Vehicle Axle'}
-                  </Text>
-                  <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
-                </View>
-              );
-            }}
-            renderItem={(vehicleAxle, index, isSelected) => {
-
-              return (
-                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
-                  <Text style={styles.dropdownItemTxtStyle}>
-                    {vehicleAxle.vehicle_axle_type} {' '}
-                  </Text>
-                </View>
-              );
-
-            }}
-            showsVerticalScrollIndicator={false}
-            dropdownStyle={styles.dropdownMenuStyle}
-          />
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.TextInput}
+              placeholder="Chassis Number"
+              placeholderTextColor="#19788e"
+              onChangeText={(text) => {
+                setErrMsg({ ...errMsg, contact_person: "" });
+                setVehicleDetails({ ...vehicleList, chassis_no: text })
+              }
+              }
+              value={
+                selectVehicle.vehicle_axle_type
+                  ? selectVehicle.vehicle_axle_type
+                  : ""
+              }
+            />
+          </View>
         </>
-      :""}
+)}
 
 
         <Text style={styles.HeaderText}>Chassis Number</Text>
@@ -633,8 +745,13 @@ export default function NewVehicle(props) {
             placeholderTextColor="#19788e"
             onChangeText={(text) => {
               setErrMsg({ ...errMsg, contact_person: "" });
-              setVehicleDetails({ ...vehiclesDetails, chassis_no: text })
+              setVehicleDetails({ ...vehicleList, chassis_no: text })
             }
+            }
+            value={
+              selectVehicle.vehicle_chassis_no
+                ? selectVehicle.vehicle_chassis_no
+                : ""
             }
           />
         </View>
@@ -649,13 +766,37 @@ export default function NewVehicle(props) {
             placeholderTextColor="#19788e"
             onChangeText={(text) => {
               setErrMsg({ ...errMsg, contact_person_responsibility: "" });
-              setVehicleDetails({ ...vehiclesDetails, gross_weight: text })
+              setVehicleDetails({ ...vehicleList, gross_weight: text })
             }
+            }
+            value={
+              selectVehicle.vehicle_gross_weight
+                ? selectVehicle.vehicle_gross_weight
+                : ""
+            }
+          />
+        </View>
+        
+        <Text style={styles.HeaderText}>Current km</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Current km"
+            placeholderTextColor="#19788e"
+            onChangeText={(text) => {
+              setErrMsg({ ...errMsg, contact_person_responsibility: "" });
+              setVehicleDetails({ ...vehicleList, gross_weight: text })
+            }
+            }
+            value={
+              selectVehicle.vehicle_initial_km
+                ? selectVehicle.vehicle_initial_km
+                : ""
             }
           />
         </View>
 
-        <Text style={styles.HeaderText}>Vehicle Info</Text>
+        <Text style={styles.HeaderText}>Model - Year of Manufacture</Text>
         <View
           style={[
             {
@@ -672,10 +813,11 @@ export default function NewVehicle(props) {
               placeholderTextColor="#19788e"
               inputMode="numeric"
               maxLength={10}
-              onChangeText={(text) => {
-                setErrMsg({ ...errMsg, contact_person_phone: "" });
-                setVehicleDetails({ ...vehiclesDetails, model: text })
-              }
+              
+              value={
+                selectVehicle.vehicle_model_no
+                  ? selectVehicle.vehicle_model_no
+                  : ""
               }
             />
           </View>
@@ -687,8 +829,13 @@ export default function NewVehicle(props) {
               placeholderTextColor="#19788e"
               onChangeText={(year_manufacture) => {
                 setErrMsg({ ...errMsg, contact_person_email: "" });
-                setVehicleDetails({ ...vehiclesDetails, year_manufacture: year_manufacture })
+                setVehicleDetails({ ...vehicleList, year_manufacture: year_manufacture })
               }
+              }
+              value={
+                selectVehicle.year_manufacture
+                  ? selectVehicle.year_manufacture
+                  : ""
               }
             />
           </View>
@@ -696,36 +843,29 @@ export default function NewVehicle(props) {
         <View
           style={[
             {
-              flexDirection: 'row',
+
               width: '95%',
               gap: 4,
               backgroundColor: '#fff',
             },
           ]}>
-        {vehiclesDetails && vehiclesDetails.vehicle_name != 4 && (
+        {vehicleList && vehicleList.vehicle_name != 4 && (
           <>
-          <View style={{ ...styles.inputView, width: '50%', }}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Initial Km"
-              placeholderTextColor="#19788e"
-              onChangeText={(initial_km) => {
-                setErrMsg({ ...errMsg, initial_km: "" });
-                setVehicleDetails({ ...vehiclesDetails, initial_km: initial_km })
-              }
-              }
-            />
-            
-          </View>
-          <View style={{ ...styles.inputView, width: '50%', }}>
+          <Text style={styles.HeaderText}>Motor Number</Text>
+          <View style={{ ...styles.inputView, width: '100%', }}>
             <TextInput
               style={styles.TextInput}
               placeholder="Motor Number"
               placeholderTextColor="#19788e"
               onChangeText={(motor_no) => {
                 setErrMsg({ ...errMsg, motor_no: "" });
-                setVehicleDetails({ ...vehiclesDetails, motor_no: motor_no })
+                setVehicleDetails({ ...vehicleList, motor_no: motor_no })
               }
+              }
+              value={
+                selectVehicle.vehicle_motor_no
+                  ? selectVehicle.vehicle_motor_no
+                  : ""
               }
             />
           </View>
@@ -734,12 +874,144 @@ export default function NewVehicle(props) {
         )}
         </View>
 
-        {vehiclesDetails.vehicle_name && 
-          vehiclesDetails.vehicle_name ===3 ||
-          ((vehiclesDetails.vehicle_name ===1 ||
-          vehiclesDetails.vehicle_name ===3 || 
-          vehiclesDetails.vehicle_name === 4) &&
-          vehiclesDetails.vehicle_type !== 6) ? 
+        {selectedVehicleType && vehicleNameValue !== "Power" ? (
+          <>
+          <Text style={styles.HeaderText}>Trailer Plate Number</Text>
+        
+          <SelectDropdown
+            data={trailerList}
+            onSelect={(trailerList, index) => {
+              setErrMsg({ ...errMsg, plate_number: "" });
+              setCurrenttrailer(trailerList.vehicle_id);
+            }}
+            
+            value={trailerList.plate_number}
+            renderButton={(trailerList, isOpened) => {
+              return (
+                <View style={styles.dropdownButtonStyle}>
+                  <Text style={styles.dropdownButtonTxtStyle}>
+                    {(trailerList && trailerList.plate_number) || 'Select Vehicle Plate'}
+                  </Text>
+                  <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
+                </View>
+              );
+            }}
+            renderItem={(trailerList, index, isSelected) => {
+              return (
+                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                  <Text style={styles.dropdownItemTxtStyle}>{trailerList.plate_number}</Text>
+                </View>
+              );
+            }}
+            showsVerticalScrollIndicator={false}
+            dropdownStyle={styles.dropdownMenuStyle}
+          />
+
+          <Text style={styles.HeaderText}>Required Cargo Type</Text>
+          <View style={{ ...styles.inputView }}>
+            <TextInput
+                  style={styles.TextInput}
+                  placeholder="Vehicle Type"
+                  placeholderTextColor="#19788e"
+                  value={offerInfo.modalCargo}
+                  editable={false} 
+                  selectTextOnFocus={false}
+                />
+          </View>
+          <Text style={styles.HeaderText}>Container</Text>
+          <View style={{ ...styles.inputView }}>
+            <TextInput
+                  style={styles.TextInput}
+                  placeholder="Vehicle Type"
+                  placeholderTextColor="#19788e"
+                  value={selectVehicle?.container_type_value
+                    ? selectVehicle?.container_type_value
+                    : ""}
+                  editable={false} 
+                  selectTextOnFocus={false}
+                />
+          </View>
+          
+          <Text style={styles.HeaderText}>Vehicle Type       /        Chassis Number</Text>
+          
+          <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '95%',
+                gap: 4,
+                backgroundColor: '#fff',
+              },
+            ]}>
+            <View style={{ ...styles.inputView, width: '50%', }}>
+              <TextInput
+                style={styles.TextInput}
+                placeholder="Vehicle Type"
+                placeholderTextColor="#19788e"
+                value={selectedtrailer?.vehicle_type
+                  ? selectedtrailer?.vehicle_type
+                  : ""}
+                editable={false} 
+                selectTextOnFocus={false}
+              />
+            </View>
+            <View style={{ ...styles.inputView, width: '50%', }}>
+              <TextInput
+                style={styles.TextInput}
+                placeholder="Chassis Number"
+                placeholderTextColor="#19788e"
+                value={selectedtrailer?.vehicle_chassis_no
+                  ? selectedtrailer?.vehicle_chassis_no
+                  : ""}
+                editable={false} 
+                selectTextOnFocus={false}
+              />
+            </View>
+          </View>
+
+          <Text style={styles.HeaderText}>Gross Weight       /       Vehicle Load Capacity Quintals</Text>
+          <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '95%',
+                gap: 4,
+                backgroundColor: '#fff',
+              },
+            ]}>
+            <View style={{ ...styles.inputView, width: '50%', }}>
+              <TextInput
+                style={styles.TextInput}
+                placeholder="Vehicle Type"
+                placeholderTextColor="#19788e"
+                value={selectedtrailer?.vehicle_gross_weight
+                  ? selectedtrailer?.vehicle_gross_weight
+                  : ""}
+                editable={false} 
+                selectTextOnFocus={false}
+              />
+            </View>
+            <View style={{ ...styles.inputView, width: '50%', }}>
+              <Text style={styles.TextInput}>
+                {selectedtrailer?.vehicle_capacity
+                  ? selectedtrailer?.vehicle_capacity
+                  : ""}
+              </Text>
+              
+            </View>
+          </View>
+          </>
+        )
+        :
+        ""
+      }
+
+        {vehicleList.vehicle_name && 
+          vehicleList.vehicle_name ===3 ||
+          ((vehicleList.vehicle_name ===1 ||
+          vehicleList.vehicle_name ===3 || 
+          vehicleList.vehicle_name === 4) &&
+          vehicleList.vehicle_type !== 6) ? 
           <> 
 
             <Text style={styles.HeaderText}>Vehicle Load Capacity in Quintal</Text>
@@ -750,338 +1022,62 @@ export default function NewVehicle(props) {
                 placeholderTextColor="#19788e"
                 onChangeText={(text) => {
                   setErrMsg({ ...errMsg, vehicle_capacity: "" });
-                  setVehicleDetails({ ...vehiclesDetails, vehicle_capacity: text })
+                  setVehicleDetails({ ...vehicleList, vehicle_capacity: text })
                 }
                 }
               />
             </View>
           </>
           :
-        ""}
-
-        {vehiclesDetails && (vehiclesDetails.vehicle_name === 4 &&
-        (vehiclesDetails.vehicle_type=== 2)
-        )
-        ?
-        <>
-          <Text style={styles.HeaderText}>Container</Text>
-          <Text style={{...styles.HeaderText, paddingTop: 0}}>
-            {console.log(containerList)}
-            {
-            containerList.map((name, index) => (
-              <View key={index} style={styles.selectedContainer}>
-                <TouchableOpacity
-                  style={styles.removeContainer}
-                  onPress={() => removeContainer(name.value)}
-                >
-                  <Text style={styles.removeButtonText}>X</Text>
-                </TouchableOpacity>
-                <Text>{name.label}</Text>
-              </View>
-            ))
-          }</Text>
-          <SelectDropdown
-            data={vehicleContainer}
-            onSelect={(vehicleContainer, index) => {
-              setErrMsg({ ...errMsg, container_type: "" });
-              const newContainerType = [
-                { label: vehicleContainer.container_type_name, value: vehicleContainer.container_type_id },
-              ];
-          
-              setSelectedContainers((containerList) => [...containerList, ...newContainerType]);
-            }}
-            
-            value={vehiclesDetails.container_type}
-            renderButton={(vehicleContainer, isOpened) => {
-              return (
-                <View style={styles.dropdownButtonStyle}>
-                  <Text style={styles.dropdownButtonTxtStyle}>
-                    {(vehicleContainer && vehicleContainer.container_type_name) || 'Select Container Type'}
-                  </Text>
-                  <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
-                </View>
-              );
-            }}
-            renderItem={(vehicleContainer, index, isSelected) => {
-
-              return (
-                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
-                  <Text style={styles.dropdownItemTxtStyle}>
-                    {vehicleContainer.container_type_name} {' '}
-                  </Text>
-                </View>
-              );
-
-            }}
-            showsVerticalScrollIndicator={false}
-            dropdownStyle={styles.dropdownMenuStyle}
-          />
-        </>
-          :""
-        }
-        {vehiclesDetails && vehiclesDetails.vehicle_name === 1 ||
-                      (vehiclesDetails.vehicle_type=== 1 &&
-                          vehiclesDetails.vehicle_name===4) ||
-                      (vehiclesDetails.vehicle_type===3 &&
-                          vehiclesDetails.vehicle_name===4) ||
-                          ((vehiclesDetails.vehicle_name===3) ||
-                      (vehiclesDetails.vehicle_name === 4 &&
-                          ((vehiclesDetails.vehicle_type===5 
-                          && vehiclesDetails.vehicle_axle===2) ||
-                          (vehiclesDetails.vehicle_type===5 
-                          && vehiclesDetails.vehicle_axle===1) ||
-                          (vehiclesDetails.vehicle_type===2))
-                          )) ?
-        <View style={styles.section}>
-          <Checkbox
-            style={styles.checkbox}
-            value={isBreakBulkChecked}
-            onValueChange={setBreakBulkChecked}
-            color={isBreakBulkChecked ? '#19788e' : undefined}
-          />
-          <Text style={styles.paragraph}>Break Bulk</Text>
-        </View>
-        :""
-        }
+        ""}     
         
-        {vehiclesDetails.vehicle_name===1 || (vehiclesDetails.vehicle_type===1 && vehiclesDetails.vehicle_name===4) ||
-            (vehiclesDetails.vehicle_type===3 && vehiclesDetails.vehicle_name===4) || 
-            (vehiclesDetails.vehicle_name===3) || (vehiclesDetails.vehicle_name ===4 && 
-              (vehiclesDetails.vehicle_type===5 && vehiclesDetails.vehicle_axle===2)) 
-          ?
-          <View style={styles.section}>
-            <Checkbox
-              style={styles.checkbox}
-              value={isBulkChecked}
-              onValueChange={setBulkChecked}
-              color={isBulkChecked ? '#19788e' : undefined}
-            />
-            <Text style={styles.paragraph}>Bulk</Text>
-          </View>
-          : ""
-        }
 
-        <Text style={styles.HeaderText}>GPS Availability</Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.TextInput}
-            placeholder="Vendor Name"
-            placeholderTextColor="#19788e"
-            onChangeText={(text) => {
-              setErrMsg({ ...errMsg, vendor_name: "" });
-              setVehicleDetails({ ...vehiclesDetails, vendor_name: text })
-            }
-            }
-          />
-        </View>
-        <View
-          style={[
-            {
-              flexDirection: 'row',
-              width: '95%',
-              gap: 4,
-              backgroundColor: '#fff',
-            },
-          ]}>
-          <View style={{ ...styles.inputView, width: '50%', }}>
+        
+        <Text style={styles.HeaderText}>Select Driver</Text>
+        
+        <SelectDropdown
+          data={driverList}
+          onSelect={(driverList, index) => {
+            setSelectedDriver(driverList.licence_number);
+            setVehicleDetails({ ...vehicleList, driver_id: driverList.driver_id })
+          }}
+          value={driverList.driver_name}
+          renderButton={(driverList, isOpened) => {
+            return (
+              <View style={styles.dropdownButtonStyle}>
+                <Text style={styles.dropdownButtonTxtStyle}>
+                  {(driverList && driverList.driver_name) || 'Select Driver'}
+                </Text>
+                <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
+              </View>
+            );
+          }}
+          renderItem={(driverList, index, isSelected) => {
+            return (
+              <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                <Text style={styles.dropdownItemTxtStyle}>{driverList.driver_name}</Text>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+          dropdownStyle={styles.dropdownMenuStyle}
+        />
+        <Text style={styles.HeaderText}>Driver's License Number</Text>
+        <View style={{ ...styles.inputView }}>
             <TextInput
               style={styles.TextInput}
-              placeholder="Vendor Contact"
+              placeholder="Driver and Licence Number"
               placeholderTextColor="#19788e"
-              onChangeText={(vendor_contact) => {
-                setErrMsg({ ...errMsg, vendor_contact: "" });
-                setVehicleDetails({ ...vehiclesDetails, vendor_contact: vendor_contact })
-              }
-              }
-            />
-          </View>
-          <View style={{ ...styles.inputView, width: '50%', }}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Vendor Platform"
-              placeholderTextColor="#19788e"
-              onChangeText={(vendor_platform) => {
-                setErrMsg({ ...errMsg, vendor_platform: "" });
-                setVehicleDetails({ ...vehiclesDetails, vendor_platform: vendor_platform })
-              }
-              }
-            />
-          </View>
-        </View>
-
-        <Text style={styles.HeaderText}>Vendor Address</Text>
-        <View style={{ ...styles.inputView, height: 120, marginTop: 10 }}>
-          <TextInput
-            style={{ ...styles.TextInput, height: 120, textAlignVertical: 'top' }}
-            multiline={true}
-            numberOfLines={10}
-            placeholder="Vendor Address "
-            placeholderTextColor="#19788e"
-            onChangeText={(vendor_address) => {
-              setErrMsg({ ...errMsg, vendor_address: "" });
-              setVehicleDetails({ ...vehiclesDetails, vendor_address: vendor_address })
-            }
-            }
-          />
-        </View>
-
-        {/* add conditional inputs here */}
-
-        <Text style={styles.HeaderText}>Vehicles Documents</Text>
-        <View
-          style={[
-            {
-              flexDirection: 'row',
-              width: '95%',
-              gap: 4,
-              backgroundColor: '#fff',
-            },
-          ]}>
-          <View style={{ ...styles.inputView, width: '50%', }}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Insurance No"
-              placeholderTextColor="#19788e"
-              inputMode="numeric"
-              onChangeText={(insurance_no) => {
-                setErrMsg({ ...errMsg, insurance_no: "" });
-                setVehicleDetails({ ...vehiclesDetails, insurance_no: insurance_no })
-              }
-              }
+              editable={false} 
+              selectTextOnFocus={false}
+              value={selectedDriver}
             />
           </View>
 
-          <View style={{ ...styles.inputView, width: '50%', }}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Insurance Company"
-              placeholderTextColor="#19788e"
-              maxLength={4}
-              onChangeText={(insurance_company) => {
-                setErrMsg({ ...errMsg, insurance_company: "" });
-                setVehicleDetails({ ...vehiclesDetails, insurance_company: insurance_company })
-              }
-              }
-            />
-          </View>
-        </View>
-        <Text style={styles.HeaderText}>Insurance Issue Date</Text>
-        <View style={styles.inputView}>
 
-          <TouchableOpacity onPress={fromShowDatePicker} style={styles.TextInput}>
-            {fromSelectedDate && (
-              <Text>Selected Date: {fromSelectedDate.toDateString()}</Text>
-            )}
-            {!fromSelectedDate && (
-              <Text>Select a date</Text>
-            )}
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={isFromDatePickerVisible}
-            mode="date"
-            onConfirm={fromHandleConfirm}
-            onCancel={fromHideDatePicker}
-          />
-        </View>
-        <Text style={styles.HeaderText}>Insurance Expiry Date</Text>
-        <View style={styles.inputView}>
-
-          <TouchableOpacity onPress={toShowDatePicker} style={styles.TextInput}>
-            {toSelectedDate && (
-              <Text>Selected Date: {toSelectedDate.toDateString()}</Text>
-            )}
-            {!toSelectedDate && (
-              <Text>Select a date</Text>
-            )}
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={isToDatePickerVisible}
-            mode="date"
-            onConfirm={toHandleConfirm}
-            onCancel={toHideDatePicker}
-          />
-        </View>
-
-        <Text style={styles.HeaderText}>Type of Insurance</Text>
-        <View
-          style={[
-            {
-              flexDirection: 'row',
-              width: '95%',
-              gap: 4,
-              backgroundColor: '#fff',
-            },
-          ]}>
-
-          <SelectDropdown
-            data={insuranceType}
-            onSelect={(insuranceType, index) => {
-              setErrMsg({ ...errMsg, insurance_type: "" });
-              setVehicleDetails({ ...vehiclesDetails, insurance_type: insuranceType.vehicle_insurance_type_value })
-            }}
-            value={vehiclesDetails.insurance_type}
-            renderButton={(insuranceType, isOpened) => {
-              return (
-                <View style={{ ...styles.dropdownButtonStyle, width: '50%', }}>
-                  <Text style={styles.dropdownButtonTxtStyle}>
-                    {(insuranceType && insuranceType.vehicle_insurance_type_value) || 'Select Insurance Type'}
-                  </Text>
-                  <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
-                </View>
-              );
-            }}
-            renderItem={(insuranceType, index, isSelected) => {
-              return (
-                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
-                  <Text style={styles.dropdownItemTxtStyle}>{insuranceType.vehicle_insurance_type_value}</Text>
-                </View>
-              );
-            }}
-            showsVerticalScrollIndicator={false}
-            dropdownStyle={styles.dropdownMenuStyle}
-          />
-
-
-          <View style={{ ...styles.inputView, width: '50%', }}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Sum Insured"
-              placeholderTextColor="#19788e"
-              onChangeText={(text) => {
-                setErrMsg({ ...errMsg, sum_insured: "" });
-                setVehicleDetails({ ...vehiclesDetails, sum_insured: text })
-              }
-              }
-            />
-          </View>
-        </View>
-
-        <View
-          style={[
-            {
-              flexDirection: 'row',
-              width: '94%',
-              gap: 15,
-              backgroundColor: '#fff',
-              minHeight: 200,
-            },
-          ]}>
-          <View style={{ ...styles.iconArea, height: 60, width: "50%", marginLeft: 20 }}>
-            <Text style={{ alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15 }}>Upload Insurance</Text>
-            <View style={{ marginLeft: -10, marginTop: 10 }}>
-              {placeholderImage && <Image style={{ ...styles.cardImage, borderRadius: 10, height: 100, width: 100 }} source={{ uri: placeholderImage }} />}
-              <TouchableOpacity style={styles.uploadButton} onPress={pickImage2}>
-                <Text style={{ ...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor }}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> {fileName ? <Text>{fileName}</Text> : "Upload"}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-        </View>
-
-
-        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() => this._register()}>
+        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() => this.addVehicleOffer()}>
           {!state.isLoading && (
-            <Text style={appPageStyle.primaryTextColor}> Continue <Ionicons name="add-outline" size={15} /></Text>
+            <Text style={appPageStyle.primaryTextColor}>  Add Offer</Text>
           )}
           {state.isLoading && (
             <ActivityIndicator size="small" {...appPageStyle.primaryTextColor} />
@@ -1126,6 +1122,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     // marginLeft: 20,
+    color: '#555'
   },
   forgot_button: {
     height: 30,

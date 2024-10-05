@@ -97,7 +97,6 @@ export default function OnlineOfferLoad() {
     const [errMsg, setErrMsg] = useState({ bidAmount: ""});
 
     const sendTheBid = async (trip_id) => {
-      console.log(modalState.modalBidAmount);
       if(modalState.modalBidAmount === undefined || modalState.modalBidAmount === ''){
         setErrMsg({ ...errMsg, bidAmount: "** Please Enter Your Bid **" });
         return;
@@ -132,8 +131,9 @@ export default function OnlineOfferLoad() {
   
       await postMultipartWithAuthCallWithErrorResponse(ApiConfig.MAKEBID, details)
         .then((res) => {
-          console.log(res);
-          navigation.navigate('OfferNewVehicle', {trip_id: trip_id, amount:modalState.modalBidAmount })
+          setModalVisible(!modalVisible);
+          // console.log(res.json.bid_id);
+          navigation.navigate('OfferNewVehicle', {...modalState, bid_id: res.json.bid_id, trip_id: trip_id, amount:modalState.modalBidAmount });
         })
         .catch((err) => console.log(err));
     };
@@ -154,7 +154,9 @@ export default function OnlineOfferLoad() {
     });
 
 
-    const makeBid = async (loads) =>{    
+    const makeBid = async (loads) =>{   
+      console.log(loads);
+      setModalVisible(!modalVisible);
         setModalState({ ...modalState, 
           modalRf: loads.load_reference_no,
           modalCompany: loads.trip_company_name,
@@ -166,10 +168,10 @@ export default function OnlineOfferLoad() {
           modalAuctionType: loads.auction_details.auction_type,
           modalStartDate: loads.auction_details.auction_start_date,
           modalExpireDate: loads.auction_details.auction_end_date,
+          modalContainer: loads.container_type,
           modalBidAmount:'',
           modalLoadId:loads.trip_id,
         });
-        setModalVisible(true);
       };
 
     useEffect(() => {
@@ -216,11 +218,13 @@ export default function OnlineOfferLoad() {
                     placeholder="Bid Amount"
                     placeholderTextColor="#19788e"
                     inputMode="numeric"
+                    returnKeyType="done"
                     onChangeText={(text) => {
                       setErrMsg({ ...errMsg, bidAmount: "" });
                       setModalState({ ...modalState,  modalBidAmount: text })
                     }
                     }
+                    clearButtonMode="while-editing"
                   />
                   {errMsg.bidAmount.length > 0 && (
                     <Text style={{color: '#FF5151', marginTop: 0, position: "relative"}}>{errMsg.bidAmount}</Text>
@@ -319,7 +323,7 @@ const styles = StyleSheet.create({
     inputView: {
       backgroundColor: "rgba(25, 120, 142, 0.3)",
       borderRadius: 30,
-      width: '100%',
+      minWidth: '100%',
       height: 45,
       marginBottom: 20,
       alignItems: "center",
@@ -334,7 +338,7 @@ const styles = StyleSheet.create({
       marginBottom: 30,
     },
     loginBtn: {
-      width: "90%",
+      minWidth: '100%',
       borderRadius: 25,
       height: 50,
       alignItems: "center",
@@ -435,6 +439,7 @@ const styles = StyleSheet.create({
       elevation: 5,
     },
     button: {
+      minWidth: '100%',
       borderRadius: 20,
       padding: 10,
       elevation: 2,

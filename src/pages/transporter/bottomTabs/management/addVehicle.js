@@ -396,28 +396,28 @@ export default function NewVehicle() {
       type: insurance_file.type
     });
 
-    vehiclesDetails.vehicle_images?.map((img) => {
-      const vProfile = img.uri;
-      const v_img = vProfile.split('/').pop();
+    // vehiclesDetails.vehicle_images?.map((img) => {
+    //   const vProfile = img.uri;
+    //   const v_img = vProfile.split('/').pop();
 
-      const vechicle_file = {
-        uri: img.uri,
-        name: v_img,
-        type: img.mimeType.endsWith('.pdf')
-          ? "application/pdf"
-          : img.mimeType.endsWith('.png') || img.mimeType.endsWith('.jpeg') || img.mimeType.endsWith('.jpg')
-            ? "image/png"
-            : "image/jpeg"
-      };
+    //   const vechicle_file = {
+    //     uri: img.uri,
+    //     name: v_img,
+    //     type: img.mimeType.endsWith('.pdf')
+    //       ? "application/pdf"
+    //       : img.mimeType.endsWith('.png') || img.mimeType.endsWith('.jpeg') || img.mimeType.endsWith('.jpg')
+    //         ? "image/png"
+    //         : "image/jpeg"
+    //   };
 
 
-    });
-
-    // formData.append("vehicle_images[]", {
-    //   uri: insurance_file.uri,
-    //   name: insurance_file.name,
-    //   type: insurance_file.type
     // });
+
+    formData.append("vehicle_images[]", {
+      uri: insurance_file.uri,
+      name: insurance_file.name,
+      type: insurance_file.type
+    });
 
     console.log(formData);
     multipartPostCallWithErrorResponse(
@@ -439,7 +439,7 @@ export default function NewVehicle() {
       if (res.json.message === "Transporter details added successfully") {
         setState({ ...state, isLoading: false });
         successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
-        navigation.navigate('');
+        navigation.navigate('transporterVehiclesSearch');
       } else {
         toastWithDurationHandler("An internal server error occurred. Please Try again!");
       }
