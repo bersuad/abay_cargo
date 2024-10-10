@@ -199,7 +199,7 @@ export default function OfferLoad() {
                           ]}>
                             <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
                                 <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
-                                  onPress={()=> navigation.navigate('OfferNewVehicle', { loads })}
+                                  onPress={()=> navigation.navigate('DirectOfferNewVehicle', { loads })}
                                 >
                                     <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
                                 </TouchableOpacity>

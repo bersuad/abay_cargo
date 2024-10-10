@@ -53,6 +53,7 @@
     "react-native-simple-toast": "^3.3.1",
     "react-native-snackbar-component": "^1.1.12",
     "react-native-tab-view": "^3.5.2",
+    "react-native-table-component": "^1.2.2",
     "react-native-web": "~0.19.6",
     "react-navigation": "^4.1.1",
     "react-navigation-material-bottom-tabs": "^2.3.5",

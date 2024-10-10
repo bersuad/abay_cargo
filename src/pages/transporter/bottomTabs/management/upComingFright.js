@@ -61,11 +61,14 @@ export default function OnGoingFright() {
   
       await AsyncStorage.getItem('userDetails').then(value =>{
         setUserDetails(value);
-      });    
-  
-      postMultipartWithAuthCallWithErrorResponse(
-        ApiConfig.UPCOMMING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
-      ).then((res) => {
+      });  
+      
+
+        postMultipartWithAuthCallWithErrorResponse(
+          ApiConfig.UPCOMMING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id,  }),
+        ).then((res) => {
+
+        console.log(res+" upcoming");
     
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
@@ -124,9 +127,9 @@ export default function OnGoingFright() {
         )}
       {!state.isLoading &&(
         <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-        {dashBoardData.ongoing_freights &&
-          dashBoardData.ongoing_freights.length &&
-          dashBoardData.ongoing_freights.map((fright, key) => (
+        {dashBoardData.load_list &&
+          dashBoardData.load_list.length > 0 &&
+          dashBoardData.load_list.map((fright, key) => (
             
             <View style={[styles.boxShadow, {minHeight: 150, width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
               <View
@@ -177,7 +180,7 @@ export default function OnGoingFright() {
         }
         </View>
       )}
-      {!dashBoardData.ongoing_freights &&(
+      {!dashBoardData.load_list &&(
           <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
             <Text style={{fontWeight: 'bold'}}>No Data Found</Text>
             <Text style={{fontWeight: 'normal', fontSize: 9}}>Pull down to refresh.</Text>

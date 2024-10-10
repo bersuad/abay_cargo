@@ -86,7 +86,7 @@ export default function OnlineOfferVehicle() {
         });    
     
         postMultipartWithAuthCallWithErrorResponse(
-            ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES, JSON.stringify({ user_id, api_key, customer_id })
+            ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES_ONLINE, JSON.stringify({ user_id, api_key, customer_id })
             // ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES_ONLINE, JSON.stringify({ ...customerData }) ** for direct order options **
         ).then((res) => {
 

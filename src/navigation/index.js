@@ -48,6 +48,7 @@ import AddNewVehicle from '../pages/transporter/bottomTabs/management/addVehicle
 import ViewOfferLoad from '../pages/transporter/bottomTabs/management/viewOfferLoad';
 import TransporterAuction from '../pages/transporter/bottomTabs/management/transporterAuction';
 import OfferNewVehicle from '../pages/transporter/bottomTabs/management/offerNewVehicle';
+import DirectOfferNewVehicle from '../pages/transporter/bottomTabs/management/directOfferNewVehicle';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -429,7 +430,7 @@ export default function App() {
           component={OnlineOfferVehicle} 
           options={{
             headerShown: true,
-            headerTitle:'Direct Vehicle Offer',
+            headerTitle:'Online Vehicle Offer',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',
@@ -612,6 +613,21 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Offer Vehicle',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+          }}
+          
+        />
+        <Stack.Screen
+          name="DirectOfferNewVehicle"
+          title="Direct Offer Vehicle"
+          component={DirectOfferNewVehicle} 
+          options={{
+            headerShown: true,
+            headerTitle:'Direct Offer Vehicle',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

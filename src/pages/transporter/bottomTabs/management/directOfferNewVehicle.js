@@ -46,7 +46,7 @@ import { height } from "deprecated-react-native-prop-types/DeprecatedImagePropTy
 
 export default function NewVehicle(props) {
     const navigation = useNavigation();
-    const offerInfo = props.route.params;
+    const offerInfo = props.route.params.loads;
     const [state, setState] = useState({
     device_token: "",
     device_id: "",
@@ -57,7 +57,7 @@ export default function NewVehicle(props) {
     inputFormat: true,
     checkInternet: true,
   });
-
+  
   
   const [stateTable, setTableState] = useState({
       tableHead: ['S.No', 'Reference Number', 'Model', 'Power Plate No. & Type', 'Trailer Plate No. & Type', 'Driver Name'],
@@ -97,9 +97,9 @@ export default function NewVehicle(props) {
   const [checkTrailer, setCheckTrailer] = useState([]);
   const [trailerContainer, setTrailerContainer] = useState([]);
   const [modalState, setModalState] = useState({
-    modalRf: '',
+    load_reference_no: '',
     modalCompany:'',
-    modalCargo:'',
+    cargo_type:'',
     modalQuantity:'',
     modalExpectedDate:'',
     modalAuctionName:'',
@@ -131,14 +131,6 @@ export default function NewVehicle(props) {
   useEffect(() => {
     
   }, [vehicleDetails, getSelectedTruckID, addedVehicleList, axleType]);
-
-  const emptyVehicleData = {
-    truck_id: "",
-    trailer_id: "",
-    driver_id: "",
-    bid_id: (offerInfo?.bid_id),
-    trip_id: offerInfo?.trip_id,
-  };
 
   
 
@@ -191,9 +183,9 @@ export default function NewVehicle(props) {
     const api_key = await AsyncStorage.getItem('api_key');
     
     postWithAuthCallWithErrorResponse(
-      ApiConfig.ONLINE_LISTVEHICLEOFFER,
+      ApiConfig.LISTVEHICLEOFFER,
       JSON.stringify({
-        user_id, customer_id, api_key, reference_no: offerInfo.modalRf, bid_id: offerInfo.bid_id
+        user_id, customer_id, api_key, reference_no: offerInfo.load_reference_no
       })
     )
       .then((res) => {
@@ -260,9 +252,9 @@ export default function NewVehicle(props) {
         customer_id, 
         api_key, 
         vehicle_type: selectedVehicleType,
-        cargo_type: offerInfo?.modalCargo, 
-        container_type: offerInfo?.modalContainer, 
-        container_quantity: offerInfo?.modalQuantity, 
+        cargo_type: offerInfo?.cargo_type, 
+        container_type: offerInfo?.container_type, 
+        container_quantity: offerInfo?.quantity, 
         axle_type: axleType 
       })
     )
@@ -460,10 +452,11 @@ export default function NewVehicle(props) {
     postWithAuthCallWithErrorResponse(
       ApiConfig.POWER_PLATE_NO,
       JSON.stringify({ user_id, customer_id, api_key, vehicle_name_id: vehicle_id, 
-          cargo_type: offerInfo?.modalCargo, container_type: offerInfo?.modalContainer, 
-          container_quantity: offerInfo?.modalQuantity})
+          cargo_type: offerInfo?.cargo_type, container_type: offerInfo?.container_type, 
+          container_quantity: offerInfo?.quantity})
     )
       .then((res) => {
+        console.log(res);
         if (res.json.message === 
           "Invalid user authentication,Please try to relogin with exact credentials.") {
             AsyncStorage.clear();
@@ -511,14 +504,14 @@ export default function NewVehicle(props) {
     setCheckTrailer([{ ...trailer }]);
     setSelectedtrailer({
       ...trailer,
-      load_reference_no: offerInfo && offerInfo.modalRf,
+      load_reference_no: offerInfo && offerInfo.load_reference_no,
     });
     let cont_array = [];
-    if (offerInfo?.modalCargo === "Container"){
+    if (offerInfo?.cargo_type === "Container"){
       cont_array.push(trailer?.container_type_value_id[0]);
     }
     
-    if (offerInfo?.modalCargo === "Container" && trailer?.container_type_value_id[1]) {
+    if (offerInfo?.cargo_type === "Container" && trailer?.container_type_value_id[1]) {
       cont_array.push(trailer?.container_type_value_id[1]);
     }
     
@@ -541,7 +534,7 @@ export default function NewVehicle(props) {
     
     setSelectVehicle({
       ...vehicle,
-      load_reference_no: offerInfo && offerInfo.modalRf,
+      load_reference_no: offerInfo && offerInfo.load_reference_no,
     });
     let cont_array = [];
     cont_array.push(vehicle?.container_type_value_id);
@@ -582,11 +575,11 @@ export default function NewVehicle(props) {
         ? Number(getSelectedTrailer)
         : "",
       driver_id: vehicleDetails?.driver_id,
-      reference_no: offerInfo?.modalRf,
+      reference_no: offerInfo?.load_reference_no,
       bid_id: offerInfo?.bid_id,
       vehicle_container_id: container,
       trailer_vehicle_container_id: trailerContainer,
-      cargo_type: offerInfo?.modalCargo,        
+      cargo_type: offerInfo?.cargo_type,        
     });
         
         console.log(online_details);
@@ -648,7 +641,7 @@ export default function NewVehicle(props) {
         ? Number(vehicleDetails?.trailer_id)
         : "",
       driver_id: vehicleDetails?.driver_id,
-      reference_no: offerInfo.modalRf,
+      reference_no: offerInfo.load_reference_no,
       bid_id: vehicleDetails?.bid_id,
     });
 
@@ -772,7 +765,7 @@ export default function NewVehicle(props) {
                         <Text>{key+1}</Text>
                       </View>
                       <View style={{ ...styles.inputView, width: '16%', backgroundColor: '#fff', borderRadius: 0, marginTop: "-10%", borderRightColor: '#111', borderRightWidth:1, height:100}}>
-                        <Text>{offerInfo.modalRf}</Text>
+                        <Text>{offerInfo.load_reference_no}</Text>
                       </View>
                       <View style={{ ...styles.inputView, width: '11%', backgroundColor: '#fff', borderRadius: 0, marginTop: "-10%", borderRightColor: '#111', borderRightWidth:1, height:100}}>
                         <Text>{loads.vehicle_model_no}</Text>
@@ -831,7 +824,7 @@ export default function NewVehicle(props) {
               style={styles.TextInput}
               placeholder="Reference Number"
               placeholderTextColor="#19788e"
-              value={offerInfo.modalRf}
+              value={offerInfo.load_reference_no}
               editable={false} 
               selectTextOnFocus={false}
             />
@@ -841,7 +834,7 @@ export default function NewVehicle(props) {
               style={styles.TextInput}
               placeholder="Model"
               placeholderTextColor="#19788e"
-              value={offerInfo.modalCargo}
+              value={offerInfo.cargo_type}
               editable={false} 
               selectTextOnFocus={false}
             />
@@ -1164,7 +1157,7 @@ export default function NewVehicle(props) {
                   style={styles.TextInput}
                   placeholder="Vehicle Type"
                   placeholderTextColor="#19788e"
-                  value={offerInfo.modalCargo}
+                  value={offerInfo.cargo_type}
                   editable={false} 
                   selectTextOnFocus={false}
                 />
@@ -1350,7 +1343,7 @@ export default function NewVehicle(props) {
               <ActivityIndicator size="small" {...appPageStyle.primaryTextColor} />
             )}
           </TouchableOpacity>
-          :" "
+          :""
         }
         
       </SafeAreaView>
