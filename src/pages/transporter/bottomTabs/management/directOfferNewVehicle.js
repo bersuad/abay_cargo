@@ -60,14 +60,14 @@ export default function NewVehicle(props) {
   
   
   const [stateTable, setTableState] = useState({
-      tableHead: ['S.No', 'Reference Number', 'Model', 'Power Plate No. & Type', 'Trailer Plate No. & Type', 'Driver Name'],
-      tableData: [
-        ['1', '2', '3', '4'],
-        ['a', 'b', 'c', 'd'],
-        ['1', '2', '3', '4'],
-        ['a', 'b', 'c', 'd']
-      ]
-    });
+    tableHead: ['S.No', 'Reference Number', 'Model', 'Power Plate No. & Type', 'Trailer Plate No. & Type', 'Driver Name'],
+    tableData: [
+      ['1', '2', '3', '4'],
+      ['a', 'b', 'c', 'd'],
+      ['1', '2', '3', '4'],
+      ['a', 'b', 'c', 'd']
+    ]
+  });
 
   const [dropDownList, setDropDownList] = useState({
     vehicle_name: [],
@@ -130,7 +130,7 @@ export default function NewVehicle(props) {
 
   useEffect(() => {
     
-  }, [vehicleDetails, getSelectedTruckID, addedVehicleList, axleType]);
+  }, [addedVehicleList, vehicleDetails, getSelectedTruckID, axleType]);
 
   
 
@@ -199,9 +199,64 @@ export default function NewVehicle(props) {
           setAddedVehicleList(res.json.vehicle_list);
           setLoadCategoryType(res.json.load_category);
         }
+
+        if (res.json.result == false && res.json.message == "No data found") {
+          setAddedVehicleList([]);
+          setLoadCategoryType("");
+          setModalVisible(!modalVisible);
+        }
       })
       .catch((err) => {
         console.log("Ex :: ", err);
+      });
+  }
+
+  const deleteVehicleOffer = async(id, vehicle_id, trailer_id, trip_id) => {
+    
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.DELETE_VEHICLE_OFFER,
+      JSON.stringify({
+        user_id, customer_id, api_key,
+        trip_vehicle_id: id,
+        vehicle_id: vehicle_id,
+        trailer_id: trailer_id,
+        trip_id: trip_id
+      })
+    )
+      .then((res) => {
+
+        if (res.json.message === 
+          "Invalid user authentication,Please try to relogin with exact credentials.") {
+            AsyncStorage.clear();
+            navigation.navigate('TruckLogin');
+        }
+
+        if(addedVehicleList.length == 0){
+          setAddedVehicleList(['']);
+          setModalVisible(!modalVisible);
+          toastWithDurationHandler("Please Select a vehicle!");
+        }
+
+        if (res.json.message === "Vehicle deleted successfully") {
+          if(addedVehicleList.length == 0){
+            setModalVisible(!modalVisible);
+            toastWithDurationHandler("Please Select a vehicle!");
+          }
+          getAddVehicleList();
+        }
+        if (res.json.message === "An internal server error occurred.") {
+          setModalVisible(!modalVisible);
+          toastWithDurationHandler("An internal server error occurred. Please Try again!");
+          getAddVehicleList();
+        }
+        
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }
 
@@ -240,7 +295,6 @@ export default function NewVehicle(props) {
     const api_key = await AsyncStorage.getItem('api_key');
     
     if (selectedVehicleType == "High Bed" && !axleType) {
-      console.log(selectVehicle.vehicle_type);
       setCurrentPlateNo();
       return;
     }
@@ -456,7 +510,6 @@ export default function NewVehicle(props) {
           container_quantity: offerInfo?.quantity})
     )
       .then((res) => {
-        console.log(res);
         if (res.json.message === 
           "Invalid user authentication,Please try to relogin with exact credentials.") {
             AsyncStorage.clear();
@@ -576,19 +629,17 @@ export default function NewVehicle(props) {
         : "",
       driver_id: vehicleDetails?.driver_id,
       reference_no: offerInfo?.load_reference_no,
-      bid_id: offerInfo?.bid_id,
       vehicle_container_id: container,
       trailer_vehicle_container_id: trailerContainer,
       cargo_type: offerInfo?.cargo_type,        
     });
         
-        console.log(online_details);
-        console.log(" ");
       postMultipartWithAuthCallWithErrorResponse(
-        ApiConfig.ADD_ONLINE_VEHICLEOFFER,
+        ApiConfig.ADDVEHICLEOFFER,
         online_details
       )
         .then((res) => {
+          
           if (res.json.message === 
             "Invalid user authentication,Please try to relogin with exact credentials.") {
               setState({ ...state, isLoading: false });
@@ -601,7 +652,7 @@ export default function NewVehicle(props) {
             toastWithDurationHandler("An internal server error occurred. Please Try again!");
           }
 
-          if (res.json.message === "Vehicle offer added") {
+          if (res.json.message === "Vehicle offer added successfully") {
             setState({ ...state, isLoading: false });
             successWithDurationHandler("Vehicle offer added Successfully!");
             
@@ -613,7 +664,7 @@ export default function NewVehicle(props) {
             setTimeout(function () {
               setState({ ...state, isLoading: false });
               setModalVisible(!modalVisible);
-            }, 2000);
+            }, 1000);
           }
           
           if(res.json.result == false) {
@@ -644,19 +695,17 @@ export default function NewVehicle(props) {
       reference_no: offerInfo.load_reference_no,
       bid_id: vehicleDetails?.bid_id,
     });
-
-    console.log(details);
     
     postMultipartWithAuthCallWithErrorResponse(
-      ApiConfig.ONLINE_SENDVEHICLEOFFER,
+      ApiConfig.SENDVEHICLEOFFER,
       details
     )
     .then((res) => {
 
-      console.log(res);
       
       if (res.json.message === 
         "Invalid user authentication,Please try to relogin with exact credentials.") {
+          setState({ ...state, isLoading: false });
           AsyncStorage.clear();
           navigation.navigate('TruckLogin');
       }
@@ -666,7 +715,7 @@ export default function NewVehicle(props) {
         setState({ ...state, isLoading: false });
         toastWithDurationHandler("Something went wrong, Please Try again!");
       }
-      if (res.json.message === "Vehicle offer send successfully") {
+      if (res.json.message === "Vehicle offer sent successfully") {
         setModalVisible(!modalVisible);
 
         successWithDurationHandler("Offer Send Successfully, Abay Logistics Will Contact you soon. Thank you!");        
@@ -675,13 +724,14 @@ export default function NewVehicle(props) {
         setAxleType("");
         setState({ ...state, isLoading: false });
         setTimeout(function () {
-          navigation.navigate('OnlineOfferVehicle');
+          navigation.navigate('OfferVehicle');
         }, 5000);
         
       }
       
     })
     .catch((err) => console.log(err));
+  setState({ ...state, isLoading: true });
   }
       
 
@@ -763,6 +813,17 @@ export default function NewVehicle(props) {
                         
                       <View style={{ ...styles.inputView, width: '10%', backgroundColor: '#fff', borderRadius: 0, marginTop: "-10%", borderRightColor: '#111', borderRightWidth:1, height:100 }}>
                         <Text>{key+1}</Text>
+                        <TouchableOpacity
+                          style={styles.removeButton}
+                          onPress={() => deleteVehicleOffer(
+                            loads?.trip_vehicle_id,
+                            loads?.vehicle_id,
+                            loads?.trailer_id,
+                            offerInfo?.trip_id,
+                          )}
+                        >
+                          <Text style={styles.removeButtonText}>X</Text>
+                        </TouchableOpacity>
                       </View>
                       <View style={{ ...styles.inputView, width: '16%', backgroundColor: '#fff', borderRadius: 0, marginTop: "-10%", borderRightColor: '#111', borderRightWidth:1, height:100}}>
                         <Text>{offerInfo.load_reference_no}</Text>
@@ -788,7 +849,9 @@ export default function NewVehicle(props) {
                 </View>
                 <TouchableOpacity
                   onPress={() => sendVehicleOffer()}
-                  style={[styles.button, appPageStyle.primaryColor]}>
+                  style={[styles.button, appPageStyle.primaryColor]}
+                  disabled={state.isLoading}
+                >
                   {!state.isLoading && (
                     <Text style={[styles.textStyle, appPageStyle.primaryTextColor]}>Send Offer</Text>
                   )}
@@ -1322,7 +1385,9 @@ export default function NewVehicle(props) {
         <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() =>   
           // setModalVisible(!modalVisible)
           this.addVehicleOffer()  
-        }>
+        }
+        disabled={state.isLoading}
+        >
           {!state.isLoading && (
             <Text style={appPageStyle.primaryTextColor}>  Add Vehicle</Text>
           )}
@@ -1334,8 +1399,10 @@ export default function NewVehicle(props) {
         {addedVehicleList && addedVehicleList.length > 0 ?
           <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() =>   
             setModalVisible(!modalVisible)
-            // this.addVehicleOffer()  
-          }>
+            
+          }
+          disabled={state.isLoading}
+          >
             {!state.isLoading && (
               <Text style={appPageStyle.primaryTextColor}>  Send Offer</Text>
             )}
@@ -1571,5 +1638,21 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'left',
+  },
+  removeButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  removeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

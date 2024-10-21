@@ -92,7 +92,7 @@ export default function OfferLoad() {
       postWithAuthCallWithErrorResponse(
           ApiConfig.DRIRECT_ORDER_OFFER_GOODS, JSON.stringify({ user_id, api_key, customer_id }),
       ).then((res) => {
-
+        
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
       }
@@ -107,13 +107,12 @@ export default function OfferLoad() {
     };
 
     const reject = (loads) => {
-      console.log(loads);
       setState({ ...state, actionLoading: true});
       postWithAuthCallWithErrorResponse(
         ApiConfig.DIRECT_ORDER_OFFER_GOODS_VEHICLE_REJECT,
         JSON.stringify({ user_id, api_key, customer_id,  load_id: loads.trip_id  })
       ).then((res) => {
-        console.log(res);
+        
         if (res.json.message === 
           "Invalid user authentication,Please try to relogin with exact credentials.") {
             navigation.navigate('Registration');
@@ -175,7 +174,7 @@ export default function OfferLoad() {
                             <Text style={{textAlign: 'justify', fontSize:11}}>{loads.vehicle_availability_date}</Text>    
                             <Text style={{textAlign:'justify'}}>Cargo Type: {loads.cargo_type}</Text>
                             <Text style={{textAlign:'justify'}}>Container Type: {loads.container_type}</Text>
-                            <Text style={{textAlign:'justify'}}>Rem Quantity: {loads.trip_container_quantity} {loads.unit}</Text>
+                            <Text style={{textAlign:'justify'}}>Rem Quantity: {loads.quantity} {loads.unit}</Text>
                             <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
                             From: {loads.trip_start_country +
                                 ", " +

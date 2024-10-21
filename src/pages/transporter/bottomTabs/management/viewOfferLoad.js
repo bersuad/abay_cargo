@@ -58,6 +58,7 @@ export default function ViewOfferLoad(props) {
         postWithAuthCallWithErrorResponse(ApiConfig.ORDER_CONFIRMATION_ORDER_DETAILS,
             JSON.stringify({ user_id, api_key, customer_id, load_id: detailID})
         ).then((res) => {
+          console.log(res);
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
             setState({ ...state, isLoading: false});  
             navigation.navigate('TruckLogin');    
@@ -122,7 +123,7 @@ export default function ViewOfferLoad(props) {
                         <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Cargo Type:</Text>
                         <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.cargo_type}</Text>
                         <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Quantity:</Text>
-                        <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.quantity}</Text>
+                        <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.total_cargo_quantity}</Text>
                         <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Unit Price:</Text>
                         <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.trip_unit_price} {offerRequest.unit}</Text>
                         <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Total Price:</Text>
@@ -132,7 +133,9 @@ export default function ViewOfferLoad(props) {
                     </View>
                 </View>
             </View>
-
+            
+            {offerRequest.vehicles && offerRequest.vehicles.length > 0 &&
+                          offerRequest.vehicles.map((load, key) => (
             <View style={[styles.boxShadow, {minHeight: 200, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
                 <View style={{textAlign: 'justify', fontSize: 15, marginTop:15, marginLeft: '-25%'}}>
                 <View
@@ -151,27 +154,28 @@ export default function ViewOfferLoad(props) {
                     </View>
                     <View style={{textAlign: 'justify', paddingBottom: 10}}>
                         <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Transporter:</Text>
-                        <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.transporter}</Text>
+                        <Text style={{paddingLeft:15, paddingBottom: 5}}>{load.transporter}</Text>
                     
-                        {offerRequest.vehicles && offerRequest.vehicles.length > 0 &&(
+                        
                           <View>
                               <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Loading Truck Plate Number:</Text>
-                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.vehicles && offerRequest.vehicles[0].plate_no}</Text>
+                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.plate_no}</Text>
                               <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Driver Name:</Text>
-                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.vehicles && offerRequest.vehicles[0].driver_name}</Text>
+                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.driver_name}</Text>
                               <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Driver Phone:</Text>
-                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.vehicles && offerRequest.vehicles[0].driver_phone_no}</Text>
+                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.driver_phone_no}</Text>
                               <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Trip Qty Value:</Text>
-                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.vehicles && offerRequest.trip_container_quantity}</Text>
+                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.trip_container_quantity}</Text>
                               <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Trip Status:</Text>
-                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.vehicles && offerRequest.vehicles[0].trip_vehicle_status}</Text>
+                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.trip_vehicle_status}</Text>
                               <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Trip Updated Time:</Text>
-                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.vehicles && offerRequest.vehicles[0].trip_vehicle_updated_time}</Text>
+                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.trip_vehicle_updated_time}</Text>
                             </View>
-                        )}
+                        
                     </View>
                 </View>
             </View>
+            ))}
         
         </View>
       )}

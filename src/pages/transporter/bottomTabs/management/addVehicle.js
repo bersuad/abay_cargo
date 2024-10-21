@@ -15,6 +15,7 @@ import {
   Button,
   //image
   Logo,
+  fileIcon,
   //Icons
   Ionicons,
   MaterialIcons as Icon,
@@ -72,6 +73,8 @@ export default function NewVehicle() {
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const [fromSelectedDate, setFromSelectedDate] = useState(null);
   const [toSelectedDate, setToSelectedDate] = useState(null);
+  const File_DEFAULT_IMAGE = Image.resolveAssetSource(fileIcon).uri;
+  const [fileImage, setFileImage] = useState(File_DEFAULT_IMAGE);
 
   const fromShowDatePicker = () => {
     setFromDatePickerVisibility(true);
@@ -201,32 +204,31 @@ export default function NewVehicle() {
 
   const [vehiclesDetails, setVehicleDetails] = useState({
     vehicle_images: [],
-    owner_id: "",
+    owner_id: " ",
     plate_no: "",
     vehicle_name: "",
-    vehicle_axle: "",
-    vehicle_type: "",
-    vehicle_container_type: "",
+    vehicle_type: " ",
+    vehicle_container_type: " ",
     chassis_no: "",
     gross_weight: "",
-    initial_km: "",
+    initial_km: " ",
     model: "",
     insurance_no: "",
     year_manufacture: "",
-    motor_no: "",
-    vehicle_capacity: "",
-    vendor_name: "",
-    vendor_contact: "",
-    vendor_platform: "",
-    vendor_address: "",
+    motor_no: " ",
+    vehicle_capacity: " ",
+    vendor_name: " ",
+    vendor_contact: " ",
+    vendor_platform: " ",
+    vendor_address: " ",
     insurance_file: null,
     insurance_issue_date: null,
     insurance_expiry_date: "",
     insurance_company: "",
-    insurance_type: "",
+    insurance_type: " ",
     sum_insured: "",
-    container_type:"",
-    vehicle_axle:"",
+    container_type:" ",
+    vehicle_axle:" ",
   });
 
   const [errMsg, setErrMsg] = useState({
@@ -320,7 +322,7 @@ export default function NewVehicle() {
         setFileName(result.assets[0].name);
 
         if (result.assets[0].mimeType === "application/pdf") {
-          setPlaceholderImage(PDFIcon.uri);
+          setPlaceholderImage(fileImage);
         } else {
           setPlaceholderImage(result.assets[0].uri);
         }
@@ -332,15 +334,36 @@ export default function NewVehicle() {
     }
   };
 
+  const findEmptyFields = () => {
+    setState({ ...state, isLoading: true });    
+    for (const key in vehiclesDetails) {
+      const value = vehiclesDetails[key];
+      if (typeof value === 'object' && value?.uri !== undefined || value?.uri === null ) {
+        if (!value.uri) {
+          toastWithDurationHandler("Please Add Insurance Image!");
+          setState({ ...state, isLoading: false }); 
+          return;
+        }
+      } else if(value === "" || value === null || value === undefined) {
+        toastWithDurationHandler("Please check your "+key+" !");
+        setState({ ...state, isLoading: false }); 
+        return;
+      }
+      
+    }
+    _register();
+  };
+
 
 
 
   _register = async () => {
 
+    setState({ ...state, isLoading: true });
     const user_id = await AsyncStorage.getItem('user_id');
     const customer_id = await AsyncStorage.getItem('customer_id');
     const api_key = await AsyncStorage.getItem('api_key');
-
+    // setState({ ...state, isLoading: false });
     const tn = vehiclesDetails.insurance_file;
     const tn_img = tn.split('/').pop();
 
@@ -354,11 +377,7 @@ export default function NewVehicle() {
           : "image/jpeg"
     };
     
-    
-    
-    console.log(vehiclesDetails);
 
-    setState({ ...state, isLoading: true });
     const formData = new FormData();
     formData.append("api_key", api_key);
     formData.append("user_id", user_id);
@@ -419,29 +438,31 @@ export default function NewVehicle() {
       type: insurance_file.type
     });
 
-    console.log(formData);
     multipartPostCallWithErrorResponse(
       ApiConfig.AddVehicle, formData
     ).then((res) => {
-      console.log(res);
+
       if (res.json.message === "An internal server error occurred.") {
         setState({ ...state, isLoading: false });
         toastWithDurationHandler("An internal server error occurred. Please Try again!");
       }
 
-      if (res.json.result == true) {
+      if (res.json.result == true || res.json.message === "Vehicle added successfully") {
+        successWithDurationHandler('Registered Successfully, Abay Logistics Will Contact you soon! Thank you.');
+        setState({ ...state, isLoading: false });
         setTimeout(function () {
-          successWithDurationHandler('Registered Successfully, Abay Logistics Will Contact you soon! Thank you.');
           navigation.navigate('transporterVehiclesSearch');
-        }, 5000);
+        }, 3000);
+        return;
       }
 
-      if (res.json.message === "Transporter details added successfully") {
+      if (res.json.message === "Vehicle added successfully") {
         setState({ ...state, isLoading: false });
         successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
         navigation.navigate('transporterVehiclesSearch');
       } else {
-        toastWithDurationHandler("An internal server error occurred. Please Try again!");
+        setState({ ...state, isLoading: false });
+        toastWithDurationHandler(res.json.message);
       }
 
     }).catch((error) => {
@@ -542,7 +563,9 @@ export default function NewVehicle() {
           <>
             <Text style={styles.HeaderText}>Trailer Vehicle Type</Text>
             <SelectDropdown
-              data={vehicleType}
+              data={
+                vehicleType.filter(e=>e.vehicle_name_value !== "Power" && e.vehicle_name_value !== "Trailer")
+              }
               onSelect={(vehicleType, index) => {
                 setErrMsg({ ...errMsg, vehicle_type: "" });
                 setVehicleDetails({ ...vehiclesDetails, vehicle_type: vehicleType.vehicle_name_id })
@@ -559,21 +582,22 @@ export default function NewVehicle() {
                 );
               }}
               renderItem={(vehicleType, index, isSelected) => {
-
                 return (
-                  <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
-                    <Text style={styles.dropdownItemTxtStyle}>
-                      {vehicleType.vehicle_name_value} {' '}
-                      {(
-                        vehicleType.vehicle_name_value !== "Trailer"
-                        && vehicleType.vehicle_name_value !== "Power"
-                        && vehicleType.vehicle_name_id !== 6) ?
-                        " Power" : ""}
-                    </Text>
-                  </View>
+                    <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                      <Text style={styles.dropdownItemTxtStyle}>
+                        {vehicleType.vehicle_name_value} {' '}
+                        {(
+                          vehicleType.vehicle_name_value !== "Trailer"
+                          && vehicleType.vehicle_name_value !== "Power"
+                          && vehicleType.vehicle_name_id !== 6) ?
+                          " Power" : ""}
+                      </Text>
+                    </View>
+                  
+                
                 );
-
               }}
+
               showsVerticalScrollIndicator={false}
               dropdownStyle={styles.dropdownMenuStyle}
             />
@@ -669,8 +693,6 @@ export default function NewVehicle() {
               style={styles.TextInput}
               placeholder="Model"
               placeholderTextColor="#19788e"
-              inputMode="numeric"
-              maxLength={10}
               onChangeText={(text) => {
                 setErrMsg({ ...errMsg, contact_person_phone: "" });
                 setVehicleDetails({ ...vehiclesDetails, model: text })
@@ -684,6 +706,8 @@ export default function NewVehicle() {
               style={styles.TextInput}
               placeholder="Year of Manufacture"
               placeholderTextColor="#19788e"
+              inputMode="numeric"
+              maxLength={10}
               onChangeText={(year_manufacture) => {
                 setErrMsg({ ...errMsg, contact_person_email: "" });
                 setVehicleDetails({ ...vehiclesDetails, year_manufacture: year_manufacture })
@@ -747,6 +771,8 @@ export default function NewVehicle() {
                 style={styles.TextInput}
                 placeholder="Vehicle Load Capacity in Quintal"
                 placeholderTextColor="#19788e"
+                inputMode="numeric"
+                maxLength={4}
                 onChangeText={(text) => {
                   setErrMsg({ ...errMsg, vehicle_capacity: "" });
                   setVehicleDetails({ ...vehiclesDetails, vehicle_capacity: text })
@@ -758,14 +784,17 @@ export default function NewVehicle() {
           :
         ""}
 
-        {vehiclesDetails && (vehiclesDetails.vehicle_name === 4 &&
-        (vehiclesDetails.vehicle_type=== 2)
+        
+        {vehiclesDetails && (
+          vehiclesDetails.vehicle_name === 4 &&
+          (vehiclesDetails.vehicle_type === 2 && vehiclesDetails.vehicle_type === 5 ) || 
+          (vehiclesDetails.vehicle_axle === 1 && vehiclesDetails.vehicle_type ===5)
         )
+        
         ?
         <>
           <Text style={styles.HeaderText}>Container</Text>
           <Text style={{...styles.HeaderText, paddingTop: 0}}>
-            {console.log(containerList)}
             {
             containerList.map((name, index) => (
               <View key={index} style={styles.selectedContainer}>
@@ -780,7 +809,9 @@ export default function NewVehicle() {
             ))
           }</Text>
           <SelectDropdown
-            data={vehicleContainer}
+            data={
+              vehicleContainer.filter(e=> (e.container_type_id===9))
+            }
             onSelect={(vehicleContainer, index) => {
               setErrMsg({ ...errMsg, container_type: "" });
               const newContainerType = [
@@ -818,6 +849,66 @@ export default function NewVehicle() {
         </>
           :""
         }
+        {vehiclesDetails && (vehiclesDetails.vehicle_name === 4 &&
+        (vehiclesDetails.vehicle_type=== 2)
+        )
+        ?
+        <>
+          <Text style={styles.HeaderText}>Container</Text>
+          <Text style={{...styles.HeaderText, paddingTop: 0}}>
+            {
+            containerList.map((name, index) => (
+              <View key={index} style={styles.selectedContainer}>
+                <TouchableOpacity
+                  style={styles.removeContainer}
+                  onPress={() => removeContainer(name.value)}
+                >
+                  <Text style={styles.removeButtonText}>X</Text>
+                </TouchableOpacity>
+                <Text>{name.label}</Text>
+              </View>
+            ))
+          }</Text>
+          <SelectDropdown
+            data={
+              vehicleContainer.filter(e=> (e.container_type_id === 2 || e.container_type_id===4 || e.container_type_id===6 || e.container_type_id===8 || e.container_type_id===9))
+            }
+            onSelect={(vehicleContainer, index) => {
+              setErrMsg({ ...errMsg, container_type: "" });
+              const newContainerType = [
+                { label: vehicleContainer.container_type_name, value: vehicleContainer.container_type_id },
+              ];
+          
+              setSelectedContainers((containerList) => [...containerList, ...newContainerType]);
+            }}
+            
+            value={vehiclesDetails.container_type}
+            renderButton={(vehicleContainer, isOpened) => {
+              return (
+                <View style={styles.dropdownButtonStyle}>
+                  <Text style={styles.dropdownButtonTxtStyle}>
+                    {(vehicleContainer && vehicleContainer.container_type_name) || 'Select Container Type'}
+                  </Text>
+                  <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
+                </View>
+              );
+            }}
+            renderItem={(vehicleContainer, index, isSelected) => {
+
+              return (
+                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                  <Text style={styles.dropdownItemTxtStyle}>
+                    {vehicleContainer.container_type_name} {' '}
+                  </Text>
+                </View>
+              );
+
+            }}
+            showsVerticalScrollIndicator={false}
+            dropdownStyle={styles.dropdownMenuStyle}
+          />
+        </>
+        : <></>}
         {vehiclesDetails && vehiclesDetails.vehicle_name === 1 ||
                       (vehiclesDetails.vehicle_type=== 1 &&
                           vehiclesDetails.vehicle_name===4) ||
@@ -955,7 +1046,6 @@ export default function NewVehicle() {
               style={styles.TextInput}
               placeholder="Insurance Company"
               placeholderTextColor="#19788e"
-              maxLength={4}
               onChangeText={(insurance_company) => {
                 setErrMsg({ ...errMsg, insurance_company: "" });
                 setVehicleDetails({ ...vehiclesDetails, insurance_company: insurance_company })
@@ -1078,7 +1168,7 @@ export default function NewVehicle() {
         </View>
 
 
-        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() => this._register()}>
+        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() => findEmptyFields()} disabled={state.isLoading}>
           {!state.isLoading && (
             <Text style={appPageStyle.primaryTextColor}> Continue <Ionicons name="add-outline" size={15} /></Text>
           )}

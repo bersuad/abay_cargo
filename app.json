@@ -7,7 +7,8 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends.",
           "cameraPermission": "The app accesses your camera to take photos."
         }
-      ]
+      ],
+      "react-native-blasted-image"
     ],
     "name": "Abay Transporter",
     "slug": "abay-cargo",
@@ -34,7 +35,9 @@
       },
       "package": "com.logistics.abay",
       "versionCode": 1,
-      "permissions": ["INTERNET"]
+      "permissions": [
+        "INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

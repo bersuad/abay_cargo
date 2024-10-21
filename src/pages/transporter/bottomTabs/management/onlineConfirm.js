@@ -64,7 +64,7 @@ export default function OnlineOrderConfirm() {
       
         const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
-        console.log('getting here on loading');
+        
         const user_id = await AsyncStorage.getItem('user_id');
         const customer_id = await AsyncStorage.getItem('customer_id');
         const api_key = await AsyncStorage.getItem('api_key');
@@ -88,9 +88,11 @@ export default function OnlineOrderConfirm() {
         postMultipartWithAuthCallWithErrorResponse(
             ApiConfig.DIRECT_ORDERS_ORDER_CONFIRMATION_Online_, JSON.stringify({ user_id, api_key, customer_id })
         ).then((res) => {
-
+          
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});
+          AsyncStorage.clear();
+          navigation.navigate('TruckLogin');
         }
         if(res.json.message === "Insufficient Parameters"){
           setState({ ...state, isLoading: false});
@@ -124,6 +126,7 @@ export default function OnlineOrderConfirm() {
         )}
       {!state.isLoading &&(
         <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+          {console.log(offerLoadData.load_list)}
         {offerLoadData.load_list &&
               offerLoadData.load_list.length &&
               offerLoadData.load_list.map((load, key) => (
@@ -144,7 +147,7 @@ export default function OnlineOrderConfirm() {
                             <Text style={{textAlign: 'justify'}}>Operation No: {load.trip_operation_no}</Text>    
                             <Text style={{textAlign:'justify'}}>Transporter: {load.transporter}</Text>
                             <Text style={{textAlign:'justify'}}>Shipper: {load.shipper}</Text>
-                            <Text style={{textAlign:'justify'}}>Quantity: {load.quantity} {load.unit}</Text>
+                            {/* <Text style={{textAlign:'justify'}}>Quantity: {load.quantity} {load.unit}</Text> */}
                             <Text style={{textAlign:'justify'}}>Loading Place: {load.loading_place}</Text>
                             <Text style={{textAlign:'justify'}}>Received On  : {load.received_on}</Text>
                             <Text style={{textAlign:'justify'}}>Expected Loading Time  : {load.trip_start_date}</Text>

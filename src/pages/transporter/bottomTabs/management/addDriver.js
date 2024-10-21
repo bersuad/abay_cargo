@@ -13,6 +13,7 @@ import {
   useNavigation,
   //image
   Logo,
+  fileIcon,
   //Icons
   Ionicons,
   // main styling
@@ -37,7 +38,7 @@ import { value } from 'deprecated-react-native-prop-types/DeprecatedTextInputPro
 export default function AddNewDriver() {
   const navigation = useNavigation();
 
-
+  
   const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;
   const [image, setImage] = useState(DEFAULT_IMAGE);
   const [companyTypes, setCompanyTyes] = useState([]);
@@ -53,6 +54,8 @@ export default function AddNewDriver() {
   const [fromSelectedDate, setFromSelectedDate] = useState(null);
   const [issueSelectedDate, setIssueSelectedDate] = useState(null);
   const [expireSelectedDate, setExpireSelectedDate] = useState(null);
+  const File_DEFAULT_IMAGE = Image.resolveAssetSource(fileIcon).uri;
+  const [fileImage, setFileImage] = useState(File_DEFAULT_IMAGE);
 
   const fromHandleConfirm = (date) => {
     setDriverDetails({ ...driverDetails, driver_dob: FormatDate(date)})
@@ -172,6 +175,7 @@ export default function AddNewDriver() {
       if (!result.assets[0].canceled) {
         if (result.assets[0].mimeType === "application/pdf") {
           setFileName(result.assets[0].name);
+          setPlaceholderImage(fileImage);
         } else {
           setPlaceholderImage(result.assets[0].uri);
         }
@@ -220,7 +224,7 @@ export default function AddNewDriver() {
     };
 
     const [driverDetails, setDriverDetails] = useState({
-      profile_picture: "",
+      profile_picture: { uri:  image},
       driver_name: "",
       driver_email: "",
       driver_phone_no: "",
@@ -229,7 +233,7 @@ export default function AddNewDriver() {
       driver_woreda: "",
       driver_house_no: "",
       driver_po_number: "",
-      driver_country: "",
+      driver_country: " ",
       driver_dob: "",
       driver_gender: "",
       license_file: "",
@@ -237,8 +241,8 @@ export default function AddNewDriver() {
       license_issue_date: "",
       license_no: "",
       license_expiry_date: "",
-      owner_id: "",
-      driver_city: "",
+      owner_id: " ",
+      driver_city: " ",
       // password: "",
     });
 
@@ -264,6 +268,26 @@ export default function AddNewDriver() {
         driver_city: "",
     });
 
+    const findEmptyFields = () => {
+      setState({ ...state, isLoading: true });    
+      for (const key in driverDetails) {
+        const value = driverDetails[key];
+        if (typeof value === 'object' && value?.uri !== undefined || value?.uri === null ) {
+          if (!value.uri) {
+            toastWithDurationHandler("Please Add Image!");
+            setState({ ...state, isLoading: false }); 
+            return;
+          }
+        } else if(value === "" || value === null || value === undefined) {
+          toastWithDurationHandler("Please check your "+key+" !");
+          setState({ ...state, isLoading: false }); 
+          return;
+        }
+        
+      }
+      _register();
+    };
+
   
   const successWithDurationHandler = (message) => {
     // To make Toast with duration
@@ -278,18 +302,24 @@ export default function AddNewDriver() {
   
 
   _register = async () =>{
+    const formData = new FormData();
     
     const user_id = await AsyncStorage.getItem('user_id');
     const customer_id = await AsyncStorage.getItem('customer_id');
     const api_key = await AsyncStorage.getItem('api_key');
     
-    const uri  = driverDetails.profile_picture;
-    const filename = uri.split('/').pop();
+    const uri  = driverDetails.profile_picture ? driverDetails?.profile_picture : "";    
     
     const tn  = driverDetails.license_file;
     const tn_img = tn.split('/').pop();
     
-    const profileImage = { uri: driverDetails.profile_picture, name: filename, type: 'image/jpeg'};
+    if(uri.uri){     
+      formData.append("profile_picture", " ");
+    }else{
+      const filename = uri.split('/').pop();
+      const profileImage = { uri: driverDetails.profile_picture, name: filename, type: 'image/jpeg'};
+      formData.append("profile_picture", profileImage);
+    } 
 
     const licenseFile = {
       uri: driverDetails.license_file, 
@@ -300,7 +330,6 @@ export default function AddNewDriver() {
         ? "image/png" 
         : "image/jpeg"
     };
-    const formData = new FormData();
     formData.append("api_key", api_key);
     formData.append("user_id", user_id);
     formData.append("customer_id", customer_id);
@@ -323,22 +352,17 @@ export default function AddNewDriver() {
     formData.append("driver_po_number", driverDetails.driver_po_number);
     
     
-    driverDetails.profile_picture &&
-    formData.append("profile_picture", profileImage);
-    
     formData.append("license_file", {
       uri: licenseFile.uri,
       name: licenseFile.name,
       type: licenseFile.type
     });
 
-    setState({ ...state, isLoading: true});    
-    console.log(formData);
+    // setState({ ...state, isLoading: true});    
     multipartPostCallWithErrorResponse(
       ApiConfig.ADD_DRIVER,
       formData
     ).then((res) => {
-      
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         navigation.navigate('TruckLogin');
         setState({ ...state, isLoading: false});  
@@ -354,8 +378,9 @@ export default function AddNewDriver() {
       }
 
       if (res.json.result == true) {
+        setState({ ...state, isLoading: false});
+        successWithDurationHandler('Registered Successfully, Driver updated successfully,Please wait for approval from Administration.');
         setTimeout(function () {
-          successWithDurationHandler('Registered Successfully, Driver updated successfully,Please wait for approval from Administration.');
           navigation.navigate('transporterDriverSearch');
         }, 10000);
       }
@@ -407,6 +432,8 @@ export default function AddNewDriver() {
               style={styles.TextInput}
               placeholder="Driver Phone"
               placeholderTextColor="#19788e"
+              inputMode="numeric"
+              maxLength={10}
               onChangeText={(text) =>{
                 setErrMsg({ ...errMsg, driver_phone_no: "" });
                 setDriverDetails({...driverDetails, driver_phone_no: text})
@@ -570,7 +597,7 @@ export default function AddNewDriver() {
               placeholder="License Grade"
               placeholderTextColor="#19788e"
               inputMode="numeric"
-              maxLength={4}
+              maxLength={10}
               onChangeText={(text) =>{
                 setErrMsg({ ...errMsg, license_grade: "" });
                 setDriverDetails({...driverDetails, license_grade: text})
@@ -585,7 +612,7 @@ export default function AddNewDriver() {
               placeholder="License Number"
               placeholderTextColor="#19788e"
               inputMode="numeric"
-              maxLength={4}
+              maxLength={20}
               onChangeText={(text) =>{
                 setErrMsg({ ...errMsg, license_no: "" });
                 setDriverDetails({...driverDetails, license_no: text})
@@ -652,7 +679,9 @@ export default function AddNewDriver() {
           
         </View>
 
-        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={()=>this._register()}>
+        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() => findEmptyFields()} 
+        disabled={state.isLoading}
+        >
           {!state.isLoading &&(
             <Text style={appPageStyle.primaryTextColor}><Ionicons name="person-add-outline" size={15} /> Add Driver</Text> 
           )}

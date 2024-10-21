@@ -46,11 +46,12 @@ export default function App() {
   
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         setState({ ...state, isLoading: false});  
-        console.log('Wrong Data here');
+        AsyncStorage.clear();
+        navigation.navigate('TruckLogin');
+        return;
       }
       if(res.json.message === "Insufficient Parameters"){
         setState({ ...state, isLoading: false});
-        console.log('no data here')
       }
   
       
@@ -81,26 +82,28 @@ export default function App() {
     }
   }, []);
 
+  const imageUrl = ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic;
+
   return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
       {state.isLoading &&(
-          <View style={styles.container}>
-            <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
-            <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
-          </View> 
-        )}
+        <View style={styles.container}>
+          <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
+          <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
+        </View> 
+      )}
       {!state.isLoading &&(
         <View style={styles.container}>
         <Text style={styles.HeaderText}>Settings</Text>
         
         <TouchableOpacity onPress={()=>navigation.navigate('ProfileSetting')} style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 110, backgroundColor:'rgba(25, 120, 142, 1)'}]}>
-          <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <Image style={styles.cardImage} 
-              source={{
-                uri: ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic,
-              }}/>
+          <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute" , left: 25 }}>
+            <Image 
+              style={styles.cardImage} 
+              source={{ uri: imageUrl }} 
+            />
           </View>
-          {console.log(ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic)}
+          
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>{userData.user_name}</Text>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#cfcfcf', marginTop: 60, top: 1 }}>{userData.user_email}</Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>
@@ -267,7 +270,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   cardImage:{
-    opacity: 0.9,
+    // opacity: 1,
     height: 50,
     width: 50,
     borderRadius: 100,

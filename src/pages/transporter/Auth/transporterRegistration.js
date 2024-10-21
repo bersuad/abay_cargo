@@ -19,6 +19,7 @@ import {
   // main styling
   appPageStyle,
   placeholder,
+  fileIcon,
   MaterialCommunityIcons,
   Toast,
   postWithAuthCallWithErrorResponse,
@@ -83,6 +84,8 @@ export default function NewTransporter() {
   const [image, setImage] = useState(DEFAULT_IMAGE);
   const [companyTypes, setCompanyTyes] = useState([]);
   const SECOND_DEFAULT_IMAGE = Image.resolveAssetSource(placeholder).uri;
+  const File_DEFAULT_IMAGE = Image.resolveAssetSource(fileIcon).uri;
+  const [fileImage, setFileImage] = useState(File_DEFAULT_IMAGE);
   const [placeholderImage, setPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
   const [secondPlaceholderImage, setSecondPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
   const [thirdPlaceholderImage, setThirdPlaceholderImage] = useState(SECOND_DEFAULT_IMAGE);
@@ -150,7 +153,7 @@ export default function NewTransporter() {
       setDriverDetails({ ...driverDetails, tn_document: result.assets[0].uri });
       if (result.assets[0].mimeType === "application/pdf") {
         setFileName(result.assets[0].name);
-        setPlaceholderImage(PDFIcon.uri);
+        setPlaceholderImage(fileImage);
       } else {
         setPlaceholderImage(result.assets[0].uri);
       }
@@ -174,7 +177,7 @@ export default function NewTransporter() {
       setDriverDetails({ ...driverDetails, grade_certificate: result.assets[0].uri});
       if(result.assets[0].mimeType == "application/pdf"){
         setFileName2(result.assets[0].name);
-        setSecondPlaceholderImage(PDFIcon.uri);
+        setSecondPlaceholderImage(fileImage);
       }else{
         setSecondPlaceholderImage(result.assets[0].uri);
       }
@@ -199,7 +202,7 @@ export default function NewTransporter() {
       setDriverDetails({ ...driverDetails, business_license: result.assets[0].uri});
       if(result.assets[0].mimeType == "application/pdf"){
         setFileName3(result.assets[0].name);
-        setThirdPlaceholderImage(PDFIcon.uri);
+        setThirdPlaceholderImage(fileImage);
       }else{
         setThirdPlaceholderImage(result.assets[0].uri);
       }
@@ -236,13 +239,35 @@ export default function NewTransporter() {
       animation: true,
     });
   };
+
+  const findEmptyFields = () => {
+    setState({ ...state, isLoading: true });    
+    for (const key in driverDetails) {
+      const value = driverDetails[key];
+      
+      if (typeof value === 'object' && value.uri !== undefined) {
+        if (!value.uri) {
+          toastWithDurationHandler("Please Add Image!");
+          setState({ ...state, isLoading: false }); 
+          return;
+        }
+      }else if (key !== "alternate_phone" || key !== "po_number"){
+        continue;
+      } else if(value === "" || value === null || value === undefined) {
+        toastWithDurationHandler("Please check your "+key+" !");
+        setState({ ...state, isLoading: false }); 
+        return;
+      }
+      
+    }
+    _register();
+  };
   
   const [driverDetails, setDriverDetails] = useState({
     profile_picture: { uri:  image},
     company_type: "",
     company_name: "",
     contact_person: "",
-    total_fleet_size: "",
     alternate_phone:"",
     country: "",
     contact_person_responsibility: "",
@@ -250,11 +275,11 @@ export default function NewTransporter() {
     contact_person_email: "",
     password: "",
     confirmPassword: "",
-    country: "",
-    company_region: "",
+    country: "Ethiopia",
+    region: "",
     city: "",
-    phone_no: "",
-    email: "",
+    phone_no: " ",
+    email: " ",
     po_number: "",
     tn_document: {uri: placeholderImage},
     grade_certificate: {uri: secondPlaceholderImage},
@@ -266,7 +291,6 @@ export default function NewTransporter() {
     company_type: "",
     company_name: "",
     contact_person: "",
-    total_fleet_size: "",
     alternate_phone: "",
     country: "",
     contact_person_responsibility: "",
@@ -298,21 +322,39 @@ export default function NewTransporter() {
   
 
   _register = async () =>{
-    
-    const tn  = driverDetails.tn_document;
-    const tn_img = tn.split('/').pop();
-    const uri  = driverDetails.profile_picture;
-    const filename = uri.split('/').pop();
-    const bizz  = driverDetails.business_license;
-    const buss = bizz.split('/').pop();
-
-
-
+    const formData = new FormData();
+    const tn  = driverDetails?.tn_document;
+    const bizz  = driverDetails?.business_license;
+    const pro_uri  = driverDetails.profile_picture ? driverDetails.profile_picture : "";    
     const gc  = driverDetails.grade_certificate;
+    
+    
+    if (tn.uri || bizz.uri || gc.uri) {
+      if(tn.uri){
+        toastWithDurationHandler("Please Add TIN Image");
+      }else if(bizz.uri){
+        toastWithDurationHandler("Please Add Business License");
+      }else{
+        toastWithDurationHandler("Please Add Grade Certification!");
+      }
+      return;
+    }
+    
+    if(pro_uri.uri){
+      formData.append("profile_picture", " ");
+    }else{
+      const filename = pro_uri.split('/').pop();
+      const profileImage = { uri: driverDetails.profile_picture, name: filename, type: 'image/jpeg'};
+      formData.append("profile_picture", {
+        uri: profileImage?.uri,
+        name: profileImage?.name,
+        type: profileImage?.type
+      });
+    }
+    
+    const tn_img = tn.split('/').pop();
+    const buss = bizz.split('/').pop();
     const gc_img = gc.split('/').pop();
-
-const profileImage = { uri: driverDetails.profile_picture, name: filename, type: 'image/jpeg'};
-
 const businessImage = {
   uri: driverDetails.business_license, 
   name: buss, 
@@ -343,10 +385,9 @@ const gradeImage = {
     : "image/jpeg"
   };
 
-  
 
   setState({ ...state, isLoading: true });    
-  const formData = new FormData();
+  
   formData.append("company_name", driverDetails.company_name);
   formData.append("email", driverDetails.email.replace(/\s+/g, ''));
   formData.append("password", driverDetails.password);
@@ -354,20 +395,16 @@ const gradeImage = {
   formData.append("city", driverDetails.city);
   formData.append("region", driverDetails.region);
   formData.append("country", driverDetails.country ? driverDetails.country : "Ethiopia");
-  formData.append("po_number", driverDetails.po_number);
+  formData.append("po_number", driverDetails?.po_number);
   formData.append("contact_person", driverDetails.contact_person);
   formData.append("contact_person_responsibility", driverDetails.contact_person_responsibility);
   formData.append("contact_person_phone", driverDetails.contact_person_phone);
   formData.append("contact_person_email", driverDetails.contact_person_email.replace(/\s+/g, ''));
-  formData.append("total_fleet_size", driverDetails.total_fleet_size);
-  formData.append("alternate_phone", driverDetails.alternate_phone);
+  formData.append("total_fleet_size", '');
+  formData.append("alternate_phone", driverDetails?.alternate_phone);
   formData.append("company_type", driverDetails.company_type);
-
-  formData.append("profile_picture", {
-    uri: profileImage.uri,
-    name: profileImage.name,
-    type: profileImage.type
-  });
+  
+  
 
   formData.append("business_license", {
     uri: businessImage.uri,
@@ -388,7 +425,8 @@ const gradeImage = {
   });
 
   formData.append("user_role", driverDetails.user_role ? driverDetails.user_role : "transporter");
-
+  
+  
     postMultipartWithAuthCallWithErrorResponse(
       ApiConfig.ADD_TRANSPORTER,formData
     ).then((res) => {
@@ -413,6 +451,7 @@ const gradeImage = {
         successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
         navigation.navigate('TruckLogin');
       }else{
+        setState({ ...state, isLoading: false});
         toastWithDurationHandler("Please check your Email, Password and Phone Number carefully!");
       }
 
@@ -433,7 +472,7 @@ const gradeImage = {
         <View style={{marginBottom:10}}>
           {image && <Image source={{ uri: image }} style={styles.image} />}
           <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-            <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload Logo</Text> 
+            <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload Image</Text> 
           </TouchableOpacity> 
         </View>
         <Text style={styles.HeaderText}>Company Type</Text>
@@ -554,7 +593,7 @@ const gradeImage = {
           </View> 
         </View>
 
-        <Text style={styles.HeaderText}>Total Fleet Size</Text>
+        {/* <Text style={styles.HeaderText}>Total Fleet Size</Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
@@ -566,7 +605,7 @@ const gradeImage = {
               }
             }
           /> 
-        </View>
+        </View> */}
 
         <Text style={styles.HeaderText}>Password</Text>
         <View
@@ -803,7 +842,7 @@ const gradeImage = {
           </View>
         </View>  
 
-        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={()=>this._register()}>
+        <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={()=>findEmptyFields()} disabled={state.isLoading}>
           {!state.isLoading &&(
             <Text style={appPageStyle.primaryTextColor}><Ionicons name="person-add-outline" size={15} /> Register</Text> 
           )}
@@ -881,7 +920,8 @@ const styles = StyleSheet.create({
   uploadButton:{
     backgroundColor: "#f1f1f1",
     height: 30,
-    width: 'auto',
+    minWidth: 150,
+    maxWidth: 'auto',
     shadowColor: '#1f1f1f',
     shadowOffset: {width: -2, height: 4},
     shadowOpacity: 0.2,

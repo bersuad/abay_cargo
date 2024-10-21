@@ -158,6 +158,7 @@ export default function App() {
           AsyncStorage.clear();
           navigation.navigate('TruckLogin');
       }
+      console.log(res.json);
       if (res.json.result) {
         setReportType(res.json.report_types
           .filter(e=> e.report_type_id !== 4 && e.report_type_id !== 5));
@@ -185,6 +186,7 @@ export default function App() {
       from_date: getReport.from_date,
       to_date: getReport.to_date,
     });    
+    console.log(details);
     setState({ ...state, isLoading: true});
     postMultipartWithAuthCallWithErrorResponse(ApiConfig.REPORT_ADD, details)
       .then((data) => {
@@ -247,7 +249,7 @@ export default function App() {
                   <SelectDropdown
                     data={report_types}
                     onSelect={(report_type, index) => {
-                        setGetReport({ ...getReport, list_report_type: report_type.report_type_id})
+                        setGetReport({ ...getReport, report_type: report_type.report_type_id})
                         setErrMsg({ ...errMsg, report_type: "" });
                       }
                     }

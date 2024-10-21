@@ -65,6 +65,10 @@ export default function App() {
     }, 2000);
   }, []);
   
+  useEffect(() => {
+    
+  }, [dashBoardData]);
+
   const _getDashboardDetails = async() => {
     setState({ ...state, isLoading: true});  
     const user_id = await AsyncStorage.getItem('user_id');
@@ -90,7 +94,7 @@ export default function App() {
     postWithAuthCallWithErrorResponse(
       ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
     ).then((res) => {
-  
+      
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         navigation.navigate('TruckLogin');
         setState({ ...state, isLoading: false});  
@@ -99,13 +103,13 @@ export default function App() {
       if(res.json.message === "Insufficient Parameters"){
         setState({ ...state, isLoading: false});
       }
-  
       
       if (res.json.result)setDashBoardData(res.json);
       setState({ ...state, isLoading: false});
       AsyncStorage.getItem('userDetails').then(value =>{
         setMyUserID(value);
       });
+      console.log(res);
     });
     
 
@@ -168,8 +172,14 @@ export default function App() {
             <Text style={styles.cardText}>WELCOME.., </Text>
             <Text style={{...styles.cardText, fontSize:18, }}>{dashBoardData.user_name}</Text>
             <Image style={styles.cardImage} source={headerImage}/>
+            <TouchableOpacity onPress={()=>navigation.navigate('transporterDriverSearch')}>
+              <Text style={{...styles.cardText, fontSize: 15, marginTop: 15, color: "#1b9be6"}}>+ Add Driver</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
+              <Text style={{...styles.cardText, fontSize: 15, marginTop: 15, color: "#1b9be6"}}>+ Add Vehicles </Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={()=>navigation.navigate('OfferLoad')}>
-              <Text style={{...styles.cardText, fontSize: 13, marginTop: 50, color: "#1b9be6"}}>GET STARTED! </Text>
+              <Text style={{...styles.cardText, fontSize: 15, marginTop: 20, color: "#1b9be6"}}>Get Started With Offer Goods </Text>
             </TouchableOpacity>
           </ImageBackground>
 
@@ -189,12 +199,18 @@ export default function App() {
             },
           ]}>
           <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
+            <View style={{...styles.badge, backgroundColor: "rgba(1, 138, 40, 0.88)", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.vehicles}</Text>
+            </View>
             <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)"}}>
               <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Vehicles</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
+            <View style={{...styles.badge, backgroundColor: "#1b9be6", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.drivers}</Text>
+            </View>
             <View style={{...styles.iconArea, backgroundColor: "#1b9be6"}}>
               <FontAwesome5 name="id-badge" size={24} color="#fff" />
             </View>
@@ -209,31 +225,77 @@ export default function App() {
 
         </View>
 
-        <TouchableOpacity style={[styles.boxShadow, styles.offers]} onPress={()=>navigation.navigate('OfferLoad')}>
+        <View
+          style={[
+            {
+              flexDirection: 'row',
+              width: '95%',
+              gap: 5,
+              shadowColor: '#1f1f1f',
+              shadowOffset: {width: -2, height: 1},
+              shadowOpacity: 0.2,
+              shadowRadius: 1,
+              marginTop: 0,
+            },
+          ]}>
+            <TouchableOpacity style={[styles.boxShadow, styles.offers]} onPress={()=>navigation.navigate('OfferLoad')}>
+              <View style={{...styles.badge, backgroundColor: "#1b9be6", marginTop: 0, position: 'absolute', left:35, top: 1,  }}>
+                <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offer_goods_direct}</Text>
+              </View>
+              <View style={{...styles.iconArea, backgroundColor: "#1b9be6", position: "absolute", left: 5}}>
+                <MaterialCommunityIcons name="notebook-check" size={24} color="#fff" />
+              </View>
+              <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 3, marginLeft: 50 }}>Direct Offer Loads </Text>
+              <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
+              
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.boxShadow, styles.offers]} onPress={()=>navigation.navigate('OnlineOfferLoad')}>
+              <View style={{...styles.badge, backgroundColor: "#1b9be6", marginTop: 0, position: 'absolute', left:35, top: 1,  }}>
+                <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offer_goods_online}</Text>
+              </View>
+              <View style={{...styles.iconArea, backgroundColor: "#1b9be6", position: "absolute", left: 5}}>
+                <MaterialCommunityIcons name="notebook-check" size={24} color="#fff" />
+              </View>
+              <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 1, marginLeft: 50 }}>Online Offer Loads  
+              </Text>
+              <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
+              
+            </TouchableOpacity>
 
-          <View style={{...styles.iconArea, backgroundColor: "#1b9be6", position: "absolute", left: 20}}>
-            <MaterialCommunityIcons name="notebook-check" size={24} color="#fff" />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offer Loads  
-            <View style={{...styles.badge, backgroundColor: "#1b9be6", }}>
-              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offer_goods}</Text>
-            </View>
-          </Text>
-          <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-          
-        </TouchableOpacity>
+          <View
+          style={[
+            {
+              flexDirection: 'row',
+              width: '95%',
+              gap: 5,
+              shadowColor: '#1f1f1f',
+              shadowOffset: {width: -2, height: 1},
+              shadowOpacity: 0.2,
+              shadowRadius: 1,
+              marginTop: 10,
+            },
+          ]}>
+            <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('OfferVehicle')}>
+              <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)", position: "absolute", left: 5}}>
+                <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
+              </View>
+              <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 1, marginLeft: 50 }}>Direct Offered Vehicles  
+              </Text>
+              <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
+              
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('OfferVehicle')}>
+              
+              <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)", position: "absolute", left: 5}}>
+                <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
+              </View>
+              <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 1, marginLeft: 50 }}>Online Offered Vehicles
+              </Text>
+              <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('OfferVehicle')}>
-          <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)", position: "absolute", left: 20}}>
-            <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Offered Vehicles
-            <View style={{...styles.badge, backgroundColor: "rgba(1, 138, 40, 0.88)", }}>
-              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offer_vehicles_direct}</Text>
-            </View>
-          </Text>
-          <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
-        </TouchableOpacity>
         
         <View
           style={[
@@ -405,7 +467,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   offers:{
-    width: '94%',
+    width: '50%',
     height: 70,
     backgroundColor: '#fff',
     borderRadius: 10,

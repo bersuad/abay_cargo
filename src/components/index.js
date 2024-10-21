@@ -16,7 +16,8 @@ import {
   // ToastAndroid,
   RefreshControl,
   Keyboard,
-  Modal
+  Modal,
+  Platform
 } from "react-native";
 
 import Toast from 'react-native-root-toast';
@@ -62,6 +63,7 @@ import cardBackground from "./../../assets/cardimage.jpg";
 import headerImage from "./../../assets/cargodelivary.png";
 import userImage from "./../../assets/userava.png";
 import placeholder from "./../../assets/placeholder.jpg";
+import fileIcon from "./../../assets/file.png";
 
 import Collapsible from 'react-native-collapsible';
 import appPageStyle from "../styles/common";
@@ -89,6 +91,7 @@ export {
   ActivityIndicator,
   Keyboard,
   Modal,
+  Platform,
 
   createMaterialBottomTabNavigator,
   createAppContainer,  
@@ -119,6 +122,7 @@ export {
   headerImage,
   userImage,
   placeholder,
+  fileIcon,
 
   //main styling
   appPageStyle,

@@ -16,7 +16,8 @@ import {
   ApiConfig,
   postWithAuthCallWithErrorResponse,
   RefreshControl,
-  postMultipartWithAuthCallWithErrorResponse
+  postMultipartWithAuthCallWithErrorResponse,
+  Toast
 } from './../../../../components/index';
 export default function OnGoingFright() {
   
@@ -40,6 +41,70 @@ export default function OnGoingFright() {
     const [user_id, setMyUserID]              = useState('');
     const [dashBoardData, setDashBoardData ]  = useState([]);
     const [user_details, setUserDetails]      = useState('');
+
+
+    const successWithDurationHandler = (message) => {
+      let toast = Toast.show(message, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        backgroundColor: 'green',
+        animation: true,
+      });
+    };
+
+
+    const completeFright = async(load_id, status, trip_start_city, 
+      trip_end_city, vehicles, vehicle_id, trailer_id, driver_id, trip_vehicle_id) => {
+
+      setState({ ...state, isLoading: true});  
+      const user_id = await AsyncStorage.getItem('user_id');
+      const customer_id = await AsyncStorage.getItem('customer_id');
+      const api_key = await AsyncStorage.getItem('api_key');
+      
+      await AsyncStorage.getItem('customer_id').then((myClientID) => {
+        setMyClientID(myClientID);
+      });
+      
+      await AsyncStorage.getItem('api_key').then(value =>{
+        setAPI_KEY(value);
+      });
+  
+      await AsyncStorage.getItem('user_id').then(value =>{
+        setMyUserID(value);
+      });
+  
+      await AsyncStorage.getItem('userDetails').then(value =>{
+        setUserDetails(value);
+      });  
+      
+      postWithAuthCallWithErrorResponse(
+        ApiConfig.COMPLETE_FRIGHT,
+        JSON.stringify({ user_id, api_key, customer_id, load_id, status, 
+          trip_start_city, trip_end_city, vehicles, vehicle_id, trailer_id, driver_id, trip_vehicle_id })
+      )
+        .then((res) => {
+          console.log(res);
+          setState({ ...state, isLoading: false});  
+          if (res.json.message === 
+            "Invalid user authentication,Please try to relogin with exact credentials.") {
+              AsyncStorage.clear();
+              navigation.navigate('TruckLogin');
+          }
+
+          if (res.json.message === "Freight Completed successfully")
+          {
+            successWithDurationHandler("Freight Completed successfully! Please check on Completed Frights.");
+            setTimeout(function () {
+              getOngoingFright();
+              onRefresh();
+            }, 2000);
+          }
+          
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
 
     const getOngoingFright = async() => {
       setState({ ...state, isLoading: true});  
@@ -66,21 +131,17 @@ export default function OnGoingFright() {
       postMultipartWithAuthCallWithErrorResponse(
         ApiConfig.ONGOING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id,  }),
       ).then((res) => {
-        console.log(res);
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
-          console.log('Wrong Data here');
         }
         if(res.json.message === "Insufficient Parameters"){
           setState({ ...state, isLoading: false});
-          console.log('no data here')
         }
 
         if(res.json.result === false){
           setState({ ...state, noData: true});
         }
-    
-        console.log(res.json);
+  
         if (res.json.result)setDashBoardData(res.json);
         
         setState({ ...state, isLoading: false});
@@ -108,7 +169,7 @@ export default function OnGoingFright() {
         getOngoingFright();
         setRefreshing(false);
       }, 2000);
-    }, []);
+    }, [dashBoardData]);
     
     return (
     <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
@@ -125,7 +186,7 @@ export default function OnGoingFright() {
       {!state.isLoading &&(
         <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
         {dashBoardData.load_list &&
-          dashBoardData.load_list.length &&
+          dashBoardData.load_list.length > 0 &&
           dashBoardData.load_list.map((fright, key) => (
             
             <View style={[styles.boxShadow, {minHeight: 150, width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
@@ -144,13 +205,13 @@ export default function OnGoingFright() {
                 <View >
                   <Text style={{fontWeight: 'bold'}}>Ref. No: {fright.trip_reference_no}</Text>
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {fright.trip_start_country +
+                    {fright?.trip_start_country +
                     ", " +
-                    fright.trip_start_city}{" "}
+                    fright?.trip_start_city}{" "}
                   -{" "}
-                  {fright.trip_end_country +
+                  {fright?.trip_end_country +
                     " " +
-                    fright.trip_end_city}
+                    fright?.trip_end_city}
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
                     {'Start at: '+fright.trip_start_date +
@@ -161,16 +222,16 @@ export default function OnGoingFright() {
                     " " }
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {'Trip Status: '+fright.trip_status +
+                    {'Trip Status: '+fright?.vehicle_status +
                     " "}
                     </Text>
                 </View>
-                <View style={{position: "absolute", top: 0, right:0}}>
-                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                    <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
-                  </TouchableOpacity>
-                </View>
               </View>
+              <TouchableOpacity onPress={()=>completeFright(fright.trip_id, fright.trip_status,
+                                            fright.trip_start_city, fright.trip_end_city, fright.vehicles,
+                                            fright.vehicle_id, fright.trailer_id, fright.driver_id, fright.trip_vehicle_id)} style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
+                  <Text style={{...appPageStyle.primaryTextColor}}>Complete Fright</Text>
+              </TouchableOpacity>
             </View>
           
           ))

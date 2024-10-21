@@ -82,9 +82,7 @@ export default function VehicleDescription(props) {
             ApiConfig.VEHICLE_DETAILS,
             JSON.stringify({ vehicle_id: vehicle, user_id, api_key, customer_id })
         ).then((res) => {
-
-          
-          
+          console.log(res);
           if (res.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
             setState({ ...state, isLoading: false});  
             navigation.navigate('TruckLogin');            
@@ -267,8 +265,8 @@ const styles = StyleSheet.create({
     },
     image: {
       marginBottom: 0,
-      height: 100,
-      width: 100,
+      height: "100%",
+      width: "auto",
       objectFit: "contain",
     },
     logoArea:{

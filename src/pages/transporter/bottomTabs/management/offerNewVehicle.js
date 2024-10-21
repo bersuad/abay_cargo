@@ -43,7 +43,6 @@ import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { height } from "deprecated-react-native-prop-types/DeprecatedImagePropType";
 
 
-
 export default function NewVehicle(props) {
     const navigation = useNavigation();
     const offerInfo = props.route.params;
@@ -58,7 +57,6 @@ export default function NewVehicle(props) {
     checkInternet: true,
   });
 
-  
   const [stateTable, setTableState] = useState({
       tableHead: ['S.No', 'Reference Number', 'Model', 'Power Plate No. & Type', 'Trailer Plate No. & Type', 'Driver Name'],
       tableData: [
@@ -130,15 +128,7 @@ export default function NewVehicle(props) {
 
   useEffect(() => {
     
-  }, [vehicleDetails, getSelectedTruckID, addedVehicleList, axleType]);
-
-  const emptyVehicleData = {
-    truck_id: "",
-    trailer_id: "",
-    driver_id: "",
-    bid_id: (offerInfo?.bid_id),
-    trip_id: offerInfo?.trip_id,
-  };
+  }, [vehicleList, vehicleDetails, getSelectedTruckID, addedVehicleList, axleType]);
 
   
 
@@ -202,7 +192,11 @@ export default function NewVehicle(props) {
           AsyncStorage.clear();
           navigation.navigate('TruckLogin');
         }
-        // setLoading(false);
+        if (res.json.result == false && res.json.message == "No data found") {
+          setAddedVehicleList([]);
+          setLoadCategoryType("");
+          setModalVisible(!modalVisible);
+        }
         if (res.json.result) {
           setAddedVehicleList(res.json.vehicle_list);
           setLoadCategoryType(res.json.load_category);
@@ -235,6 +229,7 @@ export default function NewVehicle(props) {
         );
       });
       setVehicleList(filteredTruckList);
+      
     })
     getAddVehicleList();
   }
@@ -248,7 +243,6 @@ export default function NewVehicle(props) {
     const api_key = await AsyncStorage.getItem('api_key');
     
     if (selectedVehicleType == "High Bed" && !axleType) {
-      console.log(selectVehicle.vehicle_type);
       setCurrentPlateNo();
       return;
     }
@@ -561,13 +555,63 @@ export default function NewVehicle(props) {
     getTrailerList();
   };
 
+  const deleteVehicleOffer = async(id, bidId, vehicle_id, trailer_id, trip_id) => {
+    
+    const user_id = await AsyncStorage.getItem('user_id');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.DELETE_BID_VEHICLE_OFFER,
+      JSON.stringify({
+        user_id, customer_id, api_key,
+        trip_vehicle_id: id,
+        bid_id: bidId,
+        vehicle_id: vehicle_id,
+        trailer_id: trailer_id,
+        trip_id: trip_id
+      })
+    )
+      .then((res) => {
+        console.log(res);
+        if (res.json.message === 
+          "Invalid user authentication,Please try to relogin with exact credentials.") {
+            AsyncStorage.clear();
+            navigation.navigate('TruckLogin');
+        }
+
+        if(addedVehicleList.length == 0){
+          setAddedVehicleList(['']);
+          setModalVisible(!modalVisible);
+          toastWithDurationHandler("Please Select a vehicle!");
+        }
+
+        if (res.json.message === "Vehicle deleted successfully") {
+          if(addedVehicleList.length == 0){
+            setModalVisible(!modalVisible);
+            toastWithDurationHandler("Please Select a vehicle!");
+          }
+          getAddVehicleList();
+        }
+        if (res.json.message === "An internal server error occurred.") {
+          setModalVisible(!modalVisible);
+          toastWithDurationHandler("An internal server error occurred. Please Try again!");
+          getAddVehicleList();
+        }
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
 
   addVehicleOffer = async () => {
     const user_id = await AsyncStorage.getItem('user_id');
     const customer_id = await AsyncStorage.getItem('customer_id');
     const api_key = await AsyncStorage.getItem('api_key');
-
     setState({ ...state, isLoading: true });
+
     
     if(!getSelectedTrailer){
       getTrailerList();
@@ -589,8 +633,7 @@ export default function NewVehicle(props) {
       cargo_type: offerInfo?.modalCargo,        
     });
         
-        console.log(online_details);
-        console.log(" ");
+        
       postMultipartWithAuthCallWithErrorResponse(
         ApiConfig.ADD_ONLINE_VEHICLEOFFER,
         online_details
@@ -651,8 +694,6 @@ export default function NewVehicle(props) {
       reference_no: offerInfo.modalRf,
       bid_id: vehicleDetails?.bid_id,
     });
-
-    console.log(details);
     
     postMultipartWithAuthCallWithErrorResponse(
       ApiConfig.ONLINE_SENDVEHICLEOFFER,
@@ -660,8 +701,6 @@ export default function NewVehicle(props) {
     )
     .then((res) => {
 
-      console.log(res);
-      
       if (res.json.message === 
         "Invalid user authentication,Please try to relogin with exact credentials.") {
           AsyncStorage.clear();
@@ -690,16 +729,6 @@ export default function NewVehicle(props) {
     })
     .catch((err) => console.log(err));
   }
-      
-
-
-  const element = (data, index) => (
-    <TouchableOpacity onPress={() => this._alertIndex(index)}>
-      <View style={styles.btn}>
-        <Text style={styles.btnText}>button</Text>
-      </View>
-    </TouchableOpacity>
-  );
 
   return (
     
@@ -753,7 +782,7 @@ export default function NewVehicle(props) {
                     </View>
 
                   {addedVehicleList ?
-                    
+                    addedVehicleList.length > 0 &&
                     addedVehicleList.map((loads, key) => 
 
                       (
@@ -770,6 +799,18 @@ export default function NewVehicle(props) {
                         
                       <View style={{ ...styles.inputView, width: '10%', backgroundColor: '#fff', borderRadius: 0, marginTop: "-10%", borderRightColor: '#111', borderRightWidth:1, height:100 }}>
                         <Text>{key+1}</Text>
+                        <TouchableOpacity
+                          style={styles.removeButton}
+                          onPress={() => deleteVehicleOffer(
+                            loads?.trip_vehicle_id,
+                            offerInfo?.bid_id,
+                            loads?.vehicle_id,
+                            loads?.trailer_id,
+                            offerInfo?.trip_id,
+                          )}
+                        >
+                          <Text style={styles.removeButtonText}>X</Text>
+                        </TouchableOpacity>
                       </View>
                       <View style={{ ...styles.inputView, width: '16%', backgroundColor: '#fff', borderRadius: 0, marginTop: "-10%", borderRightColor: '#111', borderRightWidth:1, height:100}}>
                         <Text>{offerInfo.modalRf}</Text>
@@ -788,7 +829,7 @@ export default function NewVehicle(props) {
                       </View>
                     </View>
                   )
-                  ): ""
+                  ): <Text> </Text>
                 }
                   
                   
@@ -813,6 +854,7 @@ export default function NewVehicle(props) {
         </Modal>
       </View>
       <SafeAreaView style={styles.container}>
+
         {!state.checkInternet && (
           <SnackBar visible={true} textMessage="No Internet Connection!" actionHandler={() => { this._checkConnection() }} actionText="Try Again" />
         )}
@@ -880,9 +922,7 @@ export default function NewVehicle(props) {
           showsVerticalScrollIndicator={false}
           dropdownStyle={styles.dropdownMenuStyle}
         />
-        {errMsg.company_name && errMsg.company_name.length > 0 && (
-          <Text style={{ color: '#FF5151' }}>{errMsg.company_name}</Text>
-        )}
+        
         
         <Text style={styles.HeaderText}>Plate Number</Text>
         
@@ -958,7 +998,7 @@ export default function NewVehicle(props) {
             />
           </>
         :
-          ""
+          <Text></Text>
         }
 
 
@@ -1244,11 +1284,8 @@ export default function NewVehicle(props) {
             </View>
             <View style={{ ...styles.inputView, width: '50%', }}>
               <Text style={styles.TextInput}>
-                {selectedtrailer?.vehicle_capacity
-                  ? selectedtrailer?.vehicle_capacity
-                  : ""}
+                {selectedtrailer?.vehicle_capacity ? selectedtrailer?.vehicle_capacity : ""}
               </Text>
-              
             </View>
           </View>
           </>
@@ -1274,13 +1311,17 @@ export default function NewVehicle(props) {
                 onChangeText={(text) => {
                   setErrMsg({ ...errMsg, vehicle_capacity: "" });
                   setVehicleDetails({ ...vehicleList, vehicle_capacity: text })
-                }
+                }}
+                value={
+                  selectedtrailer?.vehicle_capacity
+                    ? String(selectedtrailer.vehicle_capacity)  // Ensure it's a string
+                    : ""
                 }
               />
             </View>
           </>
           :
-        ""}     
+        <Text></Text>}     
         
 
         
@@ -1329,7 +1370,9 @@ export default function NewVehicle(props) {
         <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() =>   
           // setModalVisible(!modalVisible)
           this.addVehicleOffer()  
-        }>
+        }
+        disabled={state.isLoading}
+        >
           {!state.isLoading && (
             <Text style={appPageStyle.primaryTextColor}>  Add Vehicle</Text>
           )}
@@ -1341,7 +1384,6 @@ export default function NewVehicle(props) {
         {addedVehicleList && addedVehicleList.length > 0 ?
           <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor, appPageStyle.secondaryTextColor]} onPress={() =>   
             setModalVisible(!modalVisible)
-            // this.addVehicleOffer()  
           }>
             {!state.isLoading && (
               <Text style={appPageStyle.primaryTextColor}>  Send Offer</Text>
@@ -1350,7 +1392,7 @@ export default function NewVehicle(props) {
               <ActivityIndicator size="small" {...appPageStyle.primaryTextColor} />
             )}
           </TouchableOpacity>
-          :" "
+          :<Text></Text>
         }
         
       </SafeAreaView>

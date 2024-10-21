@@ -74,14 +74,13 @@ export default function OnGoingFright() {
         }
         if(res.json.message === "Insufficient Parameters"){
           setState({ ...state, isLoading: false});
-          console.log('no data here')
         }
 
         if(res.json.result === false){
           setState({ ...state, noData: true});
         }
     
-        if (res.json.result)setCompleted(res.json.load_list);
+        if (res.json.result)setCompleted(res.json);
         
         setState({ ...state, isLoading: false});
       });
@@ -123,9 +122,9 @@ export default function OnGoingFright() {
         )}
       {!state.isLoading &&(
         <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-        {completed &&
-          completed.length &&
-          completed.map((fright, key) => (
+        {completed.load_list &&
+          completed.load_list.length > 0 &&
+          completed.load_list.map((fright, key) => (
             
             <View style={[styles.boxShadow, {minHeight: 150, width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
               <View

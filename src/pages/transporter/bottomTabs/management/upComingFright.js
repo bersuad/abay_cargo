@@ -16,7 +16,8 @@ import {
   ApiConfig,
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
-  RefreshControl
+  RefreshControl,
+  Toast,
 } from './../../../../components/index';
 export default function OnGoingFright() {
   
@@ -35,11 +36,73 @@ export default function OnGoingFright() {
       noData: false
     });
 
+    useEffect(() => {
+    
+    }, [dashBoardData]);
+
     const [customer_id, setMyClientID]        = useState('');
     const [api_key, setAPI_KEY]               = useState('');
     const [user_id, setMyUserID]              = useState('');
     const [dashBoardData, setDashBoardData ]  = useState([]);
     const [user_details, setUserDetails]      = useState('');
+
+    const successWithDurationHandler = (message) => {
+      let toast = Toast.show(message, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        backgroundColor: 'green',
+        animation: true,
+      });
+    };
+
+    const initiateFright = async(load_id, vehicle_id, trip_vehicle_id) => {
+
+      setState({ ...state, isLoading: true});  
+      const user_id = await AsyncStorage.getItem('user_id');
+      const customer_id = await AsyncStorage.getItem('customer_id');
+      const api_key = await AsyncStorage.getItem('api_key');
+      
+      await AsyncStorage.getItem('customer_id').then((myClientID) => {
+        setMyClientID(myClientID);
+      });
+      
+      await AsyncStorage.getItem('api_key').then(value =>{
+        setAPI_KEY(value);
+      });
+  
+      await AsyncStorage.getItem('user_id').then(value =>{
+        setMyUserID(value);
+      });
+  
+      await AsyncStorage.getItem('userDetails').then(value =>{
+        setUserDetails(value);
+      });  
+      
+      postWithAuthCallWithErrorResponse(
+        ApiConfig.INITIATE_FRIGHT,
+        JSON.stringify({ user_id, api_key, customer_id, load_id, vehicle_id, trip_vehicle_id })
+      )
+        .then((res) => {
+          setState({ ...state, isLoading: false});  
+          if (res.json.message === 
+            "Invalid user authentication,Please try to relogin with exact credentials.") {
+              AsyncStorage.clear();
+              navigation.navigate('TruckLogin');
+          }
+
+          if (res.json.message === "Freight initiated successfully")
+          {
+            successWithDurationHandler("Freight initiated successfully! Please check Ongoing Frights.");
+            setTimeout(function () {
+              onRefresh();
+            }, 2000);
+          }
+          
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
 
     const getOngoingFright = async() => {
       setState({ ...state, isLoading: true});  
@@ -67,23 +130,18 @@ export default function OnGoingFright() {
         postMultipartWithAuthCallWithErrorResponse(
           ApiConfig.UPCOMMING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id,  }),
         ).then((res) => {
-
-        console.log(res+" upcoming");
     
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
-          console.log('Wrong Data here');
         }
         if(res.json.message === "Insufficient Parameters"){
           setState({ ...state, isLoading: false});
-          console.log('no data here')
         }
 
         if(res.json.result === false){
           setState({ ...state, noData: true});
         }
-    
-        console.log(res.json);
+        
         if (res.json.result)setDashBoardData(res.json);
         
         setState({ ...state, isLoading: false});
@@ -147,13 +205,13 @@ export default function OnGoingFright() {
                 <View >
                   <Text style={{fontWeight: 'bold'}}>Ref. No: {fright.trip_reference_no}</Text>
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {fright.trip_start_country +
+                    {fright?.trip_start_country +
                     ", " +
-                    fright.trip_start_city}{" "}
+                    fright?.trip_start_city}{" "}
                   -{" "}
-                  {fright.trip_end_country +
+                  {fright?.trip_end_country +
                     " " +
-                    fright.trip_end_city}
+                    fright?.trip_end_city}
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
                     {'Start at: '+fright.trip_start_date +
@@ -164,16 +222,14 @@ export default function OnGoingFright() {
                     " " }
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {'Trip Status: '+fright.trip_status +
+                    {'Trip Status: '+fright?.vehicle_status +
                     " "}
                     </Text>
                 </View>
-                <View style={{position: "absolute", top: 0, right:0}}>
-                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                    <MaterialCommunityIcons name="dots-vertical" size={24} {...appPageStyle.secondaryTextColor} />
-                  </TouchableOpacity>
-                </View>
               </View>
+              <TouchableOpacity onPress={()=>initiateFright(fright.trip_id, fright.vehicle_id, fright.trip_vehicle_id)} style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
+                  <Text style={{...appPageStyle.primaryTextColor}}>Initiate Fright</Text>
+              </TouchableOpacity>
             </View>
           
           ))
