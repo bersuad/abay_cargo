@@ -231,8 +231,8 @@ export default function AddNewDriver() {
       driver_region: "",
       driver_zone: "",
       driver_woreda: "",
-      driver_house_no: "",
-      driver_po_number: "",
+      driver_house_no: " ",
+      driver_po_number: " ",
       driver_country: " ",
       driver_dob: "",
       driver_gender: "",
@@ -254,7 +254,7 @@ export default function AddNewDriver() {
         driver_region: "",
         driver_zone: "",
         driver_woreda: "",
-        driver_house_no: "",
+        driver_house_no: " ",
         driver_po_number: "",
         driver_country: "",
         driver_dob: "",
@@ -278,7 +278,9 @@ export default function AddNewDriver() {
             setState({ ...state, isLoading: false }); 
             return;
           }
-        } else if(value === "" || value === null || value === undefined) {
+        }else if (key == "driver_house_no" || key == "driver_po_number"){
+          continue;
+        }else if(value === "" || value === null || value === undefined) {
           toastWithDurationHandler("Please check your "+key+" !");
           setState({ ...state, isLoading: false }); 
           return;
@@ -378,11 +380,11 @@ export default function AddNewDriver() {
       }
 
       if (res.json.result == true) {
-        setState({ ...state, isLoading: false});
         successWithDurationHandler('Registered Successfully, Driver updated successfully,Please wait for approval from Administration.');
         setTimeout(function () {
           navigation.navigate('transporterDriverSearch');
-        }, 10000);
+          setState({ ...state, isLoading: false});
+        }, 1000);
       }
     }).catch((error) => {
       console.log(error+'error here');

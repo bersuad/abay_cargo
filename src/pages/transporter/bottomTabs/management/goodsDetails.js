@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import * as FileSystem from 'expo-file-system';
 import {
   useNavigation,
   StyleSheet,
@@ -29,11 +28,10 @@ import {
 import * as MediaLibrary from 'expo-media-library';
 
 
-export default function OfferDetail(props) {
+export default function OfferGoodsDetails(props) {
   
     const navigation = useNavigation();
     const offer = props.route.params.details;
-    
     // return;
     const [state, setState] = useState({
         isLoading: true,
@@ -61,7 +59,6 @@ export default function OfferDetail(props) {
     const ensureDirectoryExists = async (directory) => {
       const dirInfo = await FileSystem.getInfoAsync(directory);
       if (!dirInfo.exists) {
-        console.log('Directory does not exist, creating...');
         await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
       }
     };
@@ -71,7 +68,6 @@ export default function OfferDetail(props) {
       try {
         const hasPermission = await getPermissionAsync();
         if (!hasPermission) {
-          console.log('Permission Denied', 'Cannot download file without storage access.');
           return;
         }
         // Specify the download path
@@ -87,11 +83,8 @@ export default function OfferDetail(props) {
           fileUrl,
           filePath
         );
-        console.log(filePath);
-
-        // Start downloading
-        const { uri } = await downloadResumable.downloadAsync();
-        console.log('File downloaded to:', uri);
+        
+        const { uri } = await downloadResumable.downloadAsync()
 
         // For Android, save it to external storage
         if (Platform.OS === 'android') {
@@ -183,7 +176,7 @@ export default function OfferDetail(props) {
         if (res.json.result)setOfferLoadData(res.json.load_details);
             setState({ ...state, isLoading: false});
         })
-        console.log(offerLoadData)
+        
         .catch((err) => console.log(err));
 
         return () => {};
@@ -213,7 +206,7 @@ export default function OfferDetail(props) {
         )}
       {!state.isLoading &&(
         <SafeAreaView style={styles.container}>
-            <View style={[styles.boxShadow, {minHeight: 200, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+            <View style={[styles.boxShadow, {minHeight: 200, width: '94%', backgroundColor: '#fff', marginTop: 1, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
             
                 <View
                 style={[
@@ -221,7 +214,7 @@ export default function OfferDetail(props) {
                     flexDirection: 'row',
                     width: '92%',
                     gap: 15,
-                    paddingTop: 10
+                    paddingTop: 1
                     },
                 ]}>
                     <View style={{marginTop:-18}}>
@@ -278,102 +271,24 @@ export default function OfferDetail(props) {
                         <Text>Company Name: {offerLoadData.trip_company_name}</Text>  
                         <Text>Cargo Type: {offerLoadData.cargo_type}</Text>
                         {offerLoadData.container_type && 
-                          <Text>Container Type: {offerLoadData && offerLoadData.container_type ? offerLoadData.container_type : "No Container"}</Text>                                
-                          }
-                          {offerLoadData.container_type_name && 
-                          <Text>Container Type: {offerLoadData && offerLoadData.container_type_name ? offerLoadData.container_type_name : "No Container"}</Text>                                
-                          }
+                            <Text>Container Type: {offerLoadData && offerLoadData.container_type ? offerLoadData.container_type : "No Container"}</Text>
+                        }
+                        {offerLoadData.container_type_name && 
+                            <Text>Container Type: {offerLoadData && offerLoadData.container_type_name ? offerLoadData.container_type_name : "No Container"}</Text>                                
+                        }
                         <Text>Quantity: {offerLoadData && offerLoadData.cargo_type === "Container" ? 
-                              offerLoadData.trip_container_quantity + " Containers" : 
-                              offerLoadData.cargo_type === "Vehicle" ? offerLoadData.quantity + " Vehicles" : 
-                              (offerLoadData.cargo_type === "Bulk" || offerLoadData.cargo_type === "Break bulk") ?
-                              offerLoadData.quantity + " Quintals" : " - "}
+                            offerLoadData.trip_container_quantity + " Containers" : 
+                            offerLoadData.cargo_type === "Vehicle" ? offerLoadData.quantity + " Vehicles" : 
+                            (offerLoadData.cargo_type === "Bulk" || offerLoadData.cargo_type === "Break bulk") ?
+                                offerLoadData.quantity + " Quintals" : " - "
+                            }
                         </Text>
                     </View>
                 </View>
-                
             </View>
-
-            <View style={[styles.boxShadow, styles.groupButton, {marginTop: 20, borderTopRightRadius:10, borderTopLeftRadius: 10}]}>
-                <Text style={{...styles.cardText, fontSize:18, position: "absolute", left: 0, color: "#1b9be6" }}>Documents</Text>
-            </View>
-            <View
-            style={[
-              {
-                flexDirection: 'row',
-                width: '94%',
-                gap: 5,
-                backgroundColor:'#fff', 
-                minHeight: 200,
-                paddingTop: 15,
-                paddingLeft: 50
-              },
-            ]}>
-              {offerLoadData?.trip_packing_list !== "" && (
-              <View style={{...styles.iconArea, height: 60, width: 90, marginLeft: 20}}>
-                <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15}}>Packing List</Text>
-                <View style={{marginLeft: 0, marginTop: 10}}>
-                  <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} 
-                    source={{
-                            uri: offerLoadData.trip_packing_list
-                            ? ApiConfig.BASE_URL_FOR_IMAGES+offerLoadData.trip_packing_list : fileImage 
-                            
-                          }}/>
-                  <View style={{position: "absolute", top: 0, right:-35}}>
-                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                      <MaterialCommunityIcons name="download" size={24} color="#19788e" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              )}
-
-              <View style={{...styles.iconArea, height: 60, width: 140, marginLeft: 60}}>
-                <Text style={{fontWeight: 500, fontSize: 14, marginTop: 15, }}>Insurance, Comprehensive & cargo</Text>
-                <View style={{marginLeft: -30, marginTop: 10}}>
-                  <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{
-                        uri: offerLoadData.trip_insurance
-                        ? ApiConfig.BASE_URL_FOR_IMAGES+offerLoadData.trip_insurance : fileImage 
-                      }}/>
-                  <View style={{position: "absolute", top: 0, right:-35}}>
-                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=> downloadFile(offerLoadData.trip_insurance)}>
-                      <MaterialCommunityIcons name="download" size={24} color="#19788e" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              
-            </View> 
-            {offerLoadData?.trip_bill_of_landing !== "" && (       
-            <View
-            style={[
-              {
-                flexDirection: 'row',
-                width: '94%',
-                gap: 15,
-                backgroundColor:'#fff', 
-                minHeight: 200,
-                paddingLeft: 40
-              },
-            ]}>
-              <View style={{...styles.iconArea, height: 60, width: 120, marginLeft: 20}}>
-                <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15}}>Bill of Lading</Text>
-                <View style={{marginLeft: 0, marginTop: 10}}>
-                  <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}}
-                    source={{
-                      uri: offerLoadData.trip_bill_of_landing
-                          ? ApiConfig.BASE_URL_FOR_IMAGES+offerLoadData.trip_bill_of_landing : fileImage 
-                    }}
-                  />
-                  <View style={{position: "absolute", top: 0, right:-35}}>
-                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
-                      <MaterialCommunityIcons name="download" size={24} color="#19788e" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View> 
-            )}     
+                <TouchableOpacity onPress={()=>navigation.navigate('OfferVehicleDetails', {details: offer})} style={{...appPageStyle.primaryColor, height: 45, width: "92%", alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
+                    <Text style={{...appPageStyle.primaryTextColor}}>View Vehicle Details</Text>
+                </TouchableOpacity>
         
         </SafeAreaView>
       )}

@@ -83,7 +83,7 @@ export default function OnGoingFright() {
           trip_start_city, trip_end_city, vehicles, vehicle_id, trailer_id, driver_id, trip_vehicle_id })
       )
         .then((res) => {
-          console.log(res);
+          
           setState({ ...state, isLoading: false});  
           if (res.json.message === 
             "Invalid user authentication,Please try to relogin with exact credentials.") {
@@ -203,7 +203,9 @@ export default function OnGoingFright() {
                   <FontAwesome5 name="box-open" size={24} color="#fff" />
                 </View>
                 <View >
-                  <Text style={{fontWeight: 'bold'}}>Ref. No: {fright.trip_reference_no}</Text>
+                <TouchableOpacity onPress={()=>navigation.navigate('OfferGoodsDetails', {details: fright})}>
+                  <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {fright.trip_reference_no}</Text>
+                </TouchableOpacity>
                   <Text style={{textAlign:'left', width: 250,}}>
                     {fright?.trip_start_country +
                     ", " +

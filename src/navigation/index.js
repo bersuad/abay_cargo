@@ -49,6 +49,8 @@ import ViewOfferLoad from '../pages/transporter/bottomTabs/management/viewOfferL
 import TransporterAuction from '../pages/transporter/bottomTabs/management/transporterAuction';
 import OfferNewVehicle from '../pages/transporter/bottomTabs/management/offerNewVehicle';
 import DirectOfferNewVehicle from '../pages/transporter/bottomTabs/management/directOfferNewVehicle';
+import OfferGoodsDetails from '../pages/transporter/bottomTabs/management/goodsDetails';
+import OfferVehicleDetails from '../pages/transporter/bottomTabs/management/frightVechicleDetails';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -628,6 +630,37 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Direct Offer Vehicle',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+          }}
+          
+        />
+        <Stack.Screen
+          name="OfferGoodsDetails"
+          title="View Details"
+          component={OfferGoodsDetails} 
+          options={{
+            headerShown: true,
+            headerTitle:'View Details',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#19788e',
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="OfferVehicleDetails"
+          title="View Details"
+          component={OfferVehicleDetails} 
+          options={{
+            headerShown: true,
+            headerTitle:'View Vehicle Details',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

@@ -195,7 +195,6 @@ export default function NewVehicle(props) {
         if (res.json.result == false && res.json.message == "No data found") {
           setAddedVehicleList([]);
           setLoadCategoryType("");
-          setModalVisible(!modalVisible);
         }
         if (res.json.result) {
           setAddedVehicleList(res.json.vehicle_list);
@@ -660,10 +659,21 @@ export default function NewVehicle(props) {
             setSelectedVehicleType("");
             setVehicleNameValue("");
             getAddVehicleList();
+            setVehicleList([]);
+            setPlateNoList([]);
+            setDriverList([]);
+            setSelectedtrailer({});
+            setSelectVehicle({});
+            setSelectedDriver([]);
+            setVehicleDetails({ ...vehicleDetails, truck_id: "",
+              trailer_id: "",
+              driver_id: "" });
+              getTrucks();
+              
             setTimeout(function () {
               setState({ ...state, isLoading: false });
               setModalVisible(!modalVisible);
-            }, 2000);
+            }, 1000);
           }
           
           if(res.json.result == false) {

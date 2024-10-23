@@ -785,10 +785,11 @@ export default function NewVehicle() {
         ""}
 
         
-        {vehiclesDetails && (
-          vehiclesDetails.vehicle_name === 4 &&
-          (vehiclesDetails.vehicle_type === 2 && vehiclesDetails.vehicle_type === 5 ) || 
-          (vehiclesDetails.vehicle_axle === 1 && vehiclesDetails.vehicle_type ===5)
+        {vehiclesDetails && (vehiclesDetails.vehicle_name === 4 &&
+            ((vehiclesDetails.vehicle_axle === 2
+            && vehiclesDetails.vehicle_type=== 5 ) || 
+            (vehiclesDetails.vehicle_axle === 1
+            && vehiclesDetails.vehicle_type=== 5))
         )
         
         ?
@@ -810,7 +811,7 @@ export default function NewVehicle() {
           }</Text>
           <SelectDropdown
             data={
-              vehicleContainer.filter(e=> (e.container_type_id===9))
+              vehicleContainer.filter(e=> (e.container_type_id !== 9))
             }
             onSelect={(vehicleContainer, index) => {
               setErrMsg({ ...errMsg, container_type: "" });
@@ -849,6 +850,73 @@ export default function NewVehicle() {
         </>
           :""
         }
+
+        {vehiclesDetails && (((vehiclesDetails.vehicle_name=== 3) ||
+          (vehiclesDetails.vehicle_name=== 1) ||
+          (vehiclesDetails.vehicle_type=== 1 &&
+              vehiclesDetails.vehicle_name=== 4
+              ))
+          )
+        
+        ?
+        <>
+          <Text style={styles.HeaderText}>Container</Text>
+          <Text style={{...styles.HeaderText, paddingTop: 0}}>
+            {
+            containerList.map((name, index) => (
+              <View key={index} style={styles.selectedContainer}>
+                <TouchableOpacity
+                  style={styles.removeContainer}
+                  onPress={() => removeContainer(name.value)}
+                >
+                  <Text style={styles.removeButtonText}>X</Text>
+                </TouchableOpacity>
+                <Text>{name.label}</Text>
+              </View>
+            ))
+          }</Text>
+          <SelectDropdown
+            data={
+              vehicleContainer.filter(e=> e.container_type_id === 1 || e.container_type_id===3 || e.container_type_id===5 || e.container_type_id===7)
+            }
+            onSelect={(vehicleContainer, index) => {
+              setErrMsg({ ...errMsg, container_type: "" });
+              const newContainerType = [
+                { label: vehicleContainer.container_type_name, value: vehicleContainer.container_type_id },
+              ];
+          
+              setSelectedContainers((containerList) => [...containerList, ...newContainerType]);
+            }}
+            
+            value={vehiclesDetails.container_type}
+            renderButton={(vehicleContainer, isOpened) => {
+              return (
+                <View style={styles.dropdownButtonStyle}>
+                  <Text style={styles.dropdownButtonTxtStyle}>
+                    {(vehicleContainer && vehicleContainer.container_type_name) || 'Select Container Type'}
+                  </Text>
+                  <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
+                </View>
+              );
+            }}
+            renderItem={(vehicleContainer, index, isSelected) => {
+
+              return (
+                <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: '#D2D9DF' }) }}>
+                  <Text style={styles.dropdownItemTxtStyle}>
+                    {vehicleContainer.container_type_name} {' '}
+                  </Text>
+                </View>
+              );
+
+            }}
+            showsVerticalScrollIndicator={false}
+            dropdownStyle={styles.dropdownMenuStyle}
+          />
+        </>
+          :""
+        }
+
         {vehiclesDetails && (vehiclesDetails.vehicle_name === 4 &&
         (vehiclesDetails.vehicle_type=== 2)
         )

@@ -124,27 +124,20 @@ export default function VehicleDetail(props) {
         )}
       {!state.isLoading &&(
         <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+          {driverRequest.profile_pic?
+            <View style={[styles.boxShadow, {minHeight: 120, width: 120, backgroundColor: '#fff', borderRadius: 10, alignItems: "center", justifyContent: "center"} ]}>
+              <View style={{marginTop: 5, marginLeft: 5, alignItems: "center", justifyContent: "center"}}>
+                  <Image style={styles.cardImage} 
+                      source={{
+                          uri: ApiConfig.BASE_URL_FOR_IMAGES +
+                          driverRequest.profile_pic,
+                          headers: { 'Accept': 'image/*'}
+                  }}/>
+              </View>
+            </View>
+            :""}
             <View style={[styles.boxShadow, {minHeight: 200, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
             
-                <View
-                style={[
-                    {
-                    flexDirection: 'row',
-                    width: '92%',
-                    gap: 15,
-                    paddingTop: 10
-                    },
-                ]}>
-                    <View style={{marginTop:-18}}>
-                        <Image style={styles.cardImage} 
-                            source={{
-                                uri: ApiConfig.BASE_URL_FOR_IMAGES +
-                                driverRequest.profile_pic,
-                                headers: { 'Accept': 'image/*'}
-                        }}/>
-                        <Text style={{fontWeight: 'bold', fontSize: 20}}>{driverRequest.driver_name} </Text>
-                    </View>
-                </View>
                 <View style={{textAlign: 'justify', fontSize: 15, marginTop:15, marginLeft: '-25%'}}>
                     
                     <Text><Text style={{fontWeight: 'bold'}}>Email:</Text> {driverRequest.email}</Text>  
@@ -265,13 +258,9 @@ const styles = StyleSheet.create({
       top: 0,
     },
     cardImage:{
-      position: "absolute",
-      right: 0,
-      top:0,
       opacity: 0.9,
       height: 110,
       width: 110,
-      marginTop: 10,
       marginRight: 5,
     },
     listCard:{

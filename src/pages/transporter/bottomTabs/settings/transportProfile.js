@@ -28,15 +28,12 @@ export default function ProfilePage() {
     isLoading: true,
     checkInternet:true,
   });
-
-  // const userImage = Image.resolveAssetSource(userImage).uri;
   
   const gettingUser = async ()=>{
     
     const user_id = await AsyncStorage.getItem('user_id');
     const api_key = await AsyncStorage.getItem('api_key');
     const customer_id = await AsyncStorage.getItem('customer_id');
-    console.log(user_id );
     
     postWithAuthCallWithErrorResponse(
       ApiConfig.PROFILE, JSON.stringify({ user_id, api_key, customer_id }),  
@@ -84,10 +81,11 @@ export default function ProfilePage() {
         <SafeAreaView style={styles.container}>
           <View style={{...styles.iconArea}}>
             <Image style={{...styles.cardImage,  borderRadius: 100, height: 100, width:100}}
-              source={{
-                uri: profile.basic_info.profile_pic
-                    ? ApiConfig.BASE_URL_FOR_IMAGES+profile.basic_info.profile_pic : userImage 
-              }}
+              source={
+                profile.basic_info ?
+                {uri: ApiConfig.BASE_URL_FOR_IMAGES+profile.basic_info.profile_pic }
+              : userImage 
+            }
             />
           </View>
           

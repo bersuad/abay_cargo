@@ -237,10 +237,12 @@ React.useEffect(() => {
                     <View style={{textAlign: 'justify'}}>
                         <Text style={{fontWeight: 'bold'}}>{driver.driver_name}</Text>
                         <View style={{position: "absolute", left: 100, marginTop: -5}}>
-                          {driver.status === 'driver_assigned' ?
-                            <Badge status='success' style={{backgroundColor: '#ED7014'}}>{driver.status}</Badge> 
+                        {console.log(driver)}
+                          {console.log(driver.status)}
+                          {driver.driver_status === 'active' ?
+                            <Badge status='success' style={{backgroundColor: 'green'}}>{driver.driver_status}</Badge> 
                           :
-                            <Badge status='success' style={{backgroundColor: 'green'}}>{driver.status}</Badge>
+                            <Badge status='success' style={{backgroundColor: '#ED7014'}}>{driver.driver_status}</Badge>
                           }
                         </View>
                         <Text style={{textAlign: 'justify'}}>Email: {driver.email_id}</Text>    

@@ -203,7 +203,10 @@ export default function OnGoingFright() {
                   <FontAwesome5 name="box-open" size={24} color="#fff" />
                 </View>
                 <View >
-                  <Text style={{fontWeight: 'bold'}}>Ref. No: {fright.trip_reference_no}</Text>
+                
+                <TouchableOpacity onPress={()=>navigation.navigate('OfferGoodsDetails', {details: fright})}>
+                  <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {fright.trip_reference_no}</Text>
+                </TouchableOpacity>
                   <Text style={{textAlign:'left', width: 250,}}>
                     {fright?.trip_start_country +
                     ", " +
