@@ -27,11 +27,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
       tabBarIcon: ({focused}) => {
         return focused ? (
           <View style={styles.labelFocusedContainer}>
-            <Ionicons name="home" size={20} color={"rgba(25, 120, 142, 1)"}/>
+            <Ionicons name="home" size={20} color={"rgba(240,138,41,1)"}/>
           </View>
         ) : (
           <View style={styles.labelContainer}>
-            <Ionicons name="home" size={19} color={"rgba(25, 120, 142, 1)"}/>
+            <Ionicons name="home" size={19} color={"rgba(240,138,41,1)"}/>
           </View>
         );
       },
@@ -46,11 +46,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
     tabBarIcon: ({focused}) => {
       return focused ? (
         <View style={styles.labelFocusedContainer}>
-          <MaterialCommunityIcons name="offer" size={20}  color={"rgba(25, 120, 142, 1)"}/>
+          <MaterialCommunityIcons name="offer" size={20}  color={"rgba(240,138,41,1)"}/>
         </View>
       ) : (
         <View style={styles.labelContainer}>
-          <MaterialCommunityIcons name="offer" size={19} color={"rgba(25, 120, 142, 1)"}/>
+          <MaterialCommunityIcons name="offer" size={19} color={"rgba(240,138,41,1)"}/>
         </View>
       );
     },
@@ -63,11 +63,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
       tabBarIcon: ({focused}) => {
         return focused ? (
           <View style={styles.labelFocusedContainer}>
-            <Ionicons name="notifications" size={20} color={"rgba(25, 120, 142, 1)"}/>
+            <Ionicons name="notifications" size={20} color={"rgba(240,138,41,1)"}/>
           </View>
         ) : (
           <View style={styles.labelContainer}>
-            <Ionicons name="notifications" size={19} color={"rgba(25, 120, 142, 1)"}/>
+            <Ionicons name="notifications" size={19} color={"rgba(240,138,41,1)"}/>
           </View>
         );
       },
@@ -81,11 +81,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
     tabBarIcon: ({focused}) => {
       return focused ? (
         <View style={styles.labelFocusedContainer}>
-          <Ionicons name="settings-outline" size={20} color={"rgba(25, 120, 142, 1)"}/>
+          <Ionicons name="settings-outline" size={20} color={"rgba(240,138,41,1)"}/>
         </View>
       ) : (
         <View style={styles.labelContainer}>
-          <Ionicons name="settings-outline" size={19} color={"rgba(25, 120, 142, 1)"}/>
+          <Ionicons name="settings-outline" size={19} color={"rgba(240,138,41,1)"}/>
         </View>
       );
     },
@@ -94,13 +94,13 @@ const TabNavigator = createMaterialBottomTabNavigator(
 },
 {
 	initialRouteName: "Home",
-  activeColor: 'rgba(25, 120, 142, 1)',
-  inactiveColor: 'rgba(25, 120, 142, 0.88)',
+  activeColor: 'rgba(240,138,41,1)',
+  inactiveColor: 'rgba(240,138,41,0.88)',
   gestureEnabled: true,
   gestureDirection: 'horizontal',
 	barStyle: {
     paddingVertical: 0, 
-    borderTopColor:'rgba(25, 120, 142, 0.5)', 
+    borderTopColor:'rgba(240,138,41,0.5)', 
     borderTopWidth:1, 
     backgroundColor: "#ffffff", 
     height: 60, 
@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
   labelFocusedContainer: {
     alignItems: 'center',
     borderTopWidth: 2,
-    borderTopColor: 'rgba(25, 120, 142, 0.5)',
+    borderTopColor: 'rgba(240,138,41,0.5)',
     width: 100,
     minWidth: '100%',
     maxWidth: 300,
     height:300,
-    backgroundColor:'rgba(25, 120, 142, 0.3)',
+    backgroundColor:'rgba(240,138,41,0.3)',
     paddingTop: 10,
     marginTop: -8
   },

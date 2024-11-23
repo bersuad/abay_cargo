@@ -100,7 +100,7 @@ export default function App() {
             headerTitle:'Forget Password',
             headerBackTitle: 'Back',
             headerStyle: {
-              backgroundColor: '#19788e',
+              backgroundColor: '#b76b29',
             },
             headerTintColor: '#fff'
           }}
@@ -116,7 +116,7 @@ export default function App() {
             headerTitle:'Transporter Registration',
             headerBackTitle: 'Back',
             headerStyle: {
-              backgroundColor: '#19788e',
+              backgroundColor: '#b76b29',
             },
             headerTintColor: '#fff'
           }}
@@ -130,15 +130,15 @@ export default function App() {
           component={TransporterDashboard} 
           options={{
             headerShown: true,
-            headerTitle:'Abay Transporter',
+            headerTitle:'Abay Shipper',
             headerStyle: {
-              backgroundColor: '#fff',
+              backgroundColor: '#b76b29',
               shadowColor: '#1f1f1f',
               shadowOffset: {width: -2, height: 4},
               shadowOpacity: 0.2,
               shadowRadius: 3,
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#ffffff',
             headerBackTitleVisible: false,
             headerLeft: ()=> <ActionBarImage/>,
             headerRight: ()=> <NotificationBar />,
@@ -157,11 +157,11 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             headerRight: ()=> 
             <View>
               <TouchableOpacity style={{flexDirection: 'row', height: "100%", marginTop: 10}}>
-                <FontAwesome5 name="edit" size={24} color="#19788e" style={{marginRight: 25, marginTop: 6}}/>
+                <FontAwesome5 name="edit" size={24} color="#b76b29" style={{marginRight: 25, marginTop: 6}}/>
               </TouchableOpacity>
           </View>,
           }}
@@ -179,7 +179,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -196,7 +196,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -213,7 +213,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -229,7 +229,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -245,7 +245,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -262,7 +262,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -279,7 +279,7 @@ export default function App() {
             headerStyle:{
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
         />
 
@@ -294,7 +294,7 @@ export default function App() {
             headerStyle:{
               backgroundColor: '#fff'
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
         />
         
@@ -309,7 +309,7 @@ export default function App() {
             headerStyle:{
               backgroundColor: '#fff'
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
         />
 
@@ -324,7 +324,7 @@ export default function App() {
             headerStyle:{
               backgroundColor: '#fff'
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
         />
 
@@ -339,7 +339,7 @@ export default function App() {
             headerStyle:{
               backgroundColor: '#fff'
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
         />
 
@@ -354,7 +354,7 @@ export default function App() {
             headerStyle:{
               backgroundColor: '#fff'
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
         />
 
@@ -369,7 +369,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -386,7 +386,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -403,7 +403,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -420,7 +420,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -437,7 +437,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -454,7 +454,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -472,7 +472,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -489,7 +489,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -506,7 +506,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -523,7 +523,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -538,7 +538,7 @@ export default function App() {
             headerTitle:'Report Form',
             headerBackTitle: 'Back',
             headerStyle: {
-              backgroundColor: '#19788e',
+              backgroundColor: '#b76b29',
             },
             headerTintColor: '#fff',
             
@@ -557,7 +557,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -573,7 +573,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
             
           }}
           
@@ -589,7 +589,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
           
         />
@@ -604,7 +604,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
           
         />
@@ -619,7 +619,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
           
         />
@@ -634,7 +634,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
           
         />
@@ -649,7 +649,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
           
         />
@@ -665,7 +665,7 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#fff',
             },
-            headerTintColor: '#19788e',
+            headerTintColor: '#b76b29',
           }}
           
         />

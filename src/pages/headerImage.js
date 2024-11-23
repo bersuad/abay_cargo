@@ -4,18 +4,19 @@ import {
   View,
   Image,
   Logo,
+  whiteLogo
 } from './../components/index'
 
 const ActionBarImage = () => {
   return (
     <View style={{flexDirection: 'row'}}>
       <Image
-        source={Logo}
+        source={whiteLogo}
         style={{
           width: 40,
           height: 40,
-        //   borderRadius: 100,
-          marginLeft: 15,
+          objectFit: "fill" ,
+          marginLeft: 20,
           marginBottom: 5
         }}
       />

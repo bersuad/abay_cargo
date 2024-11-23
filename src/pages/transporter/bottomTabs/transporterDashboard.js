@@ -153,7 +153,7 @@ export default function App() {
   
   return (
     <ScrollView 
-      style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
+      style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
@@ -171,14 +171,17 @@ export default function App() {
             <Text style={styles.cardText}>WELCOME.., </Text>
             <Text style={{...styles.cardText, fontSize:18, }}>{dashBoardData.user_name}</Text>
             <Image style={styles.cardImage} source={headerImage}/>
-            <TouchableOpacity onPress={()=>navigation.navigate('transporterDriverSearch')}>
-              <Text style={{...styles.cardText, fontSize: 15, marginTop: 15, color: "#1b9be6"}}>+ Add Driver</Text>
+            <TouchableOpacity onPress={()=>navigation.navigate('transporterDriverSearch')} style={styles.headerButton}>
+              <Text style={{...styles.cardText, fontSize: 15, ...appPageStyle.primaryTextColor}}>+ Send Offer Load</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
-              <Text style={{...styles.cardText, fontSize: 15, marginTop: 15, color: "#1b9be6"}}>+ Add Vehicles </Text>
+            <TouchableOpacity onPress={()=>navigation.navigate('transporterVehiclesSearch')} style={styles.headerButton}>
+              <Text style={{...styles.cardText, fontSize: 15, ...appPageStyle.primaryTextColor}}>X Reject Offer </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('transporterVehiclesSearch')} style={styles.headerButton}>
+              <Text style={{...styles.cardText, fontSize: 15, ...appPageStyle.primaryTextColor}}>+ Order Confermation </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>navigation.navigate('OfferLoad')}>
-              <Text style={{...styles.cardText, fontSize: 15, marginTop: 20, color: "#1b9be6"}}>Get Started With Offer Goods </Text>
+              <Text style={{...styles.cardText, fontSize: 15, marginTop: 20, ...appPageStyle.secondaryTextColor}}>Get Started With Offer Goods </Text>
             </TouchableOpacity>
           </ImageBackground>
 
@@ -204,7 +207,40 @@ export default function App() {
             <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)"}}>
               <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
             </View>
-            <Text style={{...styles.cardText, fontSize:13, }}>Vehicles</Text>
+            <Text style={{...styles.cardText, fontSize:13, }}>Vehicle Offers</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
+            <View style={{...styles.badge, backgroundColor: "#700033", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.drivers}</Text>
+            </View>
+            <View style={{...styles.iconArea, backgroundColor: "#700070"}}>
+              <FontAwesome5 name="id-badge" size={24} color="#fff" />
+            </View>
+            <Text style={{...styles.cardText, fontSize:13, }}>Drivers</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={[
+            {
+              flexDirection: 'row',
+              width: '90%',
+              gap: 15,
+              shadowColor: '#1f1f1f',
+              shadowOffset: {width: -2, height: 1},
+              shadowOpacity: 0.2,
+              shadowRadius: 1,
+              marginTop: 20,
+            },
+          ]}>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
+            <View style={{...styles.badge, backgroundColor: "#700033", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.vehicles}</Text>
+            </View>
+            <View style={{...styles.iconArea, backgroundColor: "#700033"}}>
+              <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
+            </View>
+            <Text style={{...styles.cardText, fontSize:13, }}>Reports</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
             <View style={{...styles.badge, backgroundColor: "#1b9be6", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
@@ -213,88 +249,107 @@ export default function App() {
             <View style={{...styles.iconArea, backgroundColor: "#1b9be6"}}>
               <FontAwesome5 name="id-badge" size={24} color="#fff" />
             </View>
-            <Text style={{...styles.cardText, fontSize:13, }}>Drivers</Text>
+            <Text style={{...styles.cardText, fontSize:13, }}>Payment Methods</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterFreights')}>
-            <View style={[styles.iconArea, appPageStyle.primaryColor]}>
-              <Ionicons name="swap-horizontal" size={24} color="#fff" />
-            </View>
-            <Text style={{...styles.cardText, fontSize:13, }}>Frights</Text>
-          </TouchableOpacity>
-
         </View>
 
         <View
           style={[
             {
-              flexDirection: 'row',
-              width: '95%',
-              gap: 5,
-              shadowColor: '#1f1f1f',
-              shadowOffset: {width: -2, height: 1},
-              shadowOpacity: 0.2,
-              shadowRadius: 1,
-              marginTop: 0,
+              flex: 1,
+              flexDirection: 'column',
+              width: '90%',
+              marginTop: 35,
             },
           ]}>
-            <TouchableOpacity style={[styles.boxShadow, styles.offers]} onPress={()=>navigation.navigate('OfferLoad')}>
-              <View style={{...styles.badge, backgroundColor: "#1b9be6", marginTop: 0, position: 'absolute', left:35, top: 1,  }}>
-                <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offer_goods_direct}</Text>
-              </View>
-              <View style={{...styles.iconArea, backgroundColor: "#1b9be6", position: "absolute", left: 5}}>
-                <MaterialCommunityIcons name="notebook-check" size={24} color="#fff" />
-              </View>
-              <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 3, marginLeft: 50 }}>Direct Offer Loads </Text>
-              <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-              
+          <View style={{alignItems: 'flex-start' }}>
+            <TouchableOpacity style={{alignItems: 'flex-start', marginTop: 5 }}>
+              <Text style={{fontSize:15, color:'#1b9be6', fontWeight:"bold"}}>ABAY PLC PORT AND TERMINAL HANDLING RATE CHART</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.boxShadow, styles.offers]} onPress={()=>navigation.navigate('OnlineOfferLoad')}>
-              <View style={{...styles.badge, backgroundColor: "#1b9be6", marginTop: 0, position: 'absolute', left:35, top: 1,  }}>
-                <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.offer_goods_online}</Text>
-              </View>
-              <View style={{...styles.iconArea, backgroundColor: "#1b9be6", position: "absolute", left: 5}}>
-                <MaterialCommunityIcons name="notebook-check" size={24} color="#fff" />
-              </View>
-              <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 1, marginLeft: 50 }}>Online Offer Loads  
-              </Text>
-              <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-              
-            </TouchableOpacity>
-
+            
+            <Text style={{fontSize:15, color:'#1f1f1f', fontWeight:"bold"}}>Import / Export</Text>
           </View>
-          <View
-          style={[
-            {
-              flexDirection: 'row',
-              width: '95%',
-              gap: 5,
-              shadowColor: '#1f1f1f',
-              shadowOffset: {width: -2, height: 1},
-              shadowOpacity: 0.2,
-              shadowRadius: 1,
-              marginTop: 10,
-            },
-          ]}>
-            <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('OfferVehicle')}>
-              <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)", position: "absolute", left: 5}}>
-                <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
-              </View>
-              <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 1, marginLeft: 50 }}>Direct Offered Vehicles  
-              </Text>
-              <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-              
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('OfferVehicle')}>
-              
-              <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)", position: "absolute", left: 5}}>
-                <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
-              </View>
-              <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 1, marginLeft: 50 }}>Online Offered Vehicles
-              </Text>
-              <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-            </TouchableOpacity>
+        </View>
 
+        <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+          <View style={[styles.boxShadow, {minHeight: 150, maxHeight: 'auto', width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom:10} ]}>
+            <View style={{...styles.iconArea, ...appPageStyle.secondaryBackgroundColor, borderColor:'#b76b29', borderWidth:1, height: 50, width: '100%', borderRadius: 10, margin: 10, marginTop: 0, borderBottomLeftRadius:0, borderBottomRightRadius:0}}>
+              <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>Terminal Handling</Text>
+            </View>
+            <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '90%',
+                gap: 15,
+                marginBottom: 5
+              },
+            ]}>
+              <Text style={{fontWeight: 'bold', padding:5}}>Terminal Handling</Text>
+              <View style={{width:'100%'}}>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Currency: USD</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>20 ft(teu): </Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>40 ft(feu): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Break bulk(freight tone): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Bulk (tone): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>RORO(Unit): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Other: 12</Text>
+              </View>
+            </View>
           </View>
+
+          <View style={[styles.boxShadow, {minHeight: 150, maxHeight: 'auto', width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom:10} ]}>
+            <View style={{...styles.iconArea, ...appPageStyle.secondaryBackgroundColor, borderColor:'#b76b29', borderWidth:1, height: 50, width: '100%', borderRadius: 10, margin: 10, marginTop: 0, borderBottomLeftRadius:0, borderBottomRightRadius:0}}>
+              <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>Transit fee at sea port</Text>
+            </View>
+            <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '90%',
+                gap: 15,
+                marginBottom: 5
+              },
+            ]}>
+              <Text style={{fontWeight: 'bold', padding:5}}>Transit fee at sea port</Text>
+              <View style={{width:'100%'}}>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Currency: USD</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>20 ft(teu): </Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>40 ft(feu): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Break bulk(freight tone): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Bulk (tone): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>RORO(Unit): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Other: 12</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={[styles.boxShadow, {minHeight: 150, maxHeight: 'auto', width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom:10} ]}>
+            <View style={{...styles.iconArea, ...appPageStyle.secondaryBackgroundColor, borderColor:'#b76b29', borderWidth:1, height: 50, width: '100%', borderRadius: 10, margin: 10, marginTop: 0, borderBottomLeftRadius:0, borderBottomRightRadius:0}}>
+              <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>Local Transit fee</Text>
+            </View>
+            <View
+            style={[
+              {
+                flexDirection: 'row',
+                width: '90%',
+                gap: 15,
+                marginBottom: 5
+              },
+            ]}>
+              <Text style={{fontWeight: 'bold', padding:5}}>Local Transit fee</Text>
+              <View style={{width:'100%'}}>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Currency: USD</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>20 ft(teu): </Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>40 ft(feu): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Break bulk(freight tone): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Bulk (tone): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>RORO(Unit): 12</Text>
+                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Other: 12</Text>
+              </View>
+            </View>
+          </View>
+        </View>
         
         <View
           style={[
@@ -302,7 +357,7 @@ export default function App() {
               flex: 1,
               flexDirection: 'column',
               width: '90%',
-              marginTop: 10,
+              marginTop: 35,
             },
           ]}>
           <View style={{alignItems: 'flex-start' }}>
@@ -417,8 +472,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 13,
-    textAlign: 'center',
-    marginTop: 10,
+    textAlign: 'left',
     color: '#111',
     fontWeight: "600",
     
@@ -443,10 +497,11 @@ const styles = StyleSheet.create({
     right: 0,
     top:0,
     opacity: 0.9,
-    height: 110,
-    width: 110,
-    marginTop: 20,
-    marginRight: 5,
+    height: 210,
+    width: 210,
+    marginTop: 10,
+    marginRight: 1,
+    objectFit:'contain'
   },
   listCard:{
     flex: 1, 
@@ -481,5 +536,13 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     justifyContent: "center", 
     borderRadius: 100,
+  },
+  headerButton:{
+    ...appPageStyle.primaryColor, 
+    height: 25, 
+    minWidth: 130, 
+    padding: 4, 
+    borderRadius:10, 
+    marginTop:10
   }
 });

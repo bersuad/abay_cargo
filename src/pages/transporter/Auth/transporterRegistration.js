@@ -512,7 +512,7 @@ const gradeImage = {
           <TextInput
             style={styles.TextInput}
             placeholder="Company Name"
-            placeholderTextColor="#19788e"
+            placeholderTextColor="#f08a29"
             value={driverDetails.company_name}
             onChangeText={(text) =>{
               setErrMsg({ ...errMsg, company_name: "" });
@@ -530,7 +530,7 @@ const gradeImage = {
           <TextInput
             style={styles.TextInput}
             placeholder="Contact Person"
-            placeholderTextColor="#19788e"
+            placeholderTextColor="#f08a29"
             onChangeText={(text) =>{
               setErrMsg({ ...errMsg, contact_person: "" });
               setDriverDetails({ ...driverDetails, contact_person: text})
@@ -546,7 +546,7 @@ const gradeImage = {
           <TextInput
             style={styles.TextInput}
             placeholder="Contact Person Responsibility"
-            placeholderTextColor="#19788e"
+            placeholderTextColor="#f08a29"
             onChangeText={(text) =>{
               setErrMsg({ ...errMsg, contact_person_responsibility: "" });
               setDriverDetails({...driverDetails, contact_person_responsibility: text})
@@ -568,7 +568,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Contact Person Phone"
-              placeholderTextColor="#19788e"
+              placeholderTextColor="#f08a29"
               inputMode="numeric"
               maxLength={10}
               onChangeText={(text) =>{
@@ -583,7 +583,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Company Person Email"
-              placeholderTextColor="#19788e"
+              placeholderTextColor="#f08a29"
               onChangeText={(contact_person_email) =>{
                 setErrMsg({ ...errMsg, contact_person_email: "" });
                 setDriverDetails({...driverDetails, contact_person_email: contact_person_email})
@@ -598,7 +598,7 @@ const gradeImage = {
           <TextInput
             style={styles.TextInput}
             placeholder="Total Fleet Size"
-            placeholderTextColor="#19788e"
+            placeholderTextColor="#f08a29"
             onChangeText={(text) =>{
               setErrMsg({ ...errMsg, total_fleet_size: "" });
               setDriverDetails({...driverDetails, total_fleet_size: text})
@@ -622,7 +622,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Password"
-              placeholderTextColor="#19788e"
+              placeholderTextColor="#f08a29"
               secureTextEntry={true}
               onChangeText={(text) =>{
                 setErrMsg({ ...errMsg, password: "" });
@@ -636,7 +636,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Confirm Password"
-              placeholderTextColor="#19788e"
+              placeholderTextColor="#f08a29"
               secureTextEntry={true}
               onChangeText={(confirmPassword) =>{
                 setErrMsg({ ...errMsg, confirmPassword: "" });
@@ -726,7 +726,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Phone"
-              placeholderTextColor="#19788e"
+              placeholderTextColor="#f08a29"
               inputMode="numeric"
               maxLength={10}
               onChangeText={(phone_no) =>{
@@ -741,7 +741,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Alternate Phone"
-              placeholderTextColor="#19788e"
+              placeholderTextColor="#f08a29"
               inputMode="numeric"
               maxLength={10}
               onChangeText={(alternate_phone) =>{
@@ -766,7 +766,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Email"
-              placeholderTextColor="#19788e"
+              placeholderTextColor="#f08a29"
               onChangeText={(email) =>{
                 setErrMsg({ ...errMsg, email: "" });
                 setDriverDetails({...driverDetails, email: email})
@@ -779,7 +779,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="P.O Box"
-              placeholderTextColor="#19788e"
+              placeholderTextColor="#f08a29"
               maxLength={4}
               onChangeText={(po_number) =>{
                 setErrMsg({ ...errMsg, po_number: "" });
@@ -878,7 +878,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inputView: {
-    backgroundColor: "rgba(25, 120, 142, 0.2)",
+    backgroundColor: "rgba(240,138,41, 0.3)",
     borderRadius: 10,
     width: '95%',
     height: 45,
@@ -911,7 +911,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   HeaderText:{
-    color: '#19788e',
+    color: '#f08a29',
     fontSize: 13,
     alignSelf:'flex-start',
     marginLeft: 10,
@@ -944,7 +944,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 12,
-    backgroundColor: "rgba(25, 120, 142, 0.2)",
+    backgroundColor: "rgba(240,138,41, 0.3)",
     borderRadius: 10,
     width: '95%',
     height: 45,
@@ -953,16 +953,16 @@ const styles = StyleSheet.create({
   dropdownButtonTxtStyle: {
     flex: 1,
     fontWeight: '500',
-    color: '#19788e',
+    color: '#f08a29',
   },
   dropdownButtonArrowStyle: {
     fontSize: 28,
-    color: '#19788e',
+    color: '#f08a29',
   },
   dropdownButtonIconStyle: {
     fontSize: 28,
     marginRight: 8,
-    color: '#19788e',
+    color: '#f08a29',
   },
   dropdownMenuStyle: {
     backgroundColor: '#E9ECEF',
@@ -980,7 +980,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     fontWeight: '500',
-    color: '#19788e',
+    color: '#f08a29',
   },
   dropdownItemIconStyle: {
     fontSize: 28,

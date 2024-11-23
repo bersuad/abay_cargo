@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 const appPageStyle = StyleSheet.create({
 
     primaryColor:{
-        backgroundColor: '#19788e',
+        backgroundColor: '#b76b29',
     },
 
     primaryTextColor:{
@@ -13,7 +13,7 @@ const appPageStyle = StyleSheet.create({
     },
 
     secondaryTextColor:{
-        color: '#19788e',
+        color: '#b76b29',
     },
 
     secondaryBackgroundColor:{

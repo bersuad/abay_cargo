@@ -103,7 +103,7 @@ export default function Splash() {
                     <Image style={styles.image} source={Logo}/>
                 </Animated.View>
                 
-                <Text style={styles.logoText}>Abay Cargo & Delivery</Text>
+                <Text style={styles.logoText}>Abay Logistics Shipper</Text>
                 <Text style={styles.simpleText}>"Your gateway to any destination in the world."</Text>
             </View>
         );
@@ -126,13 +126,13 @@ const styles = StyleSheet.create({
       alignItems: 'center',
   },
   logoText:{
-      color: '#19788e',
+      ...appPageStyle.secondaryTextColor,
       fontSize: 25,
       marginTop: 15,
-      fontWeight: '300',
+      fontWeight: 'bold',
   },
   simpleText:{
-      color: '#19788e',
+    ...appPageStyle.secondaryTextColor,
       fontSize: 14,
       marginTop: 2.9,
       fontWeight: '300',

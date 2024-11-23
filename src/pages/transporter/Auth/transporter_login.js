@@ -26,6 +26,8 @@ import {
   ActivityIndicator,
   Toast,
   Ionicons,
+  Logo,
+  whiteLogo
 } from "./../../../components/index";
 
 import SnackBar from 'react-native-snackbar-component';
@@ -182,14 +184,18 @@ export default function App() {
             <SnackBar visible={true} textMessage="No Internet Connection!" actionHandler={()=>{this._checkConnection()}} actionText="Try Again"/>
           )}
           <View style={styles.logoArea}>
-            <Image style={styles.image} source={TruckLogin} /> 
-            <Text style={[styles.buttonText, appPageStyle.secondaryTextColor]}>
-              Abay Transporter Login
+            <Image style={styles.image} source={whiteLogo} /> 
+            <Text style={[styles.buttonText, appPageStyle.primaryTextColor, {fontSize: 20}]}>
+            Welcome
             </Text>
+            <Text style={[styles.buttonText, appPageStyle.primaryTextColor]}>
+             Abay Logistics Shipper Login
+            </Text>
+            
           </View>
           <View style={styles.inputView}>
             <TextInput
-              style={[styles.TextInput, appPageStyle.secondaryTextColor]}
+              style={[styles.TextInput]}
               placeholder="Email Here."
               placeholderTextColor="#003f5c"
               onChangeText={(username) =>{
@@ -206,9 +212,9 @@ export default function App() {
           )}
           <View style={styles.inputView}>
             <TextInput
-              style={[styles.TextInput, appPageStyle.secondaryTextColor]}
+              style={[styles.TextInput,]}
               placeholder="Password."
-              placeholderTextColor="#003f5c"
+              placeholderTextColor="#010101"
               secureTextEntry={state.inputFormat}
               onChangeText={(password) =>{
                 setErrMsg({ ...errMsg, password: "" });
@@ -224,18 +230,18 @@ export default function App() {
             <Text style={{color: '#FF5151', marginTop: -10, paddingBottom: 10, position: "relative"}}>{errMsg.password}</Text>
           )}
           <TouchableOpacity onPress={()=>navigation.navigate('ForgetPassword')}>
-            <Text style={{...styles.forgot_button, ...appPageStyle.secondaryTextColor}}>Forgot Password?</Text> 
+            <Text style={{...styles.forgot_button, ...appPageStyle.primaryTextColor}}>Forgot Password?</Text> 
           </TouchableOpacity> 
-          <TouchableOpacity style={[styles.loginBtn, appPageStyle.primaryColor]} onPress={()=>this._login()}>
+          <TouchableOpacity style={[styles.loginBtn, appPageStyle.secondaryBackgroundColor]} onPress={()=>this._login()}>
             {!state.isLoading &&(
-                <Text style={appPageStyle.primaryTextColor}>LOGIN</Text>
+                <Text style={{...appPageStyle.secondaryTextColor, fontWeight:'bold' }}>LOGIN</Text>
             )}
             {state.isLoading && (
-                <ActivityIndicator size="small" {...appPageStyle.primaryTextColor} />       
+                <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} />       
             )}
           </TouchableOpacity> 
-          <TouchableOpacity onPress={()=>navigation.navigate('Registration')}>
-            <Text style={[styles.buttonText, appPageStyle.secondaryTextColor, {marginTop: 25, marginBottom: 25,}]}>Register</Text> 
+          <TouchableOpacity onPress={()=>navigation.navigate('Registration')} style={{...styles.loginBtn, borderColor: 'rgba(255, 255, 255, 0.9)', borderWidth:1, width: "90%",}}>
+            <Text style={[styles.buttonText, appPageStyle.primaryTextColor,]}>Register</Text> 
           </TouchableOpacity> 
         </View> 
       </ScrollView>
@@ -245,40 +251,47 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#b76b29",
     alignItems: "center",
     justifyContent: "center",
   },
   image: {
     marginBottom: 0,
-    height: 100,
-    width: 100,
-    objectFit: "contain",
+    height: 120,
+    width: 120,
+    objectFit: "fill" ,
+    marginBottom:10
   },
   logoArea:{
     marginTop: 40,
-    marginBottom: 40,
+    marginBottom: 50,
     alignItems: "center",
     justifyContent: "center",
   },
   inputView: {
-    backgroundColor: "rgba(25, 120, 142, 0.3)",
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
     borderRadius: 30,
     width: '90%',
     height: 45,
     marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
+    borderColor: 'rgba(255, 255, 255, 0.9)',
+    borderWidth: 1
   },
   TextInput: {
     height: 50,
     flex: 1,
-    padding: 10,
-    // marginLeft: 20,
+    padding: 11,
+    fontWeight: 'bold',
+    width: '100%',
+    backgroundColor:'#fff',
+    borderRadius: 30,
   },
   forgot_button: {
     height: 30,
     marginBottom: 30,
+    fontSize:18
   },
   loginBtn: {
     width: "90%",
@@ -288,13 +301,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 10,
     color: '#fff',
-    // paddingTop: 20
   },
   
   buttonText: {
-    fontSize: 18,
+    fontSize: 15,
     textAlign: 'center',
-    marginTop: 15,
     fontWeight: 'bold'
   },
 });

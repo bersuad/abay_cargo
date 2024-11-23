@@ -60,14 +60,15 @@ import ForgetPassword from './../../assets/password.gif';
 import TruckLogin from './../../assets/transporter.gif';
 import DriverLogin from './../../assets/driver.gif';
 import cardBackground from "./../../assets/cardimage.jpg";
-import headerImage from "./../../assets/cargodelivary.png";
+import headerImage from "./../../assets/shipper_banner.png";
 import userImage from "./../../assets/userava.png";
 import placeholder from "./../../assets/placeholder.jpg";
 import fileIcon from "./../../assets/file.png";
 
 import Collapsible from 'react-native-collapsible';
 import appPageStyle from "../styles/common";
-import AppContext from "./AppContext"
+import AppContext from "./AppContext";
+import whiteLogo from "./../../assets/white-abay-logo.png";
 
 export {
   StyleSheet,
@@ -123,6 +124,7 @@ export {
   userImage,
   placeholder,
   fileIcon,
+  whiteLogo,
 
   //main styling
   appPageStyle,
