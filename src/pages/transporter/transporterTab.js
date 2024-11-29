@@ -7,7 +7,8 @@ import{
   createMaterialBottomTabNavigator,
   View,
   StyleSheet,
-  Text
+  Text,
+  FontAwesome5
 } from './../../components/index';
 
 import HomeScreen from "./bottomTabs/transporterDashboard";
@@ -63,11 +64,11 @@ const TabNavigator = createMaterialBottomTabNavigator(
       tabBarIcon: ({focused}) => {
         return focused ? (
           <View style={styles.labelFocusedContainer}>
-            <Ionicons name="notifications" size={20} color={"rgba(240,138,41,1)"}/>
+            <FontAwesome5 name="truck-loading" size={20} color={"rgba(240,138,41,1)"}/>
           </View>
         ) : (
           <View style={styles.labelContainer}>
-            <Ionicons name="notifications" size={19} color={"rgba(240,138,41,1)"}/>
+            <FontAwesome5 name="truck-loading" size={19} color={"rgba(240,138,41,1)"}/>
           </View>
         );
       },

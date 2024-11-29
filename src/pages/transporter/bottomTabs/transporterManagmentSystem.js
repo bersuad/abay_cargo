@@ -19,25 +19,25 @@ export default function ImagePickerExample() {
       <SafeAreaView style={styles.container}>
         <Text style={styles.HeaderText}>Transporter Management System</Text>
         
-        <View style={[styles.boxShadow, styles.groupButton, {marginTop: 20, borderTopLeftRadius:10, borderTopRightRadius:10}]}>
+        {/* <View style={[styles.boxShadow, styles.groupButton, {marginTop: 20, borderTopLeftRadius:10, borderTopRightRadius:10}]}>
             <Text style={{...styles.cardText, fontSize:18, position: "absolute", left: 20, color: "#1b9be6" }}>Registration </Text>
-        </View>
-        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
+        </View> */}
+        {/* <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Vehicles </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Drivers </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* <TouchableOpacity style={[styles.boxShadow, styles.groupButton]} onPress={()=>navigation.navigate('transporterMOU')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>MOU </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
         </TouchableOpacity> */}
-        <TouchableOpacity style={[styles.boxShadow, styles.groupButton, {marginBottom: 20, borderBottomLeftRadius:10, borderBottomRightRadius:10}]} onPress={()=>navigation.navigate('transporterContract')}>
+        {/* <TouchableOpacity style={[styles.boxShadow, styles.groupButton, {marginBottom: 20, borderBottomLeftRadius:10, borderBottomRightRadius:10}]} onPress={()=>navigation.navigate('transporterContract')}>
             <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Contract </Text>
             <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10,}}/>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* GPS */}
 

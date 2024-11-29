@@ -58,7 +58,7 @@ export async function getWithAuthCallWithErrorResponse(url) {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      // Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
+      Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
     },
   })
     .then((response) => {
@@ -80,8 +80,9 @@ export async function postWithAuthCallWithErrorResponse(url, requestBody) {
     method: "POST",
     headers: {
       Accept: "application/json",
+
       // "Content-Type": "application/json",
-      'Content-Type': 'multipart/form-data',
+      // 'Content-Type': 'multipart/form-data',
       // Authorization: "Token " + localStorage.getItem("api_key"),
     },
     body: requestBody,
@@ -109,7 +110,7 @@ export async function putMultipartWithAuthCallWithErrorResponse(
     headers: {
       Accept: "application/json",
       //'Content-Type': 'multipart/form-data',
-      // Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
+      Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
     },
     body: requestBody,
   })
@@ -136,7 +137,7 @@ export async function postMultipartWithAuthCallWithErrorResponse(
 
     headers: {
       Accept: "application/json",
-      // Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
+      Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
     },
     body: requestBody,
   })
@@ -304,7 +305,6 @@ export async function updateProfile(url, requestBody) {
 
 //-------------------------------------
 export async function getResult(data) {
-  //console.log('--------------', data);
   return JSON.parse(data.trim());
 }
 //-------------------------------------

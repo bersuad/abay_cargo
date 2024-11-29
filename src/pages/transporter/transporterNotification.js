@@ -58,9 +58,9 @@ export default function NotificationBar() {
     });    
 
     postWithAuthCallWithErrorResponse(
-      ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
+      ApiConfig.NOTIFICATION, JSON.stringify({ user_id, api_key, customer_id }),
     ).then((res) => {
-  
+      console.log(res.json);
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         setState({ ...state, isLoading: false});  
         console.log('Wrong Data here');
@@ -71,7 +71,7 @@ export default function NotificationBar() {
       }
   
       
-      if (res.json.result)setDashBoardData(res.json);
+      if (res.json.result)setDashBoardData(res.json.notifications);
       
       
     });
@@ -94,7 +94,7 @@ export default function NotificationBar() {
     <TouchableOpacity style={{flexDirection: 'row', height: "100%", marginTop: 18}} onPress={()=>navigation.navigate('NotificationList')}>
       <Ionicons name="notifications" size={22} {...appPageStyle.primaryTextColor} style={{marginRight: 32, marginTop: 8}}/>
       <View style={{minWidth: 20, height: 20, ...appPageStyle.secondaryBackgroundColor, alignItems: "center", justifyContent: "center", borderRadius: 100, position: 'absolute', marginLeft: 8, marginTop: 3, paddingLeft: 5, paddingRight: 5}}>
-        <Text style={{ fontWeight: 600,...appPageStyle.secondaryTextColor , fontSize: 15, fontWeight:'bold' }}>{dashBoardData.notification_count ? dashBoardData.notification_count : 0 }</Text>
+        <Text style={{ fontWeight: 600,...appPageStyle.secondaryTextColor , fontSize: 15, fontWeight:'bold' }}>{dashBoardData.length > 0 ? dashBoardData.length : 0 }</Text>
       </View>
     </TouchableOpacity>
   );

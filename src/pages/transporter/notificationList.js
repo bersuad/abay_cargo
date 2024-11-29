@@ -80,7 +80,7 @@ export default  function App(){
     });    
 
     postWithAuthCallWithErrorResponse(
-      ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
+      ApiConfig.NOTIFICATION, JSON.stringify({ user_id, api_key, customer_id }),
     ).then((res) => {
   
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {

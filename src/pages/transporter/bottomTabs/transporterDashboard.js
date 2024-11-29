@@ -48,6 +48,7 @@ export default function App() {
   const [tariffImprotList, setTariffImprotList ]  = useState([]);
   const [tariffExprotList, setTariffExprotList ]  = useState([]);
   const [user_details, setUserDetails]      = useState('');
+  const [rateChartList, setRateChartList] = useState([]);
   
 
   // componentWillMount();
@@ -132,9 +133,24 @@ export default function App() {
       
       
     });
+
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.RATE_CHART_LIST,
+      JSON.stringify({customer_id, user_id, api_key }),
+    ).then((res) => {
+      if (res.json.message === 
+        "Invalid user authentication,Please try to relogin with exact credentials.") {
+          navigation.navigate('TruckLogin');
+          setState({ ...state, isLoading: false});  
+          AsyncStorage.clear();
+      }
+      setRateChartList(res.json.rate_chart_list);
+      setLoading(false);
+    });
     
     
   };
+  
 
 
   useEffect(() => {
@@ -202,7 +218,7 @@ export default function App() {
           ]}>
           <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
             <View style={{...styles.badge, backgroundColor: "rgba(1, 138, 40, 0.88)", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
-              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.vehicles}</Text>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.vehicle_offers}</Text>
             </View>
             <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.88)"}}>
               <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
@@ -211,12 +227,12 @@ export default function App() {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
             <View style={{...styles.badge, backgroundColor: "#700033", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
-              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.drivers}</Text>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.frieghts}</Text>
             </View>
             <View style={{...styles.iconArea, backgroundColor: "#700070"}}>
-              <FontAwesome5 name="id-badge" size={24} color="#fff" />
+            <MaterialCommunityIcons name="offer" size={24} color="#fff" />
             </View>
-            <Text style={{...styles.cardText, fontSize:13, }}>Drivers</Text>
+            <Text style={{...styles.cardText, fontSize:13, }}>Freights</Text>
           </TouchableOpacity>
         </View>
 
@@ -235,19 +251,19 @@ export default function App() {
           ]}>
           <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
             <View style={{...styles.badge, backgroundColor: "#700033", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
-              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.vehicles}</Text>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.reports}</Text>
             </View>
             <View style={{...styles.iconArea, backgroundColor: "#700033"}}>
-              <MaterialCommunityIcons name="truck-cargo-container" size={24} color="white" />
+              <MaterialCommunityIcons name="file-excel" size={24} color="white" />
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Reports</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
             <View style={{...styles.badge, backgroundColor: "#1b9be6", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
-              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.drivers}</Text>
+              <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.payment_methods}</Text>
             </View>
             <View style={{...styles.iconArea, backgroundColor: "#1b9be6"}}>
-              <FontAwesome5 name="id-badge" size={24} color="#fff" />
+              <FontAwesome5 name="money-check-alt" size={24} color="#fff" />
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Payment Methods</Text>
           </TouchableOpacity>
@@ -270,85 +286,39 @@ export default function App() {
             <Text style={{fontSize:15, color:'#1f1f1f', fontWeight:"bold"}}>Import / Export</Text>
           </View>
         </View>
+        
 
         <View style={{marginTop: 20, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-          <View style={[styles.boxShadow, {minHeight: 150, maxHeight: 'auto', width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom:10} ]}>
-            <View style={{...styles.iconArea, ...appPageStyle.secondaryBackgroundColor, borderColor:'#b76b29', borderWidth:1, height: 50, width: '100%', borderRadius: 10, margin: 10, marginTop: 0, borderBottomLeftRadius:0, borderBottomRightRadius:0}}>
-              <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>Terminal Handling</Text>
-            </View>
-            <View
-            style={[
-              {
-                flexDirection: 'row',
-                width: '90%',
-                gap: 15,
-                marginBottom: 5
-              },
-            ]}>
-              <Text style={{fontWeight: 'bold', padding:5}}>Terminal Handling</Text>
-              <View style={{width:'100%'}}>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Currency: USD</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>20 ft(teu): </Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>40 ft(feu): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Break bulk(freight tone): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Bulk (tone): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>RORO(Unit): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Other: 12</Text>
+          {rateChartList  &&
+            rateChartList.length > 0 &&
+            rateChartList.map((rateListItem, key) => (
+              <View style={[styles.boxShadow, {minHeight: 150, maxHeight: 'auto', width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom:10} ]}>
+                <View style={{...styles.iconArea, ...appPageStyle.secondaryBackgroundColor, borderColor:'#b76b29', borderWidth:1, height: 50, width: '100%', borderRadius: 10, margin: 10, marginTop: 0, borderBottomLeftRadius:0, borderBottomRightRadius:0}}>
+                  <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>{rateListItem.rate_chart_category}</Text>
+                </View>
+                <View
+                style={[
+                  {
+                    flexDirection: 'row',
+                    width: '90%',
+                    gap: 15,
+                    marginBottom: 5
+                  },
+                ]}>
+                  <Text style={{fontWeight: 'bold', padding:5}}>{rateListItem.rate_chart_category}</Text>
+                  <View style={{width:'100%'}}>
+                    <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Currency: {rateListItem?.currency_code}</Text>
+                    <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>20 ft(teu): {rateListItem?.rate_chart_20ft}</Text>
+                    <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>40 ft(feu): {rateListItem?.rate_chart_40ft}</Text>
+                    <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Break bulk(freight tone): {rateListItem?.rate_chart_break_bulk}</Text>
+                    <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Bulk (tone): {rateListItem?.rate_chart_bulk}</Text>
+                    <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>RORO(Unit): {rateListItem?.rate_chart_roro}</Text>
+                    <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Other: {rateListItem?.rate_chart_other}</Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
-
-          <View style={[styles.boxShadow, {minHeight: 150, maxHeight: 'auto', width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom:10} ]}>
-            <View style={{...styles.iconArea, ...appPageStyle.secondaryBackgroundColor, borderColor:'#b76b29', borderWidth:1, height: 50, width: '100%', borderRadius: 10, margin: 10, marginTop: 0, borderBottomLeftRadius:0, borderBottomRightRadius:0}}>
-              <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>Transit fee at sea port</Text>
-            </View>
-            <View
-            style={[
-              {
-                flexDirection: 'row',
-                width: '90%',
-                gap: 15,
-                marginBottom: 5
-              },
-            ]}>
-              <Text style={{fontWeight: 'bold', padding:5}}>Transit fee at sea port</Text>
-              <View style={{width:'100%'}}>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Currency: USD</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>20 ft(teu): </Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>40 ft(feu): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Break bulk(freight tone): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Bulk (tone): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>RORO(Unit): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Other: 12</Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={[styles.boxShadow, {minHeight: 150, maxHeight: 'auto', width: '96%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom:10} ]}>
-            <View style={{...styles.iconArea, ...appPageStyle.secondaryBackgroundColor, borderColor:'#b76b29', borderWidth:1, height: 50, width: '100%', borderRadius: 10, margin: 10, marginTop: 0, borderBottomLeftRadius:0, borderBottomRightRadius:0}}>
-              <Text style={{...appPageStyle.secondaryTextColor, fontWeight: 'bold'}}>Local Transit fee</Text>
-            </View>
-            <View
-            style={[
-              {
-                flexDirection: 'row',
-                width: '90%',
-                gap: 15,
-                marginBottom: 5
-              },
-            ]}>
-              <Text style={{fontWeight: 'bold', padding:5}}>Local Transit fee</Text>
-              <View style={{width:'100%'}}>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Currency: USD</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>20 ft(teu): </Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>40 ft(feu): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Break bulk(freight tone): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Bulk (tone): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>RORO(Unit): 12</Text>
-                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Other: 12</Text>
-              </View>
-            </View>
-          </View>
+            ))
+          }
         </View>
         
         <View

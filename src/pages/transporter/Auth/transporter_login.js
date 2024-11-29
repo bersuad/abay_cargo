@@ -40,7 +40,7 @@ export default function App() {
     device_token: "",
     device_id: "",
     app_version: "",
-    app_type: "transporter",
+    app_type: "shipper",
     device_os: "web",
     username: "",
     password: "",
@@ -106,16 +106,19 @@ export default function App() {
         setState({ ...state, isLoading: false});
         return;
       }
-
+      
       if (state.password === "") {
         setErrMsg({ ...errMsg, password: "** Please Enter Password **" });
         setState({ ...state, isLoading: false});
         return;
       }
     } 
-    
-    PostCallWithErrorResponse(ApiConfig.TRANSPORTER_LOGIN_API, state)
+
+    console.log(state);
+
+    PostCallWithErrorResponse(ApiConfig.SHIPPER_LOGIN_API, state)
     .then((data) => {
+      console.log(data);
       if (data.json.message === "Wrong credentials entered") {
         setState({ ...state, isLoading: false});
         toastWithDurationHandler('Wrong Username or Password');
@@ -168,7 +171,7 @@ export default function App() {
       }
     })
     .catch((error) => {
-      // navigate("/ForgetPassword");
+      console.log("here");
       setState({ ...state, isLoading: true});
       console.log(error);
     });
