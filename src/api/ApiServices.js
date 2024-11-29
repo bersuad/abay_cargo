@@ -58,7 +58,7 @@ export async function getWithAuthCallWithErrorResponse(url) {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
+      // Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
     },
   })
     .then((response) => {
@@ -110,7 +110,7 @@ export async function putMultipartWithAuthCallWithErrorResponse(
     headers: {
       Accept: "application/json",
       //'Content-Type': 'multipart/form-data',
-      Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
+      // Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
     },
     body: requestBody,
   })
@@ -137,7 +137,7 @@ export async function postMultipartWithAuthCallWithErrorResponse(
 
     headers: {
       Accept: "application/json",
-      Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
+      // Authorization: "Token " + localStorage.getItem("USER_AUTH_TOKEN"),
     },
     body: requestBody,
   })

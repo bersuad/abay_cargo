@@ -93,9 +93,9 @@ export default function App() {
     });    
 
     postWithAuthCallWithErrorResponse(
-      ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
+      ApiConfig.DASHBOARD_DETAILS, JSON.stringify({ user_id, api_key, customer_id, from_date: dates.startDate, to_date: dates.endDate, }),
     ).then((res) => {
-      
+      console.log(res);
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         navigation.navigate('TruckLogin');
         setState({ ...state, isLoading: false});  

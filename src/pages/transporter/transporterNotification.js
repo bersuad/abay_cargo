@@ -60,7 +60,7 @@ export default function NotificationBar() {
     postWithAuthCallWithErrorResponse(
       ApiConfig.NOTIFICATION, JSON.stringify({ user_id, api_key, customer_id }),
     ).then((res) => {
-      console.log(res.json);
+      
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         setState({ ...state, isLoading: false});  
         console.log('Wrong Data here');

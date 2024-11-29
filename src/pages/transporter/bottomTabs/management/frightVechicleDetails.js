@@ -66,10 +66,10 @@ export default function OfferGoodsDetails(props) {
         });  
 
         postWithAuthCallWithErrorResponse(
-            ApiConfig.VEHICLE_LIST_BY_LOADID,
+            ApiConfig.VEHICLE_OFFER_DETAILS,
             JSON.stringify({ user_id, api_key, customer_id, load_id: offer.trip_id })
         ).then((res) => {
-            console.log(res.json.vehicle_list);
+            console.log(res.json);
           if (res.json.message === 
             "Invalid user authentication,Please try to relogin with exact credentials.") {
                 setState({ ...state, isLoading: false});  

@@ -78,12 +78,10 @@ export default function OnGoingFright() {
       });  
       
       postWithAuthCallWithErrorResponse(
-        ApiConfig.COMPLETE_FRIGHT,
-        JSON.stringify({ user_id, api_key, customer_id, load_id, status, 
-          trip_start_city, trip_end_city, vehicles, vehicle_id, trailer_id, driver_id, trip_vehicle_id })
+        ApiConfig.ONGOING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id})
       )
         .then((res) => {
-          
+          console.log("here");
           setState({ ...state, isLoading: false});  
           if (res.json.message === 
             "Invalid user authentication,Please try to relogin with exact credentials.") {
@@ -128,7 +126,7 @@ export default function OnGoingFright() {
         setUserDetails(value);
       });    
       
-      postMultipartWithAuthCallWithErrorResponse(
+      postWithAuthCallWithErrorResponse(
         ApiConfig.ONGOING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id,  }),
       ).then((res) => {
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {

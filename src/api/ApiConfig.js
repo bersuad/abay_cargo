@@ -6,6 +6,7 @@ const ApiConfig = {
   BASE_URL_FOR_IMAGES: "https://abayadmin.abaylogistics.com/",
   /* Transporter API url Start*/
   SHIPPER_LOGIN_API: CLIENT_BASE_URL + "login",
+  SHIPPER_LOGOUT_API: CLIENT_BASE_URL + "logout",
   ADD_LOAD_API: CLIENT_BASE_URL + "load/add",
   DROP_DOWNS_API: CLIENT_BASE_URL + "load/dropdownlist",
   OFFER_LOAD_LIST: CLIENT_BASE_URL + "load/list",
@@ -41,6 +42,7 @@ const ApiConfig = {
   // VEHICLE_LIST: CLIENT_BASE_URL + "vehicle/list",
   DRIVER_DETAILS: CLIENT_BASE_URL + "driver/details",
   VEHICLE_DETAILS: CLIENT_BASE_URL + "vehicle/details",
+  VEHICLE_OFFER_DETAILS: CLIENT_BASE_URL + "vehicleoffer/vehicledetails",
   CHANGE_DRIVER_VEHICLE: CLIENT_BASE_URL + "driver/changedriver_vehicle",
   ADD_DRIVER: CLIENT_BASE_URL + "driver/add",
   ONLINE_AUCTION_OFFER_GOODS: CLIENT_BASE_URL + "vehiclerequest/onlineorders",

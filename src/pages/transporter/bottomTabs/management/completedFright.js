@@ -42,6 +42,7 @@ export default function OnGoingFright() {
     const [user_details, setUserDetails]      = useState('');
 
     const getOngoingFright = async() => {
+      
       setState({ ...state, isLoading: true});  
       const user_id = await AsyncStorage.getItem('user_id');
       const customer_id = await AsyncStorage.getItem('customer_id');
@@ -63,12 +64,12 @@ export default function OnGoingFright() {
         setUserDetails(value);
       });    
   
-      postMultipartWithAuthCallWithErrorResponse(
+      
+      postWithAuthCallWithErrorResponse(
         ApiConfig.COMPLETED_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
       ).then((res) => {
-    
+        console.log(res.json);
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-          setState({ ...state, isLoading: false});  
           setState({ ...state, isLoading: false});  
           navigation.navigate('TruckLogin');   
         }

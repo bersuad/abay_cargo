@@ -162,7 +162,6 @@ export default function OfferGoodsDetails(props) {
             ApiConfig.GOODS_DETAILS,
             JSON.stringify({ user_id, api_key, customer_id, load_id: vehicleRequest.offer.trip_id ? vehicleRequest.offer.trip_id : vehicleRequest.offer.trip_vehicle_trip_id })
         ).then((res) => {
-
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
           AsyncStorage.clear();
