@@ -85,7 +85,9 @@ export default function App() {
   const imageUrl = ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic;
 
   return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView 
+      style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
+    >
       {state.isLoading &&(
         <View style={styles.container}>
           <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
@@ -96,7 +98,7 @@ export default function App() {
         <View style={styles.container}>
         <Text style={styles.HeaderText}>Settings</Text>
         
-        <TouchableOpacity onPress={()=>navigation.navigate('ProfileSetting')} style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 110, backgroundColor:'rgba(25, 120, 142, 1)'}]}>
+        <TouchableOpacity onPress={()=>navigation.navigate('ProfileSetting')} style={[styles.boxShadow, styles.offers, {marginTop: 0, height: 110, ...appPageStyle.primaryColor}]}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute" , left: 25 }}>
             <Image 
               style={styles.cardImage} 
@@ -109,45 +111,27 @@ export default function App() {
           <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
         
+        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
+          <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
+            <AntDesign name="questioncircle" size={24} {...appPageStyle.secondaryTextColor} />
+          </View>
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Profile
+          </Text>
+          <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
+        </TouchableOpacity>
+        
         <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('ReportForm')}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <AntDesign name="piechart" size={24} color="rgba(25, 120, 142, 0.9)" />
+            <AntDesign name="piechart" size={24} {...appPageStyle.secondaryTextColor} />
           </View>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Reports
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
-          <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <Fontisto name="wallet" size={24} color="rgba(25, 120, 142, 0.9)" />
-          </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Payments
-          </Text>
-          <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
-          <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <AntDesign name="questioncircle" size={24} color="rgba(25, 120, 142, 0.9)" />
-          </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>How it works?
-          </Text>
-          <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('FAQView')}>
-          <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <Entypo name="chat" size={24} color="rgba(25, 120, 142, 0.9)" />
-          </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>FAQ
-          </Text>
-          <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
-        </TouchableOpacity>
-
         <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('ContactUs')}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <SimpleLineIcons name="call-out" size={24} color="rgba(25, 120, 142, 0.9)"  />
+            <SimpleLineIcons name="call-out" size={24} {...appPageStyle.secondaryTextColor}  />
           </View>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Contact Us
           </Text>
@@ -156,7 +140,7 @@ export default function App() {
 
         <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('AboutUs')}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-          <AntDesign name="infocirlce" size={24} color="rgba(25, 120, 142, 0.9)"  />
+          <AntDesign name="infocirlce" size={24} {...appPageStyle.secondaryTextColor}  />
           </View>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>About Us
           </Text>
@@ -165,7 +149,7 @@ export default function App() {
 
         <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('Terms')}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <MaterialIcons name="menu-book" size={24} color="rgba(25, 120, 142, 0.9)"  />
+            <MaterialIcons name="menu-book" size={24} {...appPageStyle.secondaryTextColor}  />
           </View>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Terms And Conditions
           </Text>
@@ -174,7 +158,7 @@ export default function App() {
 
         <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('Privacy')}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <MaterialIcons name="privacy-tip" size={24} color="rgba(25, 120, 142, 0.9)"  />
+            <MaterialIcons name="privacy-tip" size={24} {...appPageStyle.secondaryTextColor}  />
           </View>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Privacy Policy
           </Text>
@@ -183,7 +167,7 @@ export default function App() {
 
         <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>this.logout()}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
-            <AntDesign name="logout" size={24} color="rgba(25, 120, 142, 0.9)"  />
+            <AntDesign name="logout" size={24} {...appPageStyle.secondaryTextColor}  />
           </View>
           <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Logout
           </Text>

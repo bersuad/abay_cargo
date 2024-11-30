@@ -83,7 +83,6 @@ export default function OnGoingFright() {
         JSON.stringify({ user_id, api_key, customer_id })
       )
         .then((res) => {
-          console.log("res");
           setState({ ...state, isLoading: false});  
           if (res.json.message === 
             "Invalid user authentication,Please try to relogin with exact credentials.") {
@@ -131,6 +130,7 @@ export default function OnGoingFright() {
         postWithAuthCallWithErrorResponse(
           ApiConfig.UPCOMING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id,  }),
         ).then((res) => {
+          console.log(res.json.load_list);
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
         }
@@ -225,14 +225,14 @@ export default function OnGoingFright() {
                     " " }
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {'Trip Status: '+fright?.vehicle_status +
+                    {'Trip Status: '+fright?.trip_vehicle_status +
                     " "}
                     </Text>
                 </View>
               </View>
-              <TouchableOpacity onPress={()=>initiateFright(fright.trip_id, fright.vehicle_id, fright.trip_vehicle_id)} style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
+              {/* <TouchableOpacity onPress={()=>initiateFright(fright.trip_id, fright.vehicle_id, fright.trip_vehicle_id)} style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
                   <Text style={{...appPageStyle.primaryTextColor}}>Initiate Fright</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           
           ))

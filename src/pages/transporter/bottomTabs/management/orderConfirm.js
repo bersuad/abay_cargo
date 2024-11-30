@@ -102,7 +102,9 @@ export default function OrderConfirm() {
     }, []);
     
     return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView 
+      style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
+    >
         {state.isLoading &&(
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>

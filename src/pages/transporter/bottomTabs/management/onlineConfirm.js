@@ -85,8 +85,8 @@ export default function OnlineOrderConfirm() {
             setUserDetails(value);
         });    
     
-        postMultipartWithAuthCallWithErrorResponse(
-            ApiConfig.DIRECT_ORDERS_ORDER_CONFIRMATION_Online_, JSON.stringify({ user_id, api_key, customer_id })
+        postWithAuthCallWithErrorResponse(
+          ApiConfig.ONLINE_ORDER_CONFIRMATION_LIST, JSON.stringify({ user_id, api_key, customer_id })
         ).then((res) => {
           
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {

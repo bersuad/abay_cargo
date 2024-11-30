@@ -171,7 +171,7 @@ export default function OfferGoodsDetails(props) {
         if(res.json.message === "Insufficient Parameters"){
             setState({ ...state, isLoading: false});
         }
-        
+        console.log(res.json);
         if (res.json.result)setOfferLoadData(res.json.load_details);
             setState({ ...state, isLoading: false});
         })
@@ -195,7 +195,9 @@ export default function OfferGoodsDetails(props) {
     }, []);
     
     return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView 
+      style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
+    >
         {state.isLoading &&(
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
@@ -206,11 +208,10 @@ export default function OfferGoodsDetails(props) {
       {!state.isLoading &&(
         <SafeAreaView style={styles.container}>
             <View style={[styles.boxShadow, {minHeight: 200, width: '94%', backgroundColor: '#fff', marginTop: 1, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-            
                 <View
                 style={[
                     {
-                    flexDirection: 'row',
+                      flexDirection: 'row',
                     width: '92%',
                     gap: 15,
                     paddingTop: 1
@@ -219,7 +220,9 @@ export default function OfferGoodsDetails(props) {
                     <View style={{marginTop:-18}}>
                         <Text style={{fontWeight: 'bold', fontSize: 20}}>From </Text>
                     </View>
+                    
                     <View style={{textAlign: 'justify', fontSize: 15, marginLeft: '-10%', marginTop:10}}>
+                        
                         <Text>Country: {offerLoadData.trip_start_country}</Text>  
                         <Text>City: {offerLoadData.trip_start_city}</Text>
                         <Text>Address: {offerLoadData.trip_start_address}</Text>
@@ -267,21 +270,21 @@ export default function OfferGoodsDetails(props) {
                         <Text style={{fontWeight: 'bold', fontSize: 20}}>Good Detail </Text>
                     </View>
                     <View style={{textAlign: 'justify', fontSize: 15, marginLeft: '-10%', marginTop:10, width: '100%'}}>
+                        <Text style={{fontWeight: 'bold', fontSize: 15}}>Reference Number: {offerLoadData.trip_reference_no} </Text>
                         <Text>Company Name: {offerLoadData.trip_company_name}</Text>  
                         <Text>Cargo Type: {offerLoadData.cargo_type}</Text>
-                        {offerLoadData.container_type && 
-                            <Text>Container Type: {offerLoadData && offerLoadData.container_type ? offerLoadData.container_type : "No Container"}</Text>
-                        }
+                        <Text>Goods Name: My Freight</Text>
                         {offerLoadData.container_type_name && 
-                            <Text>Container Type: {offerLoadData && offerLoadData.container_type_name ? offerLoadData.container_type_name : "No Container"}</Text>                                
+                            <Text>Container Type: {offerLoadData && offerLoadData.cargo_type ? offerLoadData.cargo_type : "No Container"}</Text>                                
                         }
                         <Text>Quantity: {offerLoadData && offerLoadData.cargo_type === "Container" ? 
-                            offerLoadData.trip_container_quantity + " Containers" : 
+                            offerLoadData.quantity + " Containers" : 
                             offerLoadData.cargo_type === "Vehicle" ? offerLoadData.quantity + " Vehicles" : 
                             (offerLoadData.cargo_type === "Bulk" || offerLoadData.cargo_type === "Break bulk") ?
                                 offerLoadData.quantity + " Quintals" : " - "
                             }
                         </Text>
+                        <Text>Delivery Type: Import</Text>
                     </View>
                 </View>
             </View>

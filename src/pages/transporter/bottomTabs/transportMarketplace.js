@@ -13,7 +13,9 @@ import {
 export default function ImagePickerExample() {
   const navigation = useNavigation();
   return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView 
+      style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
+    >
       <SafeAreaView style={styles.container}>
         <Text style={styles.HeaderText}>Transport Marketplace</Text>
         <View style={[styles.boxShadow, styles.groupButton, {marginTop: 20, borderRadius:10}]}>

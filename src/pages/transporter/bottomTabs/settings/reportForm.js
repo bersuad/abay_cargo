@@ -161,7 +161,7 @@ export default function App() {
       console.log(res.json);
       if (res.json.result) {
         setReportType(res.json.report_types
-          .filter(e=> e.report_type_id !== 4 && e.report_type_id !== 5));
+          .filter(e=> e.report_type_id !== 2));
       }
     });
   }
@@ -230,7 +230,9 @@ export default function App() {
   }, []);
 
   return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView 
+      style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
+    >
       <StatusBar barStyle = "white-content" hidden = {false} {...appPageStyle.primaryColor} translucent = {true}/>
         {state.isLoading &&(
           <View style={styles.container}>
@@ -301,7 +303,7 @@ export default function App() {
                       <TextInput
                         style={styles.TextInput}
                         placeholder="Your Report Title"
-                        placeholderTextColor="#003f5c"
+                        placeholderTextColor='#003f5c'
                         onChangeText={(title) =>{
                           setGetReport({ ...getReport, title: title})
                           setErrMsg({ ...errMsg, title: "" });
@@ -386,7 +388,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inputView: {
-    backgroundColor: "rgba(25, 120, 142, 0.3)",
+    backgroundColor: "rgba(240, 138, 41, 0.3)",
     borderRadius: 8,
     width: '90%',
     height: 45,
@@ -404,7 +406,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
-    backgroundColor: "#19788e",
+    ...appPageStyle.primaryColor,
     color: '#fff',
     marginBottom: 10
   },
@@ -491,13 +493,12 @@ const styles = StyleSheet.create({
     dropdownButtonStyle: {
       width: 200,
       height: 50,
-      backgroundColor: '#E9ECEF',
       borderRadius: 12,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: 12,
-      backgroundColor: "rgba(25, 120, 142, 0.2)",
+      backgroundColor: "rgba(240, 138, 41, 0.3)",
       borderRadius: 10,
       width: '95%',
       height: 45,
@@ -507,19 +508,19 @@ const styles = StyleSheet.create({
     dropdownButtonTxtStyle: {
       flex: 1,
       fontWeight: '500',
-      color: '#19788e',
+      color: '#010101',
     },
     dropdownButtonArrowStyle: {
       fontSize: 28,
-      color: '#19788e',
+      ...appPageStyle.secondaryTextColor,
     },
     dropdownButtonIconStyle: {
       fontSize: 28,
       marginRight: 8,
-      color: '#19788e',
+      ...appPageStyle.secondaryTextColor,
     },
     dropdownMenuStyle: {
-      backgroundColor: '#E9ECEF',
+      ...appPageStyle.secondaryTextColor,
       borderRadius: 8,
     },
     dropdownItemStyle: {
@@ -534,7 +535,7 @@ const styles = StyleSheet.create({
       flex: 1,
       fontSize: 18,
       fontWeight: '500',
-      color: '#19788e',
+      ...appPageStyle.secondaryTextColor,
     },
     dropdownItemIconStyle: {
       fontSize: 28,

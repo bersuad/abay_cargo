@@ -62,7 +62,7 @@ export default function OnlineOfferVehicle() {
       //   }, 2000);
       // }, []);
       
-        const _getDashboardDetails = async() => {
+      const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
         console.log('getting here on loading');
         const user_id = await AsyncStorage.getItem('user_id');
@@ -85,14 +85,15 @@ export default function OnlineOfferVehicle() {
             setUserDetails(value);
         });    
     
-        postMultipartWithAuthCallWithErrorResponse(
-            ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES_ONLINE, JSON.stringify({ user_id, api_key, customer_id })
+        postWithAuthCallWithErrorResponse(
+            ApiConfig.ONLINE_VEHICLE_OFFER_LIST, JSON.stringify({ user_id, api_key, customer_id })
             // ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES_ONLINE, JSON.stringify({ ...customerData }) ** for direct order options **
         ).then((res) => {
-
+          console.log(res);
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
-            setState({ ...state, isLoading: false});  
-            console.log('Wrong Data here');
+          navigation.navigate('TruckLogin');
+          setState({ ...state, isLoading: false});  
+          AsyncStorage.clear();
         }
         if(res.json.message === "Insufficient Parameters"){
             setState({ ...state, isLoading: false});
@@ -118,7 +119,9 @@ export default function OnlineOfferVehicle() {
     }, []);
     
     return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}>
+    <ScrollView 
+      style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
+    >
         {state.isLoading &&(
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
@@ -129,7 +132,7 @@ export default function OnlineOfferVehicle() {
       {!state.isLoading &&(
         <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
         {offerLoadData.offer_list &&
-              offerLoadData.offer_list.length &&
+              offerLoadData.offer_list.length > 0 &&
               offerLoadData.offer_list.map((offer, key) => (
                 
                 <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
@@ -143,45 +146,42 @@ export default function OnlineOfferVehicle() {
                         },
                     ]}>
                         <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 50, width: 50, borderRadius: 100, marginLeft: 0}}>
-                            <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
+                            <MaterialCommunityIcons name="truck-cargo-container" size={30} color="#fff" />
                         </View>
                         <View style={{textAlign: 'justify'}}>
-                          <TouchableOpacity onPress={()=>navigation.navigate('OfferDetail', {details: offer})}>
-                            <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {offer.load_reference_no}</Text>
-                          </TouchableOpacity>
-                            <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>{offer.estimated_start_date}</Text>    
-                            <Text style={{textAlign:'justify'}}>Cargo Type: {offer.cargo_type}</Text>
-                            <Text style={{textAlign:'justify'}}>Container Type: {offer.container_type}</Text>
-                            <Text style={{textAlign:'justify'}}>Rem Quantity: {offer.quantity} {offer.unit}</Text>
-                            <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
+                            <View>
+                              <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {offer.load_reference_no}</Text>
+                            </View>
+                            {/* <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>{offer.estimated_start_date}</Text>     */}
+                            <Text>{offer.estimated_start_date}</Text>    
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Cargo Type: {offer.cargo_type}</Text>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Rem Quantity: {offer.quantity} {offer.unit}</Text>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>
                             From: {offer.trip_start_country +
                                 ", " +
                                 offer.trip_start_city}{" "}
                             </Text>
-                            <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>
                                 To: {offer.trip_end_country +
                                 " " +
                                 offer.trip_end_city
                             }
                             </Text>
-                            
-                            <TouchableOpacity style={{marginTop: 8, marginBottom:8}} onPress={()=>navigation.navigate('VehicleDetail', {details: offer})}>
-                                <Text style={{...appPageStyle.secondaryTextColor, fontWeight:'bold'}}>View More....</Text>
-                            </TouchableOpacity>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Quantity: {offer.pending_quantity
+                          ? offer.pending_quantity
+                          : offer.quantity}{" "}</Text>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Company Name: {offer.trip_company_name}</Text>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Unit: {offer.unit}</Text>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Start Address: {offer.trip_start_address}</Text>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>End Address: {offer.trip_end_address}</Text>
+                            <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>License No: {offer.vehicle_number}</Text>
                         </View>
-                        {/* <View style={{position: "absolute", bottom: 0, right:0, marginTop: 10,justifyContent: "center"}}>
-                            <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
-                                <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{position: "absolute", top: 0, right:0, marginTop: 50,justifyContent: "center"}}>
-                            <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}}>
-                                <Text style={{...appPageStyle.secondaryTextColor}}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View> */}
                     </View>
                 </View>
-        ) )}
+        ) 
+        )}
+        {!offerLoadData.offer_list ? <View><Text>No Data</Text></View>:'' }
+        
         </View>
       )}
     </ScrollView>

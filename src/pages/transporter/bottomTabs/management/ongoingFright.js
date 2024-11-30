@@ -81,7 +81,6 @@ export default function OnGoingFright() {
         ApiConfig.ONGOING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id})
       )
         .then((res) => {
-          console.log("here");
           setState({ ...state, isLoading: false});  
           if (res.json.message === 
             "Invalid user authentication,Please try to relogin with exact credentials.") {
@@ -129,6 +128,7 @@ export default function OnGoingFright() {
       postWithAuthCallWithErrorResponse(
         ApiConfig.ONGOING_FRIGHT, JSON.stringify({ user_id, api_key, customer_id,  }),
       ).then((res) => {
+
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
         }
@@ -222,16 +222,16 @@ export default function OnGoingFright() {
                     " " }
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {'Trip Status: '+fright?.vehicle_status +
+                    {'Trip Status: '+fright?.trip_vehicle_status +
                     " "}
                     </Text>
                 </View>
               </View>
-              <TouchableOpacity onPress={()=>completeFright(fright.trip_id, fright.trip_status,
+              {/* <TouchableOpacity onPress={()=>completeFright(fright.trip_id, fright.trip_status,
                                             fright.trip_start_city, fright.trip_end_city, fright.vehicles,
                                             fright.vehicle_id, fright.trailer_id, fright.driver_id, fright.trip_vehicle_id)} style={{...appPageStyle.primaryColor, height: 45, width: "100%", borderBottomRightRadius: 10, borderBottomLeftRadius:10, alignItems: "center", justifyContent: "center", marginTop:3, marginBottom:0}}>
                   <Text style={{...appPageStyle.primaryTextColor}}>Complete Fright</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           
           ))

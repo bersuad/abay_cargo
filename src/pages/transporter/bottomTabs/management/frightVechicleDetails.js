@@ -109,6 +109,7 @@ export default function OfferGoodsDetails(props) {
             function renderContent(section, _, isActive) {
             return (
                 <View style={styles.accordBody}>
+                    <Text style={styles.accordTitle}></Text>
                     <Text style={styles.accordTitle}>
                         Owner Name: <Text style={{fontWeight: 'bold'}}>{section.vehicle_owner}</Text>
                     </Text>
@@ -122,31 +123,11 @@ export default function OfferGoodsDetails(props) {
                         Plate No.: <Text style={{fontWeight: 'bold'}}>{section.plate_number}</Text>
                     </Text>
                     <Text style={styles.accordTitle}>
-                        Chassis Number: <Text style={{fontWeight: 'bold'}}>{section.vehicle_chassis_no}</Text>
+                    Trip Veh updated time: <Text style={{fontWeight: 'bold'}}>{section.trip_vehicle_updated_time}</Text>
                     </Text>
+                    
                     <Text style={styles.accordTitle}>
-                        Motor Number: <Text style={{fontWeight: 'bold'}}>{section.vehicle_motor_no}</Text>
-                    </Text>
-                    <Text style={styles.accordTitle}>
-                        Vehicle Load Capacity: <Text style={{fontWeight: 'bold'}}>{section.vehicle_load_capacity}</Text>
-                    </Text>
-                    <Text style={styles.accordTitle}>
-                        Initial km: <Text style={{fontWeight: 'bold'}}>{section.vehicle_initial_km}</Text>
-                    </Text>
-                    <Text style={{...styles.accordTitle, marginLeft: 0, marginTop:25, fontWeight:'bold', marginBottom:10}}>
-                        GPS Availability
-                    </Text>
-                    <Text style={styles.accordTitle}>
-                        Vendor Name: <Text style={{fontWeight: 'bold'}}>{section.vehicle_vendor_name}</Text>
-                    </Text>
-                    <Text style={styles.accordTitle}>
-                        Vendor Contact: <Text style={{fontWeight: 'bold'}}>{section.vehicle_vendor_contact}</Text>
-                    </Text>
-                    <Text style={styles.accordTitle}>
-                        Vendor Platform: <Text style={{fontWeight: 'bold'}}>{section.vehicle_vendor_platform}</Text>
-                    </Text>
-                    <Text style={styles.accordTitle}>
-                        Vendor Address: <Text style={{fontWeight: 'bold'}}>{section.vehicle_vendor_address}</Text>
+                        Status: <Text style={{fontWeight: 'bold'}}>{section.trip_vehicle_status}</Text>
                     </Text>
                 </View>
             );

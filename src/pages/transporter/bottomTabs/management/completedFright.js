@@ -68,7 +68,7 @@ export default function OnGoingFright() {
       postWithAuthCallWithErrorResponse(
         ApiConfig.COMPLETED_FRIGHT, JSON.stringify({ user_id, api_key, customer_id }),
       ).then((res) => {
-        console.log(res.json);
+        
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           setState({ ...state, isLoading: false});  
           navigation.navigate('TruckLogin');   
@@ -160,7 +160,7 @@ export default function OnGoingFright() {
                     " " }
                   </Text>
                   <Text style={{textAlign:'left', width: 250,}}>
-                    {'Trip Status: '+fright.vehicle_status +
+                    {'Trip Status: '+fright.trip_vehicle_status +
                     " "}
                     </Text>
                 </View>
