@@ -24,15 +24,17 @@ import {
   Toast,
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
+  multipartPostCall,
   ApiConfig,
   ActivityIndicator,
   AsyncStorage,
   NetInfo,
-  LogBox
+  LogBox,
 } from "./../../../components/index";
 import SelectDropdown from 'react-native-select-dropdown';
 import * as DocumentPicker from 'expo-document-picker';
 import SnackBar from 'react-native-snackbar-component';
+import CountryStateCitySelector from './CountryState';
 
 
 
@@ -110,8 +112,7 @@ export default function NewTransporter() {
         }
       })
       .catch((err) => {
-        navigation.navigate('Registration')
-        console.log(err)
+        navigation.navigate('Registration');
       });
   };
   useEffect(() => {
@@ -241,22 +242,22 @@ export default function NewTransporter() {
   };
 
   const findEmptyFields = () => {
-    setState({ ...state, isLoading: true });    
+    setState({ ...state, isLoading: true });   
     for (const key in driverDetails) {
       const value = driverDetails[key];
       
-      if (typeof value === 'object' && value.uri !== undefined) {
+      if (key !== "alternate_phone" || key !== "po_number"){
+        continue;
+      }else if(value === "" || value === null || value === undefined) {
+        toastWithDurationHandler("Please check your "+key+" !");
+        setState({ ...state, isLoading: false }); 
+        return;
+      } else if (typeof value === 'object' && value.uri !== undefined) {
         if (!value.uri) {
           toastWithDurationHandler("Please Add Image!");
           setState({ ...state, isLoading: false }); 
           return;
         }
-      }else if (key !== "alternate_phone" || key !== "po_number"){
-        continue;
-      } else if(value === "" || value === null || value === undefined) {
-        toastWithDurationHandler("Please check your "+key+" !");
-        setState({ ...state, isLoading: false }); 
-        return;
       }
       
     }
@@ -265,8 +266,8 @@ export default function NewTransporter() {
   
   const [driverDetails, setDriverDetails] = useState({
     profile_picture: { uri:  image},
-    company_type: "",
     company_name: "",
+    business_area: "",
     contact_person: "",
     alternate_phone:"",
     country: "",
@@ -335,8 +336,9 @@ export default function NewTransporter() {
       }else if(bizz.uri){
         toastWithDurationHandler("Please Add Business License");
       }else{
-        toastWithDurationHandler("Please Add Grade Certification!");
+        toastWithDurationHandler("Please Add VAT Registration!");
       }
+      setState({ ...state, isLoading: false }); 
       return;
     }
     
@@ -402,7 +404,7 @@ const gradeImage = {
   formData.append("contact_person_email", driverDetails.contact_person_email.replace(/\s+/g, ''));
   formData.append("total_fleet_size", '');
   formData.append("alternate_phone", driverDetails?.alternate_phone);
-  formData.append("company_type", driverDetails.company_type);
+  formData.append("business_area", driverDetails?.business_area);
   
   
 
@@ -427,17 +429,18 @@ const gradeImage = {
   formData.append("user_role", driverDetails.user_role ? driverDetails.user_role : "transporter");
   
   
-    postMultipartWithAuthCallWithErrorResponse(
-      ApiConfig.ADD_TRANSPORTER,formData
+  multipartPostCall(
+      ApiConfig.REGISTER_DETAILS,formData
     ).then((res) => {
       
-      if (res.json.message === "Insufficient Parameters") {
+      setState({ ...state, isLoading: false });    
+      if (res.message === "Insufficient Parameters") {
         setState({ ...state, isLoading: false});
         successWithDurationHandler("Please Check all the form inputs.");
         AsyncStorage.clear();
       }
 
-      if (res.json.result == true) {
+      if (res.result == true) {
         setTimeout(function () {
           AsyncStorage.clear();
           successWithDurationHandler('Registered Successfully, Abay Logistics Will Contact you soon! Thank you.');
@@ -445,7 +448,7 @@ const gradeImage = {
         }, 5000);
       }
 
-      if (res.json.message === "Transporter details added successfully") {
+      if (res.message === "Shipper registered successfully") {
         setState({ ...state, isLoading: false});
         AsyncStorage.clear();
         successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
@@ -456,6 +459,7 @@ const gradeImage = {
       }
 
     }).catch((error) => {
+      setState({ ...state, isLoading: false });    
       console.log(error);
     });
     
@@ -475,44 +479,13 @@ const gradeImage = {
             <Text style={{...styles.buttonText, marginTop: 0, fontSize: 13, ...appPageStyle.secondaryTextColor}}> <Ionicons name="camera" size={18} color={appPageStyle.secondaryTextColor} /> Upload Image</Text> 
           </TouchableOpacity> 
         </View>
-        <Text style={styles.HeaderText}>Company Type</Text>
-        <SelectDropdown
-          data={companyTypes}
-          onSelect={(companyTypes, index) => {
-            setErrMsg({ ...errMsg, company_type: "" });
-            setDriverDetails({ ...driverDetails, company_type: companyTypes.company_type_id})
-          }}
-          value={driverDetails.company_type}
-          renderButton={(companyTypes, isOpened) => {
-            return (
-              <View style={styles.dropdownButtonStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(companyTypes && companyTypes.company_type_name) || 'Select Company Type'}
-                </Text>
-                <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
-              </View>
-            );
-          }}
-          renderItem={(companyTypes, index, isSelected) => {
-            return (
-              <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-                <Text style={styles.dropdownItemTxtStyle}>{companyTypes.company_type_name}</Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-          dropdownStyle={styles.dropdownMenuStyle}
-        />
-          {errMsg.company_type && errMsg.company_type.length > 0 && (
-              <Text style={{color: '#FF5151'}}>{errMsg.company_type}</Text>
-          )}
 
         <Text style={styles.HeaderText}>Company Name</Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
             placeholder="Company Name"
-            placeholderTextColor="#f08a29"
+            placeholderTextColor="#090909"
             value={driverDetails.company_name}
             onChangeText={(text) =>{
               setErrMsg({ ...errMsg, company_name: "" });
@@ -525,12 +498,26 @@ const gradeImage = {
             <Text style={{color: '#FF5151'}}>{errMsg.company_name}</Text>
           )}
 
+        <Text style={styles.HeaderText}>Business Area</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Business Area"
+            placeholderTextColor="#090909"
+            onChangeText={(text) =>{
+              setErrMsg({ ...errMsg, business_area: "" });
+              setDriverDetails({ ...driverDetails, business_area: text})
+            }
+          }
+          />
+        </View> 
+
         <Text style={styles.HeaderText}>Contact Person</Text>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
             placeholder="Contact Person"
-            placeholderTextColor="#f08a29"
+            placeholderTextColor="#090909"
             onChangeText={(text) =>{
               setErrMsg({ ...errMsg, contact_person: "" });
               setDriverDetails({ ...driverDetails, contact_person: text})
@@ -546,7 +533,7 @@ const gradeImage = {
           <TextInput
             style={styles.TextInput}
             placeholder="Contact Person Responsibility"
-            placeholderTextColor="#f08a29"
+            placeholderTextColor="#090909"
             onChangeText={(text) =>{
               setErrMsg({ ...errMsg, contact_person_responsibility: "" });
               setDriverDetails({...driverDetails, contact_person_responsibility: text})
@@ -568,7 +555,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Contact Person Phone"
-              placeholderTextColor="#f08a29"
+              placeholderTextColor="#090909"
               inputMode="numeric"
               maxLength={10}
               onChangeText={(text) =>{
@@ -583,7 +570,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Company Person Email"
-              placeholderTextColor="#f08a29"
+              placeholderTextColor="#090909"
               onChangeText={(contact_person_email) =>{
                 setErrMsg({ ...errMsg, contact_person_email: "" });
                 setDriverDetails({...driverDetails, contact_person_email: contact_person_email})
@@ -598,7 +585,7 @@ const gradeImage = {
           <TextInput
             style={styles.TextInput}
             placeholder="Total Fleet Size"
-            placeholderTextColor="#f08a29"
+            placeholderTextColor="#090909"
             onChangeText={(text) =>{
               setErrMsg({ ...errMsg, total_fleet_size: "" });
               setDriverDetails({...driverDetails, total_fleet_size: text})
@@ -622,7 +609,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Password"
-              placeholderTextColor="#f08a29"
+              placeholderTextColor="#090909"
               secureTextEntry={true}
               onChangeText={(text) =>{
                 setErrMsg({ ...errMsg, password: "" });
@@ -636,7 +623,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Confirm Password"
-              placeholderTextColor="#f08a29"
+              placeholderTextColor="#090909"
               secureTextEntry={true}
               onChangeText={(confirmPassword) =>{
                 setErrMsg({ ...errMsg, confirmPassword: "" });
@@ -647,7 +634,7 @@ const gradeImage = {
           </View>  
         </View>
 
-
+        {/* <CountryStateCitySelector /> */}
         <Text style={styles.HeaderText}>Region</Text>
         <SelectDropdown
           data={regionList}
@@ -726,7 +713,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Phone"
-              placeholderTextColor="#f08a29"
+              placeholderTextColor="#090909"
               inputMode="numeric"
               maxLength={10}
               onChangeText={(phone_no) =>{
@@ -741,7 +728,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Alternate Phone"
-              placeholderTextColor="#f08a29"
+              placeholderTextColor="#090909"
               inputMode="numeric"
               maxLength={10}
               onChangeText={(alternate_phone) =>{
@@ -766,7 +753,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="Email"
-              placeholderTextColor="#f08a29"
+              placeholderTextColor="#090909"
               onChangeText={(email) =>{
                 setErrMsg({ ...errMsg, email: "" });
                 setDriverDetails({...driverDetails, email: email})
@@ -779,7 +766,7 @@ const gradeImage = {
             <TextInput
               style={styles.TextInput}
               placeholder="P.O Box"
-              placeholderTextColor="#f08a29"
+              placeholderTextColor="#090909"
               maxLength={4}
               onChangeText={(po_number) =>{
                 setErrMsg({ ...errMsg, po_number: "" });
@@ -801,7 +788,7 @@ const gradeImage = {
           },
         ]}>
           <View style={{...styles.iconArea, height: 60, width: 80, marginLeft: 20}}>
-            <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15}}>TIN</Text>
+            <Text style={{alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15}}>TIN (Tax Identification Number)</Text>
             <View style={{marginLeft: -10, marginTop: 10}}>
             {placeholderImage && <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{ uri:placeholderImage}}/>}
               <TouchableOpacity style={styles.uploadButton} onPress={pickImage2}>
@@ -811,7 +798,7 @@ const gradeImage = {
           </View>
 
           <View style={{...styles.iconArea, height: 60, width: 120, marginLeft: 90}}>
-            <Text style={{fontWeight: 500, fontSize: 14, marginTop: 15, }}>Grade Certificate</Text>
+            <Text style={{fontWeight: 500, fontSize: 14, marginTop: 15, }}>VAT Registration</Text>
             <View style={{marginLeft: 0, marginTop: 10}}>
             {secondPlaceholderImage && <Image style={{...styles.cardImage,  borderRadius: 10, height: 100, width:100}} source={{ uri:secondPlaceholderImage}}/>}
               <TouchableOpacity style={styles.uploadButton} onPress={pickImage3}>
@@ -911,7 +898,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   HeaderText:{
-    color: '#f08a29',
+    color: '#090909',
     fontSize: 13,
     alignSelf:'flex-start',
     marginLeft: 10,
@@ -953,16 +940,16 @@ const styles = StyleSheet.create({
   dropdownButtonTxtStyle: {
     flex: 1,
     fontWeight: '500',
-    color: '#f08a29',
+    color: '#090909',
   },
   dropdownButtonArrowStyle: {
     fontSize: 28,
-    color: '#f08a29',
+    color: '#090909',
   },
   dropdownButtonIconStyle: {
     fontSize: 28,
     marginRight: 8,
-    color: '#f08a29',
+    color: '#090909',
   },
   dropdownMenuStyle: {
     backgroundColor: '#E9ECEF',
@@ -980,7 +967,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     fontWeight: '500',
-    color: '#f08a29',
+    color: '#090909',
   },
   dropdownItemIconStyle: {
     fontSize: 28,

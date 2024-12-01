@@ -95,7 +95,7 @@ export default function App() {
     postWithAuthCallWithErrorResponse(
       ApiConfig.DASHBOARD_DETAILS, JSON.stringify({ user_id, api_key, customer_id, from_date: dates.startDate, to_date: dates.endDate, }),
     ).then((res) => {
-      console.log(res);
+      
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         navigation.navigate('TruckLogin');
         setState({ ...state, isLoading: false});  
@@ -104,7 +104,7 @@ export default function App() {
       if(res.json.message === "Insufficient Parameters"){
         setState({ ...state, isLoading: false});
       }
-      
+      console.log(res.json);
       if (res.json.result)setDashBoardData(res.json);
       setState({ ...state, isLoading: false});
       AsyncStorage.getItem('userDetails').then(value =>{
@@ -167,6 +167,7 @@ export default function App() {
   }, []);
 
   
+  
   return (
     <ScrollView 
       style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
@@ -187,14 +188,14 @@ export default function App() {
             <Text style={styles.cardText}>WELCOME.., </Text>
             <Text style={{...styles.cardText, fontSize:18, }}>{dashBoardData.user_name}</Text>
             <Image style={styles.cardImage} source={headerImage}/>
-            <TouchableOpacity onPress={()=>navigation.navigate('transporterDriverSearch')} style={styles.headerButton}>
+            <TouchableOpacity onPress={()=>navigation.navigate('OfferLoad')} style={styles.headerButton}>
               <Text style={{...styles.cardText, fontSize: 15, ...appPageStyle.primaryTextColor}}>+ Send Offer Load</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.navigate('transporterVehiclesSearch')} style={styles.headerButton}>
+            <TouchableOpacity onPress={()=>navigation.navigate('OfferVehicle')} style={styles.headerButton}>
               <Text style={{...styles.cardText, fontSize: 15, ...appPageStyle.primaryTextColor}}>X Reject Offer </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>navigation.navigate('transporterVehiclesSearch')} style={styles.headerButton}>
-              <Text style={{...styles.cardText, fontSize: 15, ...appPageStyle.primaryTextColor}}>+ Order Confermation </Text>
+            <TouchableOpacity onPress={()=>navigation.navigate('OrderConfirm')} style={styles.headerButton}>
+              <Text style={{...styles.cardText, fontSize: 15, ...appPageStyle.primaryTextColor}}>+ Order Confirmation </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>navigation.navigate('OfferLoad')}>
               <Text style={{...styles.cardText, fontSize: 15, marginTop: 20, ...appPageStyle.secondaryTextColor}}>Get Started With Offer Goods </Text>
@@ -216,7 +217,7 @@ export default function App() {
               marginTop: 20,
             },
           ]}>
-          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('OfferVehicle')}>
             <View style={{...styles.badge, backgroundColor: "rgba(1, 138, 40, 0.88)", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
               <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.vehicle_offers}</Text>
             </View>
@@ -225,7 +226,7 @@ export default function App() {
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Vehicle Offers</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterFreights')}>
             <View style={{...styles.badge, backgroundColor: "#700033", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
               <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.frieghts}</Text>
             </View>
@@ -249,7 +250,7 @@ export default function App() {
               marginTop: 20,
             },
           ]}>
-          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterVehiclesSearch')}>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('ReportForm')}>
             <View style={{...styles.badge, backgroundColor: "#700033", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
               <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.reports}</Text>
             </View>
@@ -258,7 +259,7 @@ export default function App() {
             </View>
             <Text style={{...styles.cardText, fontSize:13, }}>Reports</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.listCard, styles.boxShadow]} onPress={()=>navigation.navigate('transporterDriverSearch')}>
+          <TouchableOpacity style={[styles.listCard, styles.boxShadow]}>
             <View style={{...styles.badge, backgroundColor: "#1b9be6", marginTop: 0, position: 'absolute', right:28, top: 1,  }}>
               <Text style={{fontSize:12, fontWeight:600, color:'#fff'}}>{dashBoardData.payment_methods}</Text>
             </View>

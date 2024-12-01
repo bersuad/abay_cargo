@@ -111,7 +111,7 @@ export default function App() {
           <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
         
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
+        <TouchableOpacity onPress={()=>navigation.navigate('ProfileSetting')} style={[styles.boxShadow, styles.offers, {marginTop: 0}]}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
             <AntDesign name="questioncircle" size={24} {...appPageStyle.secondaryTextColor} />
           </View>

@@ -158,7 +158,6 @@ export default function App() {
           AsyncStorage.clear();
           navigation.navigate('TruckLogin');
       }
-      console.log(res.json);
       if (res.json.result) {
         setReportType(res.json.report_types
           .filter(e=> e.report_type_id !== 2));
@@ -186,7 +185,7 @@ export default function App() {
       from_date: getReport.from_date,
       to_date: getReport.to_date,
     });    
-    console.log(details);
+    
     setState({ ...state, isLoading: true});
     postMultipartWithAuthCallWithErrorResponse(ApiConfig.REPORT_ADD, details)
       .then((data) => {

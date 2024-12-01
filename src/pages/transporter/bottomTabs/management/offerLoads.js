@@ -8,6 +8,8 @@ import {
   Text,
   TouchableOpacity,
   MaterialCommunityIcons,
+  Ionicons,
+  AntDesign,
   appPageStyle,
   AsyncStorage,
   RefreshControl,
@@ -16,8 +18,15 @@ import {
   postWithAuthCallWithErrorResponse,
   ActivityIndicator,
   StatusBar,
-  Toast
+  Toast,
+  TextInput,
+  Keyboard,
+  Image
 } from './../../../../components/index';
+import { Badge } from 'react-native-paper';
+import XLSX from 'xlsx';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 
 export default function OfferLoad() {
@@ -67,6 +76,79 @@ export default function OfferLoad() {
         });
       };
 
+    
+    const _getTheExcel = async () =>{
+      var data = offerLoadData;
+      var ws = XLSX.utils.json_to_sheet(data);
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Offer Good List");
+      const wbout = XLSX.write(wb, {
+        type: 'base64',
+        bookType: "xlsx"
+      });
+      const uri = FileSystem.cacheDirectory + 'OfferGoodList.xlsx';
+      await FileSystem.writeAsStringAsync(uri, wbout, {
+        encoding: FileSystem.EncodingType.Base64
+      });
+    
+      await Sharing.shareAsync(uri, {
+        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        dialogTitle: 'MyWater data',
+        UTI: 'com.microsoft.excel.xlsx'
+      });
+    }
+
+    const getList=(text)=>{
+      if(text === ''){
+        _getDashboardDetails();
+        setState({  ...state, searchData: false });
+      }else{
+        const newData = offerLoadData.filter(
+          function (item) {
+            const itemData = item.trip_reference_no
+              ? item.trip_reference_no.toUpperCase()
+              : ''.toUpperCase();
+            const status = item.trip_status
+              ? item.trip_status.toUpperCase()
+              : ''.toUpperCase();
+            const start = item.trip_start_country
+              ? item.trip_start_country.toUpperCase()
+              : ''.toUpperCase();
+            const end = item.trip_end_country
+              ? item.trip_end_country.toUpperCase()
+              : ''.toUpperCase();
+            const cargo = item.cargo_type
+              ? item.cargo_type.toUpperCase()
+              : ''.toUpperCase();
+            const est_date = item.estimated_arrival_date
+              ? item.estimated_arrival_date.toUpperCase()
+              : ''.toUpperCase();
+            const textData = text.toUpperCase();
+            
+            return itemData.indexOf(textData) > -1 ?
+            itemData.indexOf(textData) > -1
+            :
+            status.indexOf(textData) > -1
+            ?
+            start.indexOf(textData) > -1
+            :
+            end.indexOf(textData) > -1
+            ?
+            cargo.indexOf(textData) > -1
+            :
+            est_date.indexOf(textData) > -1
+        });
+        
+        if(newData.length === 0){
+          setState({  ...state, searchData: true });
+          setOfferLoadData(newData);
+        }else{
+          setOfferLoadData(newData);
+          setState({  ...state, searchData: false });
+        }
+      }
+    }
+
     const _getDashboardDetails = async() => {
       setState({ ...state, isLoading: true});  
       const user_id = await AsyncStorage.getItem('user_id');
@@ -90,7 +172,7 @@ export default function OfferLoad() {
       });    
   
       postWithAuthCallWithErrorResponse(
-          ApiConfig.DRIRECT_ORDER_OFFER_GOODS, JSON.stringify({ user_id, api_key, customer_id }),
+        ApiConfig.OFFER_LOAD_LIST, JSON.stringify({ user_id, api_key, customer_id }),
       ).then((res) => {
         
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
@@ -100,7 +182,7 @@ export default function OfferLoad() {
           setState({ ...state, isLoading: false});
       }
       
-      if (res.json.result)setOfferLoadData(res.json);
+      if (res.json.result)setOfferLoadData(res.json.load_list);
           setState({ ...state, isLoading: false});
       });
       
@@ -136,88 +218,137 @@ export default function OfferLoad() {
     }, []);
     
     return (
-    <ScrollView style={{backgroundColor: 'rgba(27, 155, 230, 0.1)'}}
+    <ScrollView style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
     refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
     }
     >
         {state.isLoading &&(
           <View style={styles.container}>
-            <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
             <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
             <Text>Getting Offer Loads</Text>
           </View> 
         )}
       {!state.isLoading &&(
-        <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-        {offerLoadData.load_list &&
-              offerLoadData.load_list.length &&
-              offerLoadData.load_list.map((loads, key) => (
-                
-                <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-                    <View
-                    style={[
+        <View style={styles.container}>        
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.TextInput}
+              placeholder="Search"
+              placeholderTextColor="#003f5c"
+              onChangeText={(text) => getList(text) }
+              onSubmitEditing={Keyboard.dismiss}
+              returnKeyType='search'
+              contextMenuHidden={true}
+              disableFullscreenUI={true}
+              cursorColor="#111"
+            /> 
+            <Ionicons name="search" size={24} color="#555" style={{position: "absolute", right: 10, top: 10}}/>
+          </View> 
+          <View style={{flex: 1, alignSelf: "flex-start", position: "absolute", top: 68, left: 15, marginBottom:15}}>
+            <TouchableOpacity onPress={()=>_getTheExcel()} style={{backgroundColor: 'rgba(1, 138, 40, 0.88)', height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+              <Text style={{color: '#fff', fontSize: 15}}><MaterialCommunityIcons name="microsoft-excel" size={20} color="white" /> Download Offer</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{flex: 1, alignSelf: "flex-end", position: "relative", bottom:0, right: 25, marginBottom:10}}>
+            <TouchableOpacity onPress={()=>navigation.navigate('AddOffer')} style={{...appPageStyle.primaryColor, height: 40, width: "auto", borderRadius: 100, alignContent: "center", alignItems: "center", justifyContent: "center", paddingLeft: 10, paddingRight: 10}}>
+              <Text style={{color: '#fff'}}> <AntDesign name="plus" size={15} color="white" /> Add Offer</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
+          {offerLoadData &&
+                offerLoadData.length > 0 &&
+                offerLoadData.map((loads, key) => (
+                  
+                  <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
+                      <View style={{position: "absolute", right: 5, top: 5}}>
                         {
-                        flexDirection: 'row',
-                        width: '92%',
-                        gap: 15,
-                        paddingTop: 10
-                        },
-                    ]}>
-                        <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 50, width: 50, borderRadius: 100, marginLeft: 0}}>
-                            <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
-                        </View>
-                        <View style={{textAlign: 'justify'}}>
-                            <TouchableOpacity onPress={()=>navigation.navigate('OfferDetail', {details: loads})}>
-                              <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {loads.load_reference_no}</Text>
-                            </TouchableOpacity>
-                            <Text style={{textAlign: 'justify', fontSize:11}}>{loads.vehicle_availability_date}</Text>    
-                            <Text style={{textAlign:'justify'}}>Cargo Type: {loads.cargo_type}</Text>
-                            <Text style={{textAlign:'justify'}}>Container Type: {loads.container_type}</Text>
-                            <Text style={{textAlign:'justify'}}>Rem Quantity: {loads.quantity} {loads.unit}</Text>
-                            <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
-                            From: {loads.trip_start_country +
-                                ", " +
-                                loads.trip_start_city}{" "}
-                            </Text>
-                            <Text style={{textAlign:'justify', minWidth: 250, maxWidth:350}}>
-                                To: {loads.trip_end_country +
-                                " " +
-                                loads.trip_end_city
+                          loads.trip_status === 'approved' ?
+                            <Badge status='success' style={{backgroundColor: 'green'}}>{loads.trip_status}</Badge>
+                          : loads.trip_status === 'requested' ?
+                            <Badge status='success' style={{backgroundColor: '#ED7014'}}>{loads.trip_status}</Badge> 
+                          : loads.trip_status === 'rejected' ? 
+                            <Badge status='success' style={{backgroundColor: '#F91717'}}>{loads.trip_status}</Badge> 
+                          : loads.trip_status === 'confirmed' ? 
+                            <Badge status='success' style={{backgroundColor: '#42AE21'}}>{loads.trip_status}</Badge> 
+                          :
+                            <Badge status='primary'>{loads.trip_status}</Badge> 
+                        }
+                      </View>
+                      <View
+                      style={[
+                          {
+                          flexDirection: 'row',
+                          width: '92%',
+                          gap: 15,
+                          paddingTop: 10
+                          },
+                      ]}>
+                          <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                            {loads.trip_packing_list
+                              ? 
+                              <Image style={{...styles.cardImage,  borderRadius: 100, height: 59, width:59}}
+                                source={{
+                                  uri: ApiConfig.BASE_URL_FOR_IMAGES+loads.trip_packing_list 
+                                }}
+                              />
+                              :
+                              <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
                             }
-                            </Text>
-                          <View
-                          style={[
-                              {
-                              flexDirection: 'row',
-                              width: '92%',
-                              gap: 15,
-                              paddingTop: 10,
-                              marginBottom:10
-                              },
-                          ]}>
-                            <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
-                                <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
-                                  onPress={()=> navigation.navigate('DirectOfferNewVehicle', { loads })}
-                                >
-                                    <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
-                                <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} onPress={()=>{reject(loads)}}>
-                                    {!state.actionLoading &&(
-                                        <Text style={appPageStyle.secondaryTextColor}>Cancel</Text>
-                                    )}
-                                    {state.actionLoading && (
-                                        <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
-                                    )}
-                                </TouchableOpacity>
+                            
+                          </View>
+                          
+                          <View style={{textAlign: 'justify'}}>
+                              <TouchableOpacity onPress={()=>navigation.navigate('OfferDetail', {details: loads})}>
+                                <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {loads.trip_reference_no}</Text>
+                              </TouchableOpacity>
+                              <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Company Name: {loads.trip_company_name}</Text>    
+                              <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Cargo Type: {loads.cargo_type}</Text>
+                              <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>Estimated Arrival Date: {loads.estimated_arrival_date}</Text>
+                              <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>Quantity: {loads.quantity} {loads.unit}</Text>
+                              <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5, minWidth: 250, maxWidth:350}}>
+                              From: {loads.trip_start_country +
+                                  ", " +
+                                  loads.trip_start_city}{" "}
+                              </Text>
+                              <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5, textAlign:'justify', minWidth: 250, maxWidth:350}}>
+                                  To: {loads.trip_end_country +
+                                  " " +
+                                  loads.trip_end_city
+                              }
+                              </Text>
+                              
+                            <View
+                            style={[
+                                {
+                                flexDirection: 'row',
+                                width: '92%',
+                                gap: 15,
+                                paddingTop: 10,
+                                marginBottom:10
+                                },
+                            ]}>
+                              <Text style={{fontWeight: 'bold', backgroundColor:'#fff', minHeight:20, padding:5}}>Insurance: </Text>
+                              <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 5, marginLeft: 0}}>
+                                {loads.trip_insurance
+                                  ? 
+                                  <Image style={{...styles.cardImage,  borderRadius: 5, height: 59, width:59}}
+                                  source={{
+                                    uri: ApiConfig.BASE_URL_FOR_IMAGES+loads.trip_insurance 
+                                  }}
+                                  />
+                                  :
+                                  <MaterialCommunityIcons name="notebook-check" size={30} color="#fff" />
+                                }
+                                
+                              </View>
+                              
                             </View>
                           </View>
-                        </View>
-                    </View>
-                </View>
-        ) )}
+                      </View>
+                  </View>
+          ) )}
+          </View>
         </View>
       )}
     </ScrollView>
@@ -244,9 +375,9 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     },
     inputView: {
-      backgroundColor: "rgba(25, 120, 142, 0.3)",
+      backgroundColor: "rgba(240, 138, 41, 0.3)",
       borderRadius: 30,
-      width: '90%',
+      width: '92%',
       height: 45,
       marginBottom: 20,
       alignItems: "center",
@@ -299,14 +430,11 @@ const styles = StyleSheet.create({
       top: 0,
     },
     cardImage:{
-      position: "absolute",
       right: 0,
       top:0,
       opacity: 0.9,
       height: 110,
       width: 110,
-      marginTop: 10,
-      marginRight: 5,
     },
     listCard:{
       flex: 1, 

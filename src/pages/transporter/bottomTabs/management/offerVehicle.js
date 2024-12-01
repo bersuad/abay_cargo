@@ -97,9 +97,7 @@ export default function OfferVehicle() {
         }
         if(res.json.message === "Insufficient Parameters"){
             setState({ ...state, isLoading: false});
-            console.log('no data here')
         }
-        console.log(res.json);
         if (res.json.result)setOfferLoadData(res.json);
             setState({ ...state, isLoading: false});
         });

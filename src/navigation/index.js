@@ -51,6 +51,7 @@ import OfferNewVehicle from '../pages/transporter/bottomTabs/management/offerNew
 import DirectOfferNewVehicle from '../pages/transporter/bottomTabs/management/directOfferNewVehicle';
 import OfferGoodsDetails from '../pages/transporter/bottomTabs/management/goodsDetails';
 import OfferVehicleDetails from '../pages/transporter/bottomTabs/management/frightVechicleDetails';
+import AddOffer from '../pages/transporter/bottomTabs/management/addOffer'
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -661,6 +662,22 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'View Vehicle Details',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#b76b29',
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="AddOffer"
+          title="Add Offer Good"
+          component={AddOffer} 
+          options={{
+            headerShown: true,
+            headerTitle:'Add Offer Good',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

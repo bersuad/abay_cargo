@@ -25,6 +25,7 @@ import {
   placeholder,
   Platform
 } from './../../../../components/index';
+import { Badge } from 'react-native-paper';
 
 import * as MediaLibrary from 'expo-media-library';
 
@@ -183,7 +184,6 @@ export default function OfferDetail(props) {
         if (res.json.result)setOfferLoadData(res.json.load_details);
             setState({ ...state, isLoading: false});
         })
-        console.log(offerLoadData)
         .catch((err) => console.log(err));
 
         return () => {};
@@ -214,7 +214,20 @@ export default function OfferDetail(props) {
       {!state.isLoading &&(
         <SafeAreaView style={styles.container}>
             <View style={[styles.boxShadow, {minHeight: 200, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-            
+            <View style={{position: "absolute", right: 5, top: 5}}>
+              {
+                offerLoadData.trip_status === 'approved' ?
+                  <Badge status='success' style={{backgroundColor: 'green'}}>{offerLoadData.trip_status}</Badge>
+                : offerLoadData.trip_status === 'requested' ?
+                  <Badge status='success' style={{backgroundColor: '#ED7014'}}>{offerLoadData.trip_status}</Badge> 
+                : offerLoadData.trip_status === 'rejected' ? 
+                  <Badge status='success' style={{backgroundColor: '#F91717'}}>{offerLoadData.trip_status}</Badge> 
+                : offerLoadData.trip_status === 'confirmed' ? 
+                  <Badge status='success' style={{backgroundColor: '#42AE21'}}>{offerLoadData.trip_status}</Badge> 
+                :
+                  <Badge status='primary'>{offerLoadData.trip_status}</Badge> 
+              }
+            </View>
                 <View
                 style={[
                     {
@@ -275,6 +288,7 @@ export default function OfferDetail(props) {
                         <Text style={{fontWeight: 'bold', fontSize: 20}}>Good Detail </Text>
                     </View>
                     <View style={{textAlign: 'justify', fontSize: 15, marginLeft: '-10%', marginTop:10, width: '100%'}}>
+                        <Text>Reference Number: {offerLoadData.trip_reference_no}</Text>
                         <Text>Company Name: {offerLoadData.trip_company_name}</Text>  
                         <Text>Cargo Type: {offerLoadData.cargo_type}</Text>
                         {offerLoadData.container_type && 
@@ -289,6 +303,7 @@ export default function OfferDetail(props) {
                               (offerLoadData.cargo_type === "Bulk" || offerLoadData.cargo_type === "Break bulk") ?
                               offerLoadData.quantity + " Quintals" : " - "}
                         </Text>
+                        <Text>Delivery Type: {offerLoadData.delivery_type}</Text> 
                     </View>
                 </View>
                 
