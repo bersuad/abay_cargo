@@ -12,6 +12,7 @@ import {
   MaterialCommunityIcons,
   appPageStyle,
   AsyncStorage,
+  Toast,
   RefreshControl,
   LogBox,
   ApiConfig,
@@ -28,6 +29,8 @@ import {
 import { Badge } from 'react-native-paper';
 
 import * as MediaLibrary from 'expo-media-library';
+
+import SnackBar from 'react-native-snackbar-component';
 
 
 export default function OfferDetail(props) {
@@ -59,57 +62,95 @@ export default function OfferDetail(props) {
       return true; // iOS doesn't require explicit permissions in the same way
     };
 
-    const ensureDirectoryExists = async (directory) => {
-      const dirInfo = await FileSystem.getInfoAsync(directory);
-      if (!dirInfo.exists) {
-        console.log('Directory does not exist, creating...');
-        await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+    // const ensureDirectoryExists = async (directory) => {
+    //   const dirInfo = await FileSystem.getInfoAsync(directory);
+    //   if (!dirInfo.exists) {
+    //     console.log('Directory does not exist, creating...');
+    //     await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+    //   }
+    // };
+
+    const successWithDurationHandler = (message) => {
+      let toast = Toast.show(message, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        backgroundColor: 'green',
+        animation: true,
+      });
+    };
+
+    const toastWithDurationHandler = (message) => {
+      let toast = Toast.show(message, {
+        duration: Toast.durations.LONG,
+        backgroundColor: 'red',
+        animation: true,
+      });
+    };
+    const requestPermissions = async () => {
+      const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+      if (status !== 'granted') {
+        alert('Permission to access media library is required!');
+        return;
       }
     };
 
     const downloadFile = async (fileName) => {
-      const fileUrl = ApiConfig.BASE_URL_FOR_IMAGES;
+      const fileUrl = ApiConfig.BASE_URL_FOR_IMAGES + fileName;
+      
       try {
         const hasPermission = await getPermissionAsync();
         if (!hasPermission) {
-          console.log('Permission Denied', 'Cannot download file without storage access.');
+          toastWithDurationHandler("Permission Denied, Cannot download file without storage access.");
           return;
         }
-        // Specify the download path
-        const downloadsDirectory = FileSystem.documentDirectory + 'uploads/loads/';
-
-    // Ensure the download directory exists
-        await ensureDirectoryExists(downloadsDirectory);
-
-        const filePath = downloadsDirectory + fileName;
-
-        // Start the download
-        const downloadResumable = FileSystem.createDownloadResumable(
-          fileUrl,
-          filePath
-        );
-        console.log(filePath);
-
-        // Start downloading
-        const { uri } = await downloadResumable.downloadAsync();
-        console.log('File downloaded to:', uri);
-
-        // For Android, save it to external storage
+    
+        // For Android, request permissions explicitly
         if (Platform.OS === 'android') {
           const { status } = await MediaLibrary.requestPermissionsAsync();
-          if (status === 'granted') {
-            const asset = await MediaLibrary.createAssetAsync(uri);
-            await MediaLibrary.createAlbumAsync('Downloads', asset, false);
-            Alert.alert('Download Complete', 'File saved to Downloads folder');
-          } else {
-            Alert.alert('Permission Denied', 'Cannot access media library.');
+          if (status !== 'granted') {
+            toastWithDurationHandler("Permission Denied, Cannot download file without storage access.");
+            return;
           }
-        } else {
-          Alert.alert('Download Complete', 'File saved in app directory.');
         }
+    
+        // Specify the download path (internal storage for Expo)
+        const downloadsDirectory = FileSystem.documentDirectory;
+    
+        // Ensure the directory exists (makeDirectoryAsync is for custom directories if needed)
+        await ensureDirectoryExists(downloadsDirectory);
+    
+        const filePath = downloadsDirectory + fileName; // Full file path for internal storage
+    
+        // Start the download
+        const downloadResumable = FileSystem.createDownloadResumable(fileUrl, filePath);
+    
+        // Start downloading the file
+        const { uri } = await downloadResumable.downloadAsync();
+    
+        // For Android, save it to external storage
+        if (Platform.OS === 'android') {
+          // Create an asset from the downloaded file URI
+          const asset = await MediaLibrary.createAssetAsync(uri);
+          await MediaLibrary.createAlbumAsync(asset, false); // Save to the 'Downloads' album
+          successWithDurationHandler('Download Complete, File saved to Downloads folder');
+        } else {
+          successWithDurationHandler('Download Complete', 'File saved to app directory');
+        }
+    
       } catch (error) {
         console.error('Error downloading file:', error);
-        Alert.alert('Download Error', 'There was an issue downloading the file.');
+        toastWithDurationHandler("Download Error, There was an issue downloading the file.");
+      }
+    };
+
+    const ensureDirectoryExists = async (directory) => {
+      try {
+        const dirInfo = await FileSystem.readDirectoryAsync(directory);
+        if (!dirInfo.includes(directory)) {
+          await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+        }
+      } catch (error) {
+        console.error('Error ensuring directory exists:', error);
       }
     };
     
@@ -335,7 +376,7 @@ export default function OfferDetail(props) {
                             
                           }}/>
                   <View style={{position: "absolute", top: 0, right:-35}}>
-                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
+                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=> downloadFile(offerLoadData.trip_packing_list)}>
                       <MaterialCommunityIcons name="download" size={24} color="#19788e" />
                     </TouchableOpacity>
                   </View>

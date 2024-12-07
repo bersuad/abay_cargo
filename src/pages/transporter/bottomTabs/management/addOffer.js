@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import "react-native-get-random-values";
+import React, { useState, useEffect, useRef } from "react";
 
 import {
   StyleSheet,
@@ -31,7 +32,10 @@ import {
   ActivityIndicator,
   AsyncStorage,
   NetInfo,
-  LogBox
+  LogBox,
+  KeyboardAvoidingView,
+  Platform,
+  FlatList
 } from "./../../../../components/index";
 import SelectDropdown from 'react-native-select-dropdown';
 import * as DocumentPicker from 'expo-document-picker';
@@ -39,6 +43,8 @@ import SnackBar from 'react-native-snackbar-component';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Checkbox from 'expo-checkbox';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
 
 
 
@@ -60,6 +66,8 @@ export default function AddOffer() {
     vehicle_axle: [],
     vehicle_insurance_type: []
   });
+
+  const googlePlacesRef = useRef();
 
    
   const [customer_id, setMyClientID] = useState('');
@@ -268,7 +276,7 @@ export default function AddOffer() {
     to_lat: "",
     to_lon: "",
     images: "",
-    company_name: profileDetails && profileDetails.company_name,
+    company_name: profileDetails?.company_name,
     cargo_type: "",
     quantity: "",
     units: "",
@@ -276,8 +284,6 @@ export default function AddOffer() {
     packing_list: "",
     bill_of_landing: "",
     insurance: "",
-    trade_license: "",
-    vat_reg_certificate: "",
     load_commercial_invoice: "",
     agreement_abay: "",
     tax_id_no: "",
@@ -324,7 +330,7 @@ export default function AddOffer() {
       });
   
       if (result.assets[0].mimeType) {
-        setVehicleDetails({ ...vehiclesDetails, vat_reg_certificate: result.assets[0].uri });
+        setVehicleDetails({ ...vehiclesDetails, images: result.assets[0].uri });
         if (result.assets[0].mimeType) {
           setFileName(result.assets[0].name);
   
@@ -361,12 +367,12 @@ export default function AddOffer() {
     });
 
     if (result.assets[0].mimeType) {
-      setVehicleDetails({ ...vehiclesDetails, load_commercial_invoice: result.assets[0].uri });
+      setVehicleDetails({ ...vehiclesDetails, packing_list: result.assets[0].uri });
       if (result.assets[0].mimeType) {
         setFileName2(result.assets[0].name);
 
         if (result.assets[0].mimeType === "application/pdf") {
-            setSecondPlaceholderImage(secondPlaceholderImage);
+            setSecondPlaceholderImage(fileImage);
         } else {
             setSecondPlaceholderImage(result.assets[0].uri);
         }
@@ -385,12 +391,12 @@ export default function AddOffer() {
     });
 
     if (result.assets[0].mimeType) {
-      setVehicleDetails({ ...vehiclesDetails, trade_license: result.assets[0].uri });
+      setVehicleDetails({ ...vehiclesDetails, insurance: result.assets[0].uri });
       if (result.assets[0].mimeType) {
         setFileName3(result.assets[0].name);
 
         if (result.assets[0].mimeType === "application/pdf") {
-            setThirdPlaceholderImage(thirdPlaceholderImage);
+            setThirdPlaceholderImage(fileImage);
         } else {
             setThirdPlaceholderImage(result.assets[0].uri);
         }
@@ -403,6 +409,7 @@ export default function AddOffer() {
   };
 
   const findEmptyFields = () => {
+    
     setState({ ...state, isLoading: true });    
     for (const key in vehiclesDetails) {
       const value = vehiclesDetails[key];
@@ -412,7 +419,7 @@ export default function AddOffer() {
           setState({ ...state, isLoading: false }); 
           return;
         }
-      }else if (key == "from_lat" || key == "from_lon" || key == "to_lat" || key == "to_lon" || key == "images" || key == "unit_measurment" || key == "packing_list" || key == "bill_of_landing" || key == "insurance" || key == "agreement_abay" || key == "tax_id_no"){
+      }else if (key == "load_commercial_invoice" || key == "trade_license" || key == "company_name" || key == "container_type" || key == "from_lat" || key == "from_lon" || key == "to_lat" || key == "to_lon" || key == "images" || key == "unit_measurment" || key == "packing_list" || key == "bill_of_landing" || key == "insurance" || key == "agreement_abay" || key == "tax_id_no"){
         continue;
       } else if(value === "" || value === null || value === undefined) {
         toastWithDurationHandler("Please check your "+key+" !");
@@ -462,27 +469,51 @@ export default function AddOffer() {
 
   _register = async () => {
     console.log(vehiclesDetails);
-    
 
     setState({ ...state, isLoading: true });
     const user_id = await AsyncStorage.getItem('user_id');
     const customer_id = await AsyncStorage.getItem('customer_id');
     const api_key = await AsyncStorage.getItem('api_key');
     
-    const tn = vehiclesDetails.trade_license;
+    const tn = vehiclesDetails.insurance;
     const tn_img = tn.split('/').pop();
 
     const insurance_file = {
-      uri: vehiclesDetails.trade_license,
+      uri: vehiclesDetails.insurance,
       name: tn_img,
-      type: vehiclesDetails.trade_license.endsWith('.pdf')
+      type: vehiclesDetails.insurance.endsWith('.pdf')
         ? "application/pdf"
-        : vehiclesDetails.trade_license.endsWith('.png') || vehiclesDetails.trade_license.endsWith('.jpeg') || vehiclesDetails.trade_license.endsWith('.jpg')
+        : vehiclesDetails.insurance.endsWith('.png') || vehiclesDetails.insurance.endsWith('.jpeg') || vehiclesDetails.insurance.endsWith('.jpg')
           ? "image/png"
           : "image/jpeg"
     };
     
+    const pack = vehiclesDetails.packing_list;
+    const pack_img = pack.split('/').pop();
 
+    const packing_file = {
+      uri: vehiclesDetails.packing_list,
+      name: pack_img,
+      type: vehiclesDetails.packing_list.endsWith('.pdf')
+        ? "application/pdf"
+        : vehiclesDetails.packing_list.endsWith('.png') || vehiclesDetails.packing_list.endsWith('.jpeg') || vehiclesDetails.packing_list.endsWith('.jpg')
+          ? "image/png"
+          : "image/jpeg"
+    };
+    
+    const f_images = vehiclesDetails.images;
+    const fr_img = f_images.split('/').pop();
+
+    const fright_images = {
+      uri: vehiclesDetails.images,
+      name: fr_img,
+      type: vehiclesDetails.images.endsWith('.pdf')
+        ? "application/pdf"
+        : vehiclesDetails.images.endsWith('.png') || vehiclesDetails.images.endsWith('.jpeg') || vehiclesDetails.images.endsWith('.jpg')
+          ? "image/png"
+          : "image/jpeg"
+    };
+    
     const formData = new FormData();
     formData.append("api_key", api_key);
     formData.append("user_id", user_id);
@@ -491,51 +522,54 @@ export default function AddOffer() {
     formData.append("from_address", vehiclesDetails.from_address);
     formData.append("to_address", vehiclesDetails.to_address);
     formData.append("end_date", vehiclesDetails.end_date);
-    formData.append("company_name", vehiclesDetails.company_name);
+    formData.append("company_name", profileDetails?.company_name);
     formData.append("cargo_type", vehiclesDetails.cargo_type);
     formData.append("quantity", vehiclesDetails.quantity);
     formData.append("unit", vehiclesDetails.units);
+    formData.append("bill_of_landing", vehiclesDetails.bill_of_landing);
     formData.append("delivery_type", vehiclesDetails.delivery_types);
     if (vehiclesDetails.cargo_type === "1") {
-        formData.append("container_type", vehiclesDetails.container_type);
+        formData.append("container_type", vehiclesDetails?.container_type);
     }else {
         formData.append("container_type", "");
     }
-    formData.append("from_lat", vehiclesDetails?.from_lat);
+    formData.append("from_lat", vehiclesDetails.from_lat);
     formData.append("from_lon", vehiclesDetails.from_lon);
     formData.append("to_lon", vehiclesDetails.to_lon);
     formData.append("to_lat", vehiclesDetails.to_lat);
+    
 
 
-    formData.append("insurance", {
-      uri: insurance_file.uri,
-      name: insurance_file.name,
-      type: insurance_file.type
+    formData.append("images[]", {
+      uri: fright_images.uri,
+      name: fright_images.name,
+      type: fright_images.type
     });
 
-    formData.append("bill_of_landing", {
+    formData.append("packing_list", {
+        uri: packing_file.uri,
+        name: packing_file.name,
+        type: packing_file.type
+      });
+      formData.append("insurance", {
         uri: insurance_file.uri,
         name: insurance_file.name,
         type: insurance_file.type
       });
-
-    formData.append("trade_license[]", {
-      uri: insurance_file.uri,
-      name: insurance_file.name,
-      type: insurance_file.type
-    });
     console.log(formData);
+    
     postWithAuthCallWithErrorResponse(
         ApiConfig.ADD_LOAD_API, formData
     ).then((res) => {
-        console.log(res);
+      setState({ ...state, isLoading: false });
+      console.log(res);
       if (res.json.message === "An internal server error occurred.") {
         setState({ ...state, isLoading: false });
         toastWithDurationHandler("An internal server error occurred. Please Try again!");
       }
 
-      if (res.json.result == true || res.json.message === "Vehicle added successfully") {
-        successWithDurationHandler('Registered Successfully, Abay Logistics Will Contact you soon! Thank you.');
+      if (res.json.result == true || res.json.message === "Load added successfully, Please wait for approval from Administration") {
+        successWithDurationHandler('Load added successfully, Please wait for approval from Administration.');
         setState({ ...state, isLoading: false });
         setTimeout(function () {
           navigation.navigate('OfferLoad');
@@ -543,9 +577,9 @@ export default function AddOffer() {
         return;
       }
 
-      if (res.json.message === "Vehicle added successfully") {
+      if (res.json.message === "Load added successfully, Please wait for approval from Administration") {
         setState({ ...state, isLoading: false });
-        successWithDurationHandler("Registered Successfully, Abay Logistics Will Contact you soon! Thank you.");
+        successWithDurationHandler("Load added successfully, Please wait for approval from Administration.");
         navigation.navigate('OfferLoad');
       } else {
         setState({ ...state, isLoading: false });
@@ -558,6 +592,38 @@ export default function AddOffer() {
 
 
   }
+
+  const [selectedFromLocation, setSelectedFromLocation] = useState(null);
+  const [from_Coordinates, setSelectedFromCorrdination] = useState(null);
+  const [selectedToLocation, setSelectedToLocation] = useState(null);
+  const [to_Coordinates, setSelectedToCorrdination] = useState(null);
+  
+
+  const handleFromLocationSelect = (data, details) => {
+    setState({ ...state, isLoading: false });
+    setSelectedFromLocation({
+      address: data.description
+    });
+
+    setSelectedFromCorrdination({
+      address: details.geometry.location
+    });
+
+    setVehicleDetails({ ...vehiclesDetails, from_address: data.description, from_lat: details.geometry.location.lat, from_lon: details.geometry.location.lng });
+
+  };
+
+  const handleToLocationSelect = (data, details) => {
+    setSelectedToLocation({
+      address: data.description
+    });
+
+    setSelectedToCorrdination({
+      address: details.geometry.location
+    });
+    
+    setVehicleDetails({ ...vehiclesDetails, to_address: data.description, to_lat: details.geometry.location.lat, to_lon: details.geometry.location.lng })
+  };
   
   return (
     <ScrollView style={{ backgroundColor: 'rgba(27, 155, 230, 0.1)' }}>
@@ -603,55 +669,61 @@ export default function AddOffer() {
             onCancel={toHideDatePicker}
           />
         </View>
-        <Text style={styles.HeaderText}>Address</Text>
-        <View
-          style={[
-            {
-              flexDirection: 'row',
-              width: '95%',
-              gap: 4,
-              backgroundColor: '#fff',
-            },
-          ]}>
-            <View style={{ ...styles.inputView, width: '50%', }}>
-                <TextInput
-                style={styles.TextInput}
-                placeholder="Inital Location"
-                placeholderTextColor="#090909"
-                onChangeText={(text) => {
-                    setErrMsg({ ...errMsg, contact_person_phone: "" });
-                    setVehicleDetails({ ...vehiclesDetails, from_address: text })
-                }
-                }
-                />
-            </View>
+        <Text style={styles.HeaderText}>Inital Location</Text>
+        <ScrollView nestedScrollEnabled={true} style={{ width: "95%", flex: 1, backgroundColor: '#fff', }} keyboardShouldPersistTaps="handled">
+          <GooglePlacesAutocomplete
+              placeholder='Inital Location'
+              onPress={handleFromLocationSelect}
+              keepResultsAfterBlur={true}
+              textInputProps={{ onBlur: () => { console.warn("Blur") } }}
+              query={{
+                key: "AIzaSyCmTKHfje5c63U_hjhn10MiSGsHEVZbKoE", // Google Places API Key
+                language: 'en', 
+              }}
+              fetchDetails={true} 
+              keyboardShouldPersistTaps={"always"}
+              enablePoweredByContainer={false}
+              styles={{
+                textInput: styles.textInput,
+                listView: styles.listView,
+              }}
+              PlacesAPI='places'
+              debounce={200}
+            />
+        </ScrollView>
 
-            <View style={{ ...styles.inputView, width: '50%', }}>
-                <TextInput
-                style={styles.TextInput}
-                placeholder="Destination Location"
-                placeholderTextColor="#090909"
-                onChangeText={(text) => {
-                    setErrMsg({ ...errMsg, contact_person_email: "" });
-                    setVehicleDetails({ ...vehiclesDetails, to_address: text })
-                }
-                }
-                />
-            </View>
-        </View>
+        <Text style={styles.HeaderText}>Destination Location</Text>
+        <ScrollView nestedScrollEnabled={true} style={{ width: "95%", flex: 1, backgroundColor: '#fff', }} keyboardShouldPersistTaps="handled">
+          <GooglePlacesAutocomplete
+              placeholder='Destination Location'
+              onPress={handleToLocationSelect}
+              keepResultsAfterBlur={true}
+              textInputProps={{ onBlur: () => { console.warn("Blur") } }}
+              query={{
+                key: "AIzaSyCmTKHfje5c63U_hjhn10MiSGsHEVZbKoE", // Google Places API Key
+                language: 'en', 
+              }}
+              fetchDetails={true} 
+              keyboardShouldPersistTaps={"always"}
+              enablePoweredByContainer={false}
+              styles={{
+                textInput: styles.textInput,
+                listView: styles.listView,
+              }}
+              PlacesAPI='places'
+              debounce={200}
+            />
+        </ScrollView>
 
         <Text style={styles.HeaderText}>Company Name</Text>        
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
-            value={vehiclesDetails.company_name}
-            placeholder="Vendor Name"
-            placeholderTextColor="#090909"
-            onChangeText={(text) => {
-              setErrMsg({ ...errMsg, vendor_name: "" });
-              setVehicleDetails({ ...vehiclesDetails, company_name: profileDetails.company_name })
-            }
-            }
+            placeholder={profileDetails.company_name}
+            value={profileDetails.company_name}
+            editable={false}
+            placeholderTextColor="#000000"
+            
           />
         </View>
         <Text style={styles.HeaderText}>Cargo Type</Text>
@@ -780,8 +852,9 @@ export default function AddOffer() {
           <TextInput
             style={styles.TextInput}
             value={vehiclesDetails.quantity}
-            placeholder="Vendor Name"
-            placeholderTextColor="#090909"
+            placeholder="Quantity"
+            placeholderTextColor="#0f0f0f"
+            inputMode="numeric"
             onChangeText={(text) => {
               setErrMsg({ ...errMsg, vendor_name: "" });
               setVehicleDetails({ ...vehiclesDetails, quantity: text })
@@ -812,7 +885,7 @@ export default function AddOffer() {
               return (
                 <View style={{ ...styles.dropdownButtonStyle, width: '100%', }}>
                   <Text style={styles.dropdownButtonTxtStyle}>
-                    {(insuranceType && insuranceType.delivery_type_name) || 'Select Insurance Type'}
+                    {(insuranceType && insuranceType.delivery_type_name) || 'Select Delivery Type'}
                   </Text>
                   <MaterialCommunityIcons name={isOpened ? 'chevron-up' : 'chevron-down'} style={styles.dropdownButtonArrowStyle} />
                 </View>
@@ -951,7 +1024,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   HeaderText: {
-    color: '#090909',
+    color: '#0f0f0f',
     fontSize: 13,
     alignSelf: 'flex-start',
     marginLeft: 10,
@@ -992,16 +1065,16 @@ const styles = StyleSheet.create({
   dropdownButtonTxtStyle: {
     flex: 1,
     fontWeight: '500',
-    color: '#090909',
+    color: '#0f0f0f',
   },
   dropdownButtonArrowStyle: {
     fontSize: 28,
-    color: '#090909',
+    color: '#0f0f0f',
   },
   dropdownButtonIconStyle: {
     fontSize: 28,
     marginRight: 8,
-    color: '#090909',
+    color: '#0f0f0f',
   },
   dropdownMenuStyle: {
     backgroundColor: '#E9ECEF',
@@ -1019,7 +1092,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     fontWeight: '500',
-    color: '#090909',
+    color: '#0f0f0f',
   },
   dropdownItemIconStyle: {
     fontSize: 28,
@@ -1071,5 +1144,36 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingLeft:10,
     minHeight:20,
-  }
+  },
+  dropContainer:{
+    
+      paddingTop: 50,
+      paddingHorizontal: 10,
+    
+  },
+  textInput: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    fontSize: 16,
+    backgroundColor: "rgba(240,138,41, 0.3)",
+    borderRadius: 10,
+    width: '95%',
+    height: 45,
+  },
+  listView: {
+    backgroundColor: '#fff',
+  },
+  infoBox: {
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
+  },
+  infoText: {
+    fontSize: 16,
+    marginVertical: 4,
+  },
 });

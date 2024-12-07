@@ -34,7 +34,13 @@ import {
 import SelectDropdown from 'react-native-select-dropdown';
 import * as DocumentPicker from 'expo-document-picker';
 import SnackBar from 'react-native-snackbar-component';
-import CountryStateCitySelector from './CountryState';
+// import CountryStateCitySelector from './CountryState';
+import CountryPicker from 'react-native-country-picker-modal';
+import {
+  CountryDropdown,
+  RegionDropdown,
+  CountryRegionData,
+} from 'react-country-region-selector';
 
 
 
@@ -44,7 +50,7 @@ export default function NewTransporter() {
     device_token: "",
     device_id: "",
     app_version: "",
-    app_type: "transporter",
+    app_type: "shipper",
     device_os: "web",
     isLoading: false,
     inputFormat: true,
@@ -80,6 +86,14 @@ export default function NewTransporter() {
   const [fileName, setFileName] = useState('');
   const [fileName2, setFileName2] = useState('');
   const [fileName3, setFileName3] = useState('');
+  const [country, setCountry] = useState(null); 
+  const onSelectCountry = (country) => { 
+    setCountry(country); 
+    
+}; 
+const [isVisible, setIsVisible] = useState(false); 
+
+  const [region, setRegion] = useState('');
 
   
   const DEFAULT_IMAGE = Image.resolveAssetSource(Logo).uri;
@@ -426,7 +440,7 @@ const gradeImage = {
     type: tnImage.type
   });
 
-  formData.append("user_role", driverDetails.user_role ? driverDetails.user_role : "transporter");
+  formData.append("user_role", driverDetails.user_role ? driverDetails.user_role : "shipper");
   
   
   multipartPostCall(
@@ -541,44 +555,37 @@ const gradeImage = {
             } 
           /> 
         </View> 
-        <Text style={styles.HeaderText}>Contact Info</Text>
-        <View
-        style={[
-          {
-            flexDirection: 'row',
-            width: '95%',
-            gap: 4,
-            backgroundColor:'#fff',
-          },
-        ]}>
-          <View style={{...styles.inputView, width: '50%',}}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Contact Person Phone"
-              placeholderTextColor="#090909"
-              inputMode="numeric"
-              maxLength={10}
-              onChangeText={(text) =>{
-                setErrMsg({ ...errMsg, contact_person_phone: "" });
-                setDriverDetails({...driverDetails, contact_person_phone: text})
-                }
+        <Text style={styles.HeaderText}>Contact Person Phone</Text>
+        
+        <View style={{...styles.inputView, }}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Contact Person Phone"
+            placeholderTextColor="#090909"
+            inputMode="numeric"
+            maxLength={10}
+            onChangeText={(text) =>{
+              setErrMsg({ ...errMsg, contact_person_phone: "" });
+              setDriverDetails({...driverDetails, contact_person_phone: text})
               }
-            /> 
-          </View> 
+            }
+          /> 
+        </View> 
           
-          <View style={{...styles.inputView, width: '50%',}}>
-            <TextInput
-              style={styles.TextInput}
-              placeholder="Company Person Email"
-              placeholderTextColor="#090909"
-              onChangeText={(contact_person_email) =>{
-                setErrMsg({ ...errMsg, contact_person_email: "" });
-                setDriverDetails({...driverDetails, contact_person_email: contact_person_email})
-                }
+        <Text style={styles.HeaderText}>Contact Person Email</Text>
+        <View style={{...styles.inputView}}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Company Person Email"
+            placeholderTextColor="#090909"
+            onChangeText={(contact_person_email) =>{
+              setErrMsg({ ...errMsg, contact_person_email: "" });
+              setDriverDetails({...driverDetails, contact_person_email: contact_person_email})
               }
-            /> 
-          </View> 
-        </View>
+            }
+          /> 
+        </View> 
+        
 
         {/* <Text style={styles.HeaderText}>Total Fleet Size</Text>
         <View style={styles.inputView}>
@@ -633,8 +640,13 @@ const gradeImage = {
             /> 
           </View>  
         </View>
-
-        {/* <CountryStateCitySelector /> */}
+        <Text style={styles.HeaderText}>
+          <CountryPicker visible={isVisible} onSelect={onSelectCountry} onClose={() => setIsVisible(false)} withFilter={true} withFlag={true} withCountryNameButton={true} style={styles.dropdownButtonTxtStyle}/>
+        </Text>
+       
+        <TouchableOpacity onPress={() => setIsVisible(true)} style={styles.dropdownButtonStyle}> 
+            <Text style={styles.dropdownButtonTxtStyle}>{country ? country.name : 'Select Country'}</Text> 
+        </TouchableOpacity> 
         <Text style={styles.HeaderText}>Region</Text>
         <SelectDropdown
           data={regionList}
@@ -972,5 +984,27 @@ const styles = StyleSheet.create({
   dropdownItemIconStyle: {
     fontSize: 28,
     marginRight: 8,
+  },
+  label: {
+    color: '#090909',
+    fontSize: 13,
+    alignSelf:'flex-start',
+    marginLeft: 10,
+    padding: 15,
+    paddingBottom:5
+  },
+  picker: {
+    height: 50,
+    backgroundColor: '#E9ECEF',
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(240,138,41, 0.3)",
+    borderRadius: 10,
+    width: '95%',
+    height: 45,
+    marginBottom: 0,
   },
 });

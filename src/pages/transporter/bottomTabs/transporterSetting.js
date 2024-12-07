@@ -67,6 +67,9 @@ export default function App() {
   }
   
   logout=()=>{
+    setState({ ...state, isLoading: true,});
+    navigation.navigate('TransporterDashboard');
+    this.mounted = true;
     AsyncStorage.clear();
     navigation.navigate('TruckLogin');
   }
@@ -82,7 +85,7 @@ export default function App() {
     }
   }, []);
 
-  const imageUrl = ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic;
+  const imageUrl = userData?.user_profile_pic ? ApiConfig.BASE_URL_FOR_IMAGES+userData.user_profile_pic : '';
 
   return (
     <ScrollView 

@@ -17,7 +17,9 @@ import {
   RefreshControl,
   Keyboard,
   Modal,
-  Platform
+  Platform,
+  KeyboardAvoidingView,
+  FlatList
 } from "react-native";
 
 import Toast from 'react-native-root-toast';
@@ -84,6 +86,8 @@ export {
   Animated,
   BackHandler, 
   LogBox, 
+  KeyboardAvoidingView,
+  FlatList,
   StatusBar, 
   BouncyCheckbox,
   SafeAreaView,

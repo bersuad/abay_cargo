@@ -104,7 +104,7 @@ export default function App() {
       if(res.json.message === "Insufficient Parameters"){
         setState({ ...state, isLoading: false});
       }
-      console.log(res.json);
+      
       if (res.json.result)setDashBoardData(res.json);
       setState({ ...state, isLoading: false});
       AsyncStorage.getItem('userDetails').then(value =>{

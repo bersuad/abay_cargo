@@ -114,7 +114,7 @@ export default function App() {
           component={Registration} 
           options={{
             headerShown: true,
-            headerTitle:'Transporter Registration',
+            headerTitle:'Shipper Registration',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#b76b29',
