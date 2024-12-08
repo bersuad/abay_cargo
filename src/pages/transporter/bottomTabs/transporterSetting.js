@@ -43,7 +43,7 @@ export default function App() {
     postWithAuthCallWithErrorResponse(
       ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
     ).then((res) => {
-  
+      console.log(res);
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         setState({ ...state, isLoading: false});  
         AsyncStorage.clear();
@@ -52,6 +52,8 @@ export default function App() {
       }
       if(res.json.message === "Insufficient Parameters"){
         setState({ ...state, isLoading: false});
+        AsyncStorage.clear();
+        navigation.navigate('TruckLogin');
       }
   
       
@@ -67,12 +69,14 @@ export default function App() {
   }
   
   logout=()=>{
-    AsyncStorage.clear();
+    
     navigation.navigate('TransporterDashboard');
     setState({ ...state, isLoading: true,});
+    AsyncStorage.clear();
     setTimeout(function () {
       navigation.navigate('TruckLogin');
-      return;
+      
+      
     }, 3000);
   }
 

@@ -87,12 +87,11 @@ export default function App() {
   _checkConnection = async()=>{
     NetInfo.addEventListener(networkState => {
       if(networkState.isConnected){
-        // this._requestAccess();
-        console.log('connected');
+        
         setState({...state, checkInternet: true });
       }else{
         setState({...state, checkInternet: false });
-        console.log('not connected');
+        
       }
     });
   }
@@ -114,11 +113,9 @@ export default function App() {
       }
     } 
 
-    console.log(state);
 
     PostCallWithErrorResponse(ApiConfig.SHIPPER_LOGIN_API, state)
     .then((data) => {
-      console.log(data);
       if (data.json.message === "Wrong credentials entered") {
         setState({ ...state, isLoading: false});
         toastWithDurationHandler('Wrong Username or Password');
@@ -157,7 +154,7 @@ export default function App() {
         
         AsyncStorage.setItem('user_id', data.json.user_id.toString())
         .then((success) => {
-          console.log("succesfully saved in asyncestorage");
+          
         })
         .catch((e) => console.log(e));
         AsyncStorage.setItem("customer_id", data.json.customer_id.toString());
@@ -166,14 +163,17 @@ export default function App() {
           "userDetails",
           JSON.stringify(data.json.user_details)
         );
+
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'TransporterDashboard' }],
+        })
         
-        navigation.navigate('TransporterDashboard');
+        // navigation.navigate('TransporterDashboard');
       }
     })
     .catch((error) => {
-      console.log("here");
       setState({ ...state, isLoading: true});
-      console.log(error);
     });
 
   }
