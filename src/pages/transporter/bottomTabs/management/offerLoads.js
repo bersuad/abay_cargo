@@ -213,7 +213,7 @@ export default function OfferLoad() {
     
         return () => {     
           setState({ ...state, isLoading: true, checkInternet:true,});
-          this.mounted = false;   
+          this.mounted = true;   
         }
     }, []);
     

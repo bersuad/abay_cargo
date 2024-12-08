@@ -67,11 +67,13 @@ export default function App() {
   }
   
   logout=()=>{
-    setState({ ...state, isLoading: true,});
-    navigation.navigate('TransporterDashboard');
-    this.mounted = true;
     AsyncStorage.clear();
-    navigation.navigate('TruckLogin');
+    navigation.navigate('TransporterDashboard');
+    setState({ ...state, isLoading: true,});
+    setTimeout(function () {
+      navigation.navigate('TruckLogin');
+      return;
+    }, 3000);
   }
 
   useEffect(() => {
@@ -109,8 +111,8 @@ export default function App() {
             />
           </View>
           
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>{userData.user_name}</Text>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#cfcfcf', marginTop: 60, top: 1 }}>{userData.user_email}</Text>
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#fff', marginTop:40, top: 1 }}>{userData?.user_name}</Text>
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60, color: '#cfcfcf', marginTop: 60, top: 1 }}>{userData?.user_email}</Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#fff" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
         

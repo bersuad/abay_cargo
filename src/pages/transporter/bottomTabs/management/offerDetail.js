@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import * as FileSystem from 'expo-file-system';
 import {
   useNavigation,
   StyleSheet,
@@ -28,15 +27,18 @@ import {
 } from './../../../../components/index';
 import { Badge } from 'react-native-paper';
 
+import { Asset } from 'expo-asset';
+import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
-
-import SnackBar from 'react-native-snackbar-component';
+import * as Sharing from 'expo-sharing';
 
 
 export default function OfferDetail(props) {
   
     const navigation = useNavigation();
     const offer = props.route.params.details;
+    const [ready, setReady] = useState(false);
+    const [image, setImage] = useState(null);
     
     // return;
     const [state, setState] = useState({
@@ -51,6 +53,69 @@ export default function OfferDetail(props) {
         from_date:'',
         to_date:''
     });
+
+    const openShareDialogAsync = async (fileName) => {
+      const fileUrl = ApiConfig.BASE_URL_FOR_IMAGES + fileName;
+      console.log("Downloading file from:", fileUrl);
+
+      try {
+        // Check Permissions
+        const hasPermission = await getPermissionAsync();
+        if (!hasPermission) {
+          toastWithDurationHandler("Permission Denied. Cannot proceed without storage access.");
+          return;
+        }
+
+        // Android-specific Permissions
+        if (Platform.OS === 'android') {
+          const { status } = await MediaLibrary.requestPermissionsAsync();
+          if (status !== 'granted') {
+            toastWithDurationHandler("Permission Denied. Cannot proceed without storage access.");
+            return;
+          }
+        }
+
+        // Define Download Path
+        const downloadsDirectory = FileSystem.documentDirectory;
+        const filePath = `${downloadsDirectory}${fileName}`;
+
+        // Ensure Directory Exists
+        await ensureDirectoryExists(downloadsDirectory);
+
+        // Start File Download
+        // const newDownload= FileSystem.createDownloadResumable(fileUrl, filePath);
+        // console.log("Download completed:", await newDownload.downloadAsync(newUri));
+        
+        const downloadResumable = FileSystem.createDownloadResumable(fileUrl, filePath);
+        const { uri } = await downloadResumable.downloadAsync();
+
+        if (Platform.OS === 'android') {
+          // Save File to Android External Storage
+          const asset = await MediaLibrary.createAssetAsync(uri);
+          await MediaLibrary.createAlbumAsync('Downloads', asset, false);
+          successWithDurationHandler(`Download Complete. File saved to Downloads folder.`);
+        } else {
+          successWithDurationHandler(`Download Complete. File saved to app directory.`);
+        }
+        
+        console.log("Download completed:", uri);
+
+        // Share File After Download
+        const isShareAvailable = await Sharing.isAvailableAsync();
+        if (isShareAvailable) {
+          await Sharing.shareAsync(uri, {
+            mimeType: 'application/pdf' || 'image/*',
+            
+          });
+        } else {
+          Alert.alert("Sharing Not Available", "Your device does not support file sharing.");
+        }
+      } catch (error) {
+        console.error("Error downloading/sharing file:", error);
+        toastWithDurationHandler("Download Error. There was an issue downloading the file.");
+      }
+
+    }
 
     
     // Download function
@@ -95,52 +160,47 @@ export default function OfferDetail(props) {
     };
 
     const downloadFile = async (fileName) => {
-      const fileUrl = ApiConfig.BASE_URL_FOR_IMAGES + fileName;
-      
       try {
-        const hasPermission = await getPermissionAsync();
-        if (!hasPermission) {
-          toastWithDurationHandler("Permission Denied, Cannot download file without storage access.");
-          return;
-        }
+        const fileUrl = ApiConfig.BASE_URL_FOR_IMAGES + fileName;
     
-        // For Android, request permissions explicitly
-        if (Platform.OS === 'android') {
-          const { status } = await MediaLibrary.requestPermissionsAsync();
-          if (status !== 'granted') {
-            toastWithDurationHandler("Permission Denied, Cannot download file without storage access.");
-            return;
-          }
-        }
+        // Fetch the file
+        const response = await fetch(fileUrl);
+        const blob = await response.blob(); 
     
-        // Specify the download path (internal storage for Expo)
-        const downloadsDirectory = FileSystem.documentDirectory;
+        // Convert blob to base64
+        const base64Data = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
     
-        // Ensure the directory exists (makeDirectoryAsync is for custom directories if needed)
-        await ensureDirectoryExists(downloadsDirectory);
+        // Define file path
+        const fileUri = `${FileSystem.documentDirectory}${fileName}`;
+        console.log("Saving file to:", fileUri);
     
-        const filePath = downloadsDirectory + fileName; // Full file path for internal storage
+        // Write file to the app's directory
+        await FileSystem.writeAsStringAsync(fileUri, base64Data, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
     
-        // Start the download
-        const downloadResumable = FileSystem.createDownloadResumable(fileUrl, filePath);
-    
-        // Start downloading the file
-        const { uri } = await downloadResumable.downloadAsync();
-    
-        // For Android, save it to external storage
-        if (Platform.OS === 'android') {
-          // Create an asset from the downloaded file URI
-          const asset = await MediaLibrary.createAssetAsync(uri);
-          await MediaLibrary.createAlbumAsync(asset, false); // Save to the 'Downloads' album
-          successWithDurationHandler('Download Complete, File saved to Downloads folder');
+        // Optionally share the file
+        const isSharingAvailable = await Sharing.isAvailableAsync();
+        if (isSharingAvailable) {
+          await Sharing.shareAsync(fileUri, {
+            mimeType: fileName.endsWith('.pdf') ? 'application/pdf' : 'image/*',
+            dialogTitle: `Share ${fileName}`,
+          });
         } else {
-          successWithDurationHandler('Download Complete', 'File saved to app directory');
+          console.log("File saved but sharing is not available.");
         }
     
+        
       } catch (error) {
-        console.error('Error downloading file:', error);
-        toastWithDurationHandler("Download Error, There was an issue downloading the file.");
+        console.error("Error downloading file:", error);
       }
+      
+      
     };
 
     const ensureDirectoryExists = async (directory) => {
@@ -376,7 +436,7 @@ export default function OfferDetail(props) {
                             
                           }}/>
                   <View style={{position: "absolute", top: 0, right:-35}}>
-                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=> downloadFile(offerLoadData.trip_packing_list)}>
+                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=>offerLoadData.trip_packing_list.endsWith('.pdf')? downloadFile(offerLoadData.trip_packing_list): openShareDialogAsync(offerLoadData.trip_packing_list)}>
                       <MaterialCommunityIcons name="download" size={24} color="#19788e" />
                     </TouchableOpacity>
                   </View>
@@ -392,7 +452,7 @@ export default function OfferDetail(props) {
                         ? ApiConfig.BASE_URL_FOR_IMAGES+offerLoadData.trip_insurance : fileImage 
                       }}/>
                   <View style={{position: "absolute", top: 0, right:-35}}>
-                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=> downloadFile(offerLoadData.trip_insurance)}>
+                    <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=> offerLoadData.trip_insurance.endsWith('.pdf')? downloadFile(offerLoadData.trip_insurance): openShareDialogAsync(offerLoadData.trip_insurance)}>
                       <MaterialCommunityIcons name="download" size={24} color="#19788e" />
                     </TouchableOpacity>
                   </View>
