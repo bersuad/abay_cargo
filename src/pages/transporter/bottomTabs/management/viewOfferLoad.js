@@ -129,8 +129,18 @@ export default function ViewOfferLoad(props) {
                         <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.total_cargo_quantity}</Text>
                         <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Unit Price:</Text>
                         <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.unit_price}</Text>
-                        <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Total Price:</Text>
-                        <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.total_price_value}</Text>
+                        {offerRequest.trip_bid_commission && offerRequest.trip_bid_commission ? 
+                          <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Bid Commission: {offerRequest.trip_bid_commission} %</Text>
+                          :
+                          <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Total Price: {offerRequest.total_price_value}</Text>
+                        }
+                        {offerRequest.trip_bid_commission && offerRequest.trip_bid_commission ? 
+                          <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Total Price: {
+                            totalPrice + totalPrice * ((offerRequest.trip_bid_commission)/100)
+                          }</Text>
+                          :
+                          <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Total Price : {offerRequest.total_price_value}</Text>
+                        }
                         <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Loading Place:</Text>
                         <Text style={{paddingLeft:15, paddingBottom: 5}}>{offerRequest.loading_place}</Text>
                         <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Expected Loading Date:</Text>
@@ -173,6 +183,8 @@ export default function ViewOfferLoad(props) {
                               <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.user_name}</Text>
                               <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Driver Cell Phone:</Text>
                               <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.driver_phone_number}</Text>
+                              <Text style={{fontWeight:'bold', fontSize:13, marginTop: 5, paddingBottom: 5}}>Trip Status:</Text>
+                              <Text style={{paddingLeft:15, paddingBottom: 5}}>{load && load.trip_status}</Text>
                               
                             </View>
                         

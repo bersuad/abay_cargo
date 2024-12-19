@@ -33,10 +33,11 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 
 
-export default function OfferDetail(props) {
+export default function detailsOfferGoods(props) {
   
     const navigation = useNavigation();
-    const offer = props.route.params.details;
+    const bid_id = props.route.params.details;
+    
     const [ready, setReady] = useState(false);
     const [image, setImage] = useState(null);
     
@@ -216,7 +217,7 @@ export default function OfferDetail(props) {
     
 
     
-    const [vehicleRequest, setVehicleRequest] = useState({ offer });
+    const [vehicleRequest, setVehicleRequest] = useState({ bid_id });
     const [dates, setDates] = useState({
         startDate: "",
         endDate: "",
@@ -268,8 +269,8 @@ export default function OfferDetail(props) {
         });  
         
         postMultipartWithAuthCallWithErrorResponse(
-            ApiConfig.GOODS_DETAILS,
-            JSON.stringify({ user_id, api_key, customer_id, load_id: vehicleRequest.offer.trip_id ? vehicleRequest.offer.trip_id : vehicleRequest.offer.trip_vehicle_trip_id })
+            ApiConfig.OFFER_LOAD_DETAILS,
+            JSON.stringify({ user_id, api_key, customer_id, load_id: bid_id })
         ).then((res) => {
 
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
@@ -315,20 +316,6 @@ export default function OfferDetail(props) {
       {!state.isLoading &&(
         <SafeAreaView style={styles.container}>
             <View style={[styles.boxShadow, {minHeight: 200, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-            <View style={{position: "absolute", right: 5, top: 5}}>
-              {
-                offerLoadData.trip_status === 'approved' ?
-                  <Badge status='success' style={{backgroundColor: 'green'}}>{offerLoadData.trip_status}</Badge>
-                : offerLoadData.trip_status === 'requested' ?
-                  <Badge status='success' style={{backgroundColor: '#ED7014'}}>{offerLoadData.trip_status}</Badge> 
-                : offerLoadData.trip_status === 'rejected' ? 
-                  <Badge status='success' style={{backgroundColor: '#F91717'}}>{offerLoadData.trip_status}</Badge> 
-                : offerLoadData.trip_status === 'confirmed' ? 
-                  <Badge status='success' style={{backgroundColor: '#42AE21'}}>{offerLoadData.trip_status}</Badge> 
-                :
-                  <Badge status='primary'>{offerLoadData.trip_status}</Badge> 
-              }
-            </View>
                 <View
                 style={[
                     {

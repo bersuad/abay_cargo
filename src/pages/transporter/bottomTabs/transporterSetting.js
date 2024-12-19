@@ -43,7 +43,7 @@ export default function App() {
     postWithAuthCallWithErrorResponse(
       ApiConfig.DASHBOARD, JSON.stringify({ user_id, api_key, customer_id }),
     ).then((res) => {
-      console.log(res);
+      
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         setState({ ...state, isLoading: false});  
         AsyncStorage.clear();
@@ -147,11 +147,11 @@ export default function App() {
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('AboutUs')}>
+        <TouchableOpacity style={[styles.boxShadow, styles.offers, {marginTop: 0}]} onPress={()=>navigation.navigate('ShipperContract')}>
           <View style={{...styles.iconArea, backgroundColor: "rgba(1, 138, 40, 0.01)", position: "absolute", left: 20}}>
           <AntDesign name="infocirlce" size={24} {...appPageStyle.secondaryTextColor}  />
           </View>
-          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>About Us
+          <Text style={{...styles.cardText, fontSize:13, position: "absolute", left: 20, marginLeft: 60 }}>Contract
           </Text>
           <MaterialIcons name="arrow-forward-ios" size={18} color="#4f4f4f" style={{position: "absolute", right: 10}}/>
         </TouchableOpacity>

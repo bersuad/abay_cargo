@@ -51,7 +51,13 @@ import OfferNewVehicle from '../pages/transporter/bottomTabs/management/offerNew
 import DirectOfferNewVehicle from '../pages/transporter/bottomTabs/management/directOfferNewVehicle';
 import OfferGoodsDetails from '../pages/transporter/bottomTabs/management/goodsDetails';
 import OfferVehicleDetails from '../pages/transporter/bottomTabs/management/frightVechicleDetails';
-import AddOffer from '../pages/transporter/bottomTabs/management/addOffer'
+import AddOffer from '../pages/transporter/bottomTabs/management/addOffer';
+import SelectTransporter from '../pages/transporter/bottomTabs/management/selectVechicle';
+import SelectedVechileList from '../pages/transporter/bottomTabs/management/SelectedVechileList';
+import AuctionDetails from '../pages/transporter/bottomTabs/management/auctionDetail';
+import detailsOfferGoods from '../pages/transporter/bottomTabs/management/detailsOfferGood';
+import ShipperContract from '../pages/transporter/bottomTabs/settings/Contract';
+
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -678,6 +684,81 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle:'Add Offer Good',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#b76b29',
+          }}
+          
+        />
+        <Stack.Screen
+          name="SelectTransporter"
+          title="Select Transporter"
+          component={SelectTransporter} 
+          options={{
+            headerShown: true,
+            headerTitle:'Select Transporter',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#b76b29',
+          }}
+          
+        />
+        <Stack.Screen
+          name="SelectedVechileList"
+          title="Vehicle List"
+          component={SelectedVechileList} 
+          options={{
+            headerShown: true,
+            headerTitle:'Vehicle List',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#b76b29',
+          }}
+          
+        />
+        <Stack.Screen
+          name="AuctionDetails"
+          title="Auction Detail"
+          component={AuctionDetails} 
+          options={{
+            headerShown: true,
+            headerTitle:'Auction Detail',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#b76b29',
+          }}
+          
+        />
+        <Stack.Screen
+          name="detailsOfferGoods"
+          title="Offer Good Detail"
+          component={detailsOfferGoods} 
+          options={{
+            headerShown: true,
+            headerTitle:'Offer Good Detail',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#b76b29',
+          }}
+          
+        />
+         <Stack.Screen
+          name="ShipperContract"
+          title="Contract"
+          component={ShipperContract} 
+          options={{
+            headerShown: true,
+            headerTitle:'Contract',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

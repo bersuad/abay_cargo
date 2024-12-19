@@ -38,7 +38,7 @@ export default function ProfilePage() {
     postWithAuthCallWithErrorResponse(
       ApiConfig.PROFILE, JSON.stringify({ user_id, api_key, customer_id }),  
     ).then((res) => {
-      
+
       if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
         setState({ ...state, isLoading: false});  
         AsyncStorage.clear();
@@ -53,13 +53,12 @@ export default function ProfilePage() {
         setProfile(res.json.profile);
         setState({ ...state, isLoading: false});
       }
-      console.log(profile+" here ");
+      
   
     }).catch((error) => {
       console.log(error);
     });
 
-    console.log("from her");
   
   
   }
@@ -88,7 +87,6 @@ export default function ProfilePage() {
             }
             />
           </View>
-          
           <View style={[styles.boxShadow, styles.groupButton, {marginTop: 20, borderTopLeftRadius:10, borderTopRightRadius:10}]}>
               <Text style={{...styles.cardText, fontSize:18, position: "absolute", left: 20, color: "#1b9be6" }}>Basic Info</Text>
           </View>
@@ -96,10 +94,7 @@ export default function ProfilePage() {
               <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Company Name: {profile.basic_info.company_name} </Text>
           </View>
           <View style={[styles.boxShadow, styles.groupButton]}>
-              <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Company Type: {profile.basic_info.company_type}</Text>
-          </View>
-          <View style={[styles.boxShadow, styles.groupButton, {borderBottomLeftRadius: 10,borderBottomRightRadius: 10,}]}>
-              <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Total Fleet Size: {profile.basic_info.total_fleet_size} </Text>
+              <Text style={{...styles.cardText, position: "absolute", left: 20 }}>Company Type: {profile.basic_info.business_area}</Text>
           </View>
           
 

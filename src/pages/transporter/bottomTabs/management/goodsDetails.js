@@ -278,7 +278,7 @@ export default function OfferGoodsDetails(props) {
                             <Text>Container Type: {offerLoadData && offerLoadData.cargo_type ? offerLoadData.cargo_type : "No Container"}</Text>                                
                         }
                         <Text>Quantity: {offerLoadData && offerLoadData.cargo_type === "Container" ? 
-                            offerLoadData.quantity + " Containers" : 
+                            offerLoadData.quantity + " Number" : 
                             offerLoadData.cargo_type === "Vehicle" ? offerLoadData.quantity + " Vehicles" : 
                             (offerLoadData.cargo_type === "Bulk" || offerLoadData.cargo_type === "Break bulk") ?
                                 offerLoadData.quantity + " Quintals" : " - "

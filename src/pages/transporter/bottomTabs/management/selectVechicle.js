@@ -16,13 +16,16 @@ import {
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
+  Image
 } from './../../../../components/index';
 
 
-export default function OnlineOfferVehicle() {
+export default function SelectTransporter(props) {
   
     const navigation = useNavigation();
+    const transporter_list = props.route.params;
+    
 
     const [state, setState] = useState({
         isLoading: true,
@@ -64,7 +67,7 @@ export default function OnlineOfferVehicle() {
       
       const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
-        console.log('getting here on loading');
+        
         const user_id = await AsyncStorage.getItem('user_id');
         const customer_id = await AsyncStorage.getItem('customer_id');
         const api_key = await AsyncStorage.getItem('api_key');
@@ -86,10 +89,9 @@ export default function OnlineOfferVehicle() {
         });    
     
         postWithAuthCallWithErrorResponse(
-            ApiConfig.ONLINE_VEHICLE_OFFER_LIST, JSON.stringify({ user_id, api_key, customer_id })
-            // ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES_ONLINE, JSON.stringify({ ...customerData }) ** for direct order options **
+            ApiConfig.TRANSPOTER_LIST, JSON.stringify({ user_id, api_key, customer_id, load_id: transporter_list.offer.trip_id, })
         ).then((res) => {
-          console.log(res);
+
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           navigation.navigate('TruckLogin');
           setState({ ...state, isLoading: false});  
@@ -99,8 +101,10 @@ export default function OnlineOfferVehicle() {
             setState({ ...state, isLoading: false});
             console.log('no data here')
         }
+
         console.log(res.json);
-        if (res.json.result)setOfferLoadData(res.json);
+
+        if (res.json.result)setOfferLoadData(res.json.transporter_list);
             setState({ ...state, isLoading: false});
         });
         
@@ -124,93 +128,49 @@ export default function OnlineOfferVehicle() {
     >
         {state.isLoading &&(
           <View style={styles.container}>
-            <StatusBar barStyle = "dark-content" hidden = {false} {...appPageStyle.primaryColor} translucent = {true}/>
+            <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
             <ActivityIndicator size="large" {...appPageStyle.secondaryTextColor} /> 
             <Text>Getting Offer Vehicles</Text>
           </View> 
         )}
       {!state.isLoading &&(
         <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-        {offerLoadData.offer_list &&
-              offerLoadData.offer_list.length > 0 &&
-              offerLoadData.offer_list.map((offer, key) => (
+        {offerLoadData &&
+              offerLoadData.length > 0 &&
+              offerLoadData.map((transporter, key) => (
                 
                 <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
-                    <View
-                    style={[
-                        {
-                        flexDirection: 'row',
-                        width: '90%',
-                        gap: 15,
-                        paddingTop: 10
-                        },
-                    ]}>
-                        <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 50, width: 50, borderRadius: 100, marginLeft: 0}}>
-                            <MaterialCommunityIcons name="truck-cargo-container" size={30} color="#fff" />
+                    <TouchableOpacity
+                        onPress={()=> navigation.navigate('SelectedVechileList', { transporter_list })}
+                        style={[
+                            {
+                            flexDirection: 'row',
+                            width: '90%',
+                            gap: 15,
+                            paddingTop: 10
+                            },
+                        ]}
+                    >
+                        <View style={{...styles.iconArea, ...appPageStyle.primaryColor, height: 60, width: 60, borderRadius: 100, marginLeft: 0}}>
+                            {transporter.user_profile_pic
+                              ? 
+                              <Image style={{...styles.cardImage,  borderRadius: 100, height: 59, width:59}}
+                                source={{
+                                  uri: ApiConfig.BASE_URL_FOR_IMAGES+transporter.user_profile_pic 
+                                }}
+                              />
+                              :
+                              <MaterialCommunityIcons name="truck-cargo-container" size={30} color="#fff" />
+                            }
                         </View>
                         <View style={{textAlign: 'justify'}}>
-                            <View>
-                              <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>Ref. No: {offer.load_reference_no}</Text>
-                            </View>
-                            {/* <Text style={{textAlign: 'justify',...appPageStyle.secondaryTextColor, fontSize:11}}>{offer.estimated_start_date}</Text>     */}
-                            <Text>{offer.estimated_start_date}</Text>    
-                            <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}>
-                            From: {offer.trip_start_country +
-                                ", " +
-                                offer.trip_start_city}{" "}
-                            </Text>
-                            <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}>
-                                To: {offer.trip_end_country +
-                                " " +
-                                offer.trip_end_city
-                            }
-                            </Text>
-                            <View>
-                              <TouchableOpacity onPress={()=> navigation.navigate('SelectTransporter', { offer })}>
-                                <Text style={{fontWeight: 'bold', backgroundColor:'#f9f9f9', minHeight:20, padding:5}}> Vehicle: 
-                                  <Text style={appPageStyle.secondaryTextColor}> View Vehicle Detail</Text>
-                                </Text>
-                              </TouchableOpacity>
-                            </View>
-                            <View>
-                              <TouchableOpacity onPress={()=> navigation.navigate('AuctionDetails', { offer })}>
-                                <Text style={{fontWeight: 'bold', backgroundColor:'#ffffff', minHeight:20, padding:5}}> Best Bid: <Text style={appPageStyle.secondaryTextColor}>View Best Bid Detail</Text></Text>
-                              </TouchableOpacity>
-                            </View>
-                            <View
-                              style={[
-                                  {
-                                  flexDirection: 'row',
-                                  width: '92%',
-                                  gap: 15,
-                                  paddingTop: 10,
-                                  marginBottom:10
-                                  },
-                              ]}>
-                                <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
-                                    <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
-                                      onPress={()=> navigation.navigate('DirectOfferNewVehicle', { loads })}
-                                    >
-                                        <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
-                                    <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} onPress={()=>{reject(loads)}}>
-                                        {!state.actionLoading &&(
-                                            <Text style={appPageStyle.secondaryTextColor}>X Reject</Text>
-                                        )}
-                                        {state.actionLoading && (
-                                            <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
-                                        )}
-                                    </TouchableOpacity>
-                                </View>
-                              </View>
+                            <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}> {transporter.user_name}</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 </View>
         ) 
         )}
-        {!offerLoadData.offer_list ? <View><Text>No Data</Text></View>:'' }
+        {!offerLoadData ? <View><Text>No Data</Text></View>:'' }
         
         </View>
       )}
@@ -297,10 +257,6 @@ const styles = StyleSheet.create({
       right: 0,
       top:0,
       opacity: 0.9,
-      height: 110,
-      width: 110,
-      marginTop: 10,
-      marginRight: 5,
     },
     listCard:{
       flex: 1, 

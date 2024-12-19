@@ -282,7 +282,7 @@ export default function AddOffer() {
     units: "",
     delivery_types: "",
     packing_list: "",
-    bill_of_landing: "",
+    bill_of_landing: " ",
     insurance: "",
     load_commercial_invoice: "",
     agreement_abay: "",
@@ -419,7 +419,21 @@ export default function AddOffer() {
           setState({ ...state, isLoading: false }); 
           return;
         }
-      }else if (key == "load_commercial_invoice" || key == "trade_license" || key == "company_name" || key == "container_type" || key == "from_lat" || key == "from_lon" || key == "to_lat" || key == "to_lon" || key == "images" || key == "unit_measurment" || key == "packing_list" || key == "bill_of_landing" || key == "insurance" || key == "agreement_abay" || key == "tax_id_no"){
+      }else if (key == "load_commercial_invoice" 
+      || key == "trade_license" 
+      || key == "company_name" 
+      || key == "container_type" 
+      || key == "from_lat" 
+      || key == "from_lon" 
+      || key == "to_lat" 
+      || key == "to_lon" 
+      || key == "images" 
+      || key == "unit_measurment" 
+      || key == "packing_list" 
+      || key == "bill_of_landing" 
+      || key == "insurance" 
+      || key == "agreement_abay" 
+      || key == "tax_id_no"){
         continue;
       } else if(value === "" || value === null || value === undefined) {
         toastWithDurationHandler("Please check your "+key+" !");

@@ -19,7 +19,8 @@ import {
   Modal,
   Platform,
   KeyboardAvoidingView,
-  FlatList
+  FlatList,
+  Linking
 } from "react-native";
 
 import Toast from 'react-native-root-toast';
@@ -148,5 +149,6 @@ export {
   // ToastAndroid,
   Toast,
   RefreshControl,
-  AppContext
+  AppContext,
+  Linking
 };
