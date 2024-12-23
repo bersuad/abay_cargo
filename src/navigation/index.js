@@ -55,9 +55,11 @@ import AddOffer from '../pages/transporter/bottomTabs/management/addOffer';
 import SelectTransporter from '../pages/transporter/bottomTabs/management/selectVechicle';
 import SelectedVechileList from '../pages/transporter/bottomTabs/management/SelectedVechileList';
 import AuctionDetails from '../pages/transporter/bottomTabs/management/auctionDetail';
-import detailsOfferGoods from '../pages/transporter/bottomTabs/management/detailsOfferGood';
+import DetailsOfferGoods from '../pages/transporter/bottomTabs/management/detailsOfferGood';
 import ShipperContract from '../pages/transporter/bottomTabs/settings/Contract';
-
+import ChangePassword from '../pages/transporter/bottomTabs/settings/changePassword';
+import UpdateShipper from '../pages/transporter/bottomTabs/settings/updateProfile';
+import EditUser from '../pages/transporter/bottomTabs/settings/editProfile';
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -165,12 +167,8 @@ export default function App() {
               backgroundColor: '#fff',
             },
             headerTintColor: '#b76b29',
-            headerRight: ()=> 
-            <View>
-              <TouchableOpacity style={{flexDirection: 'row', height: "100%", marginTop: 10}}>
-                <FontAwesome5 name="edit" size={24} color="#b76b29" style={{marginRight: 25, marginTop: 6}}/>
-              </TouchableOpacity>
-          </View>,
+            headerRight: () => <EditUser/>
+            
           }}
           
         />
@@ -738,9 +736,9 @@ export default function App() {
           
         />
         <Stack.Screen
-          name="detailsOfferGoods"
+          name="DetailsOfferGoods"
           title="Offer Good Detail"
-          component={detailsOfferGoods} 
+          component={DetailsOfferGoods} 
           options={{
             headerShown: true,
             headerTitle:'Offer Good Detail',
@@ -752,13 +750,45 @@ export default function App() {
           }}
           
         />
-         <Stack.Screen
+        <Stack.Screen
           name="ShipperContract"
           title="Contract"
           component={ShipperContract} 
           options={{
             headerShown: true,
             headerTitle:'Contract',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#b76b29',
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="ChangePassword"
+          title="Change Password"
+          component={ChangePassword} 
+          options={{
+            headerShown: true,
+            headerTitle:'Change Password',
+            headerBackTitle: 'Back',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTintColor: '#b76b29',
+          }}
+          
+        />
+
+        <Stack.Screen
+          name="UpdateShipper"
+          title="Edit Profile"
+          component={UpdateShipper} 
+          options={{
+            headerShown: true,
+            headerTitle:'Edit Profile',
             headerBackTitle: 'Back',
             headerStyle: {
               backgroundColor: '#fff',

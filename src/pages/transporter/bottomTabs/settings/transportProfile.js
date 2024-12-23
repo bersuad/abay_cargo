@@ -17,7 +17,8 @@ import {
   ApiConfig,
   ActivityIndicator,
   StatusBar,
-  appPageStyle
+  appPageStyle,
+  Linking
 } from './../../../../components/index';
 
 
@@ -66,6 +67,43 @@ export default function ProfilePage() {
   useEffect(() => {
     gettingUser();
   }, []);
+
+  const openLink = async (link) => { 
+    const user_id = await AsyncStorage.getItem('user_id');
+    const api_key = await AsyncStorage.getItem('api_key');
+    const customer_id = await AsyncStorage.getItem('customer_id');
+    
+    
+    postWithAuthCallWithErrorResponse(
+      ApiConfig.PROFILE,
+      JSON.stringify({ user_id, api_key, customer_id }),
+    ).then((res) => {
+        if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
+            
+            AsyncStorage.clear();
+            navigation.navigate('TruckLogin');
+            return;
+        }
+        
+        if (res.json.result){
+            var url = link;
+            
+            
+            // Check if the link can be opened
+            const supported = Linking.canOpenURL(url);
+        
+            if (supported) {
+               Linking.openURL(url); // Opens the link in the default browser
+            } else {
+              console.log(`Can't open this URL: ${url}`);
+            }
+
+        }
+        
+        
+    });
+
+  };
   
   
   return (
@@ -166,13 +204,14 @@ export default function ProfilePage() {
                 }
                 />
                 <View style={{position: "absolute", top: 0, right:-35}}>
-                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
+                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=>{openLink(ApiConfig.BASE_URL_FOR_IMAGES+profile.documents.tin_document)}}>
                     <MaterialCommunityIcons name="download" size={24} color="#19788e" />
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
-
+          { profile.documents.grade_certificate
+            ?
             <View style={{...styles.iconArea, height: 60, width: 120, marginLeft: 90}}>
               <Text style={{fontWeight: 500, fontSize: 14, marginTop: 15, }}>Grade Certificate</Text>
               <View style={{marginLeft: -30, marginTop: 10}}>
@@ -184,12 +223,15 @@ export default function ProfilePage() {
                   }
                 />
                 <View style={{position: "absolute", top: 0, right:-35}}>
-                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
+                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=>{openLink(ApiConfig.BASE_URL_FOR_IMAGES+profile.documents.grade_certificate)}}>
                     <MaterialCommunityIcons name="download" size={24} color="#19788e" />
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
+            :
+            ''
+          }
             
           </View>        
           <View
@@ -213,7 +255,7 @@ export default function ProfilePage() {
                   }
                 />
                 <View style={{position: "absolute", top: 0, right:-35}}>
-                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}}>
+                  <TouchableOpacity style={{backgroundColor: "rgba(25, 120, 142, 0.3)", height: 25, width: 25, borderRadius: 10}} onPress={()=>{openLink(ApiConfig.BASE_URL_FOR_IMAGES+profile.documents.business_license)}}>
                     <MaterialCommunityIcons name="download" size={24} color="#19788e" />
                   </TouchableOpacity>
                 </View>

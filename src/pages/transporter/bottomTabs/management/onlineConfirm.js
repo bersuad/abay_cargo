@@ -143,9 +143,14 @@ export default function OnlineOrderConfirm() {
                         },
                     ]}>
                         <View style={{textAlign: 'justify'}}>
-                            <Text style={{fontWeight: 'bold'}}>Name: {load.trip_reference_no}</Text>
-                            <Text style={{textAlign: 'justify'}}>Operation No: {load.trip_operation_no}</Text>    
-                            
+                          <Text><Text style={{fontWeight:'bold', fontSize:15}}>Reference Number (Offer Vehicle):</Text> {load.trip_reference_no}</Text>
+                          <Text><Text style={{fontWeight:'bold', fontSize:15}}>Operation Number:</Text> {load.trip_operation_no}</Text>    
+                          <Text><Text style={{fontWeight:'bold', fontSize:15}}>Transporter:</Text> {load.transporter}</Text>
+                          <Text><Text style={{fontWeight:'bold', fontSize:15}}>Shipper:</Text> {load.shipper}</Text>
+                          {/* <Text><Text style={{fontWeight:'bold', fontSize:15}}>Quantity:</Text> {load.quantity} {load.unit}</Text> */}
+                          <Text><Text style={{fontWeight:'bold', fontSize:15}}>Loading Place:</Text> {load.loading_place}</Text>
+                          <Text><Text style={{fontWeight:'bold', fontSize:15}}>Received On  :</Text> {load.received_on}</Text>
+                          <Text><Text style={{fontWeight:'bold', fontSize:15}}>Expected Loading Time  :</Text> {load.trip_start_date}</Text>                           
                         </View>
                         
                     </View>

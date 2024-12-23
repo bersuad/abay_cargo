@@ -33,7 +33,7 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 
 
-export default function detailsOfferGoods(props) {
+export default function DetailsOfferGoods(props) {
   
     const navigation = useNavigation();
     const bid_id = props.route.params.details;

@@ -16,9 +16,10 @@ import {
   postWithAuthCallWithErrorResponse,
   postMultipartWithAuthCallWithErrorResponse,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
+  Toast
 } from './../../../../components/index';
-
+import { Dialog } from 'react-native-simple-dialogs';
 
 export default function OnlineOfferVehicle() {
   
@@ -46,25 +47,149 @@ export default function OnlineOfferVehicle() {
       const [user_id, setMyUserID]              = useState('');
       const [offerLoadData, setOfferLoadData ]  = useState([]);
       const [user_details, setUserDetails]      = useState('');
+      const [dialogState, setDialogState] = useState(false);
+      const [rejectDialogState, setRejectDialogState] = useState(false);
+      const [modalState, setModalState] = useState({
+        modalLoadId:''
+      });
       
-    
-      // componentWillMount();
+      const successWithDurationHandler = (message) => {
+        let toast = Toast.show(message, {
+          duration: Toast.durations.LONG,
+          position: Toast.positions.CENTER,
+          backgroundColor: 'green',
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+        });
+      };
+  
+      const toastWithDurationHandler = (message) => {
+        let toast = Toast.show(message, {
+          duration: Toast.durations.LONG,
+          position: Toast.positions.CENTER,
+          backgroundColor: 'red',
+          animation: true,
+        });
+      };
       
+    const rejectDirectOrder = async (trip_id) => {
+        
+        setState({ ...state, isLoading: true});  
+        const user_id = await AsyncStorage.getItem('user_id');
+        const customer_id = await AsyncStorage.getItem('customer_id');
+        const api_key = await AsyncStorage.getItem('api_key');
+        
+        await AsyncStorage.getItem('customer_id').then((myClientID) => {
+            setMyClientID(myClientID);
+        });
+        
+        await AsyncStorage.getItem('api_key').then(value =>{
+            setAPI_KEY(value);
+        });
     
-      // refresh page
-      
-      // const [refreshing, setRefreshing] = React.useState(false);
+        await AsyncStorage.getItem('user_id').then(value =>{
+            setMyUserID(value);
+        });
     
-      // const onRefresh = React.useCallback(() => {
-      //   setRefreshing(true);
-      //   setTimeout(() => {
-      //     setRefreshing(false);
-      //   }, 2000);
-      // }, []);
+        await AsyncStorage.getItem('userDetails').then(value =>{
+            setUserDetails(value);
+        });   
+
+        postWithAuthCallWithErrorResponse(
+        ApiConfig.REJECT_DIRECT_ORDER,
+        JSON.stringify({ user_id, api_key, customer_id, load_id: trip_id })
+        )
+        .then((res) => {
+            if (res.json.message === 
+            "Invalid user authentication,Please try to relogin with exact credentials.") {
+                setState({ ...state, isLoading: false});  
+                navigation.navigate('TruckLogin');
+                setState({ ...state, isLoading: false});  
+                AsyncStorage.clear();
+            }
+            if (res.json.result) {
+                setState({ ...state, actionLoading: false});
+                toastWithDurationHandler('Offer Rejected');
+                setRejectDialogState(!rejectDialogState)
+                setTimeout(function () {
+                  _getDashboardDetails();
+                }, 3000);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    };
+
+    const confirmOffer=(trip_id) =>{
+      setDialogState(!dialogState);
+      setModalState({ ...modalState, 
+        modalLoadId:trip_id
+      });
+    }
+
+    const rejectOffer=(trip_id) =>{
+      setRejectDialogState(!rejectDialogState);
+      setModalState({ ...modalState, 
+        modalLoadId:trip_id
+      });
+    }
+
+    const acceptDirectOrder = async (trip_id) => {
+
+        setState({ ...state, isLoading: true});  
+        const user_id = await AsyncStorage.getItem('user_id');
+        const customer_id = await AsyncStorage.getItem('customer_id');
+        const api_key = await AsyncStorage.getItem('api_key');
+        
+        await AsyncStorage.getItem('customer_id').then((myClientID) => {
+            setMyClientID(myClientID);
+        });
+        
+        await AsyncStorage.getItem('api_key').then(value =>{
+            setAPI_KEY(value);
+        });
+    
+        await AsyncStorage.getItem('user_id').then(value =>{
+            setMyUserID(value);
+        });
+    
+        await AsyncStorage.getItem('userDetails').then(value =>{
+            setUserDetails(value);
+        }); 
+
+        postWithAuthCallWithErrorResponse(
+          ApiConfig.ACCEPT_DIRECT_ORDER,
+          JSON.stringify({ user_id, api_key, customer_id, load_id: trip_id })
+        )
+          .then((res) => {
+          
+            if (res.json.message === 
+              "Invalid user authentication,Please try to relogin with exact credentials.") {
+                setState({ ...state, isLoading: false});  
+                navigation.navigate('TruckLogin');
+                setState({ ...state, isLoading: false});  
+                AsyncStorage.clear();
+            }
+            if (res.json.result) {
+                setState({ ...state, actionLoading: false});
+                successWithDurationHandler('Offer Accepted');
+                setDialogState(!dialogState);
+                setTimeout(function () {
+                  _getDashboardDetails();
+                }, 3000);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      };
       
       const _getDashboardDetails = async() => {
         setState({ ...state, isLoading: true});  
-        console.log('getting here on loading');
+        
         const user_id = await AsyncStorage.getItem('user_id');
         const customer_id = await AsyncStorage.getItem('customer_id');
         const api_key = await AsyncStorage.getItem('api_key');
@@ -89,17 +214,15 @@ export default function OnlineOfferVehicle() {
             ApiConfig.ONLINE_VEHICLE_OFFER_LIST, JSON.stringify({ user_id, api_key, customer_id })
             // ApiConfig.DIRECT_ORDERS_OFFERED_VEHICLES_ONLINE, JSON.stringify({ ...customerData }) ** for direct order options **
         ).then((res) => {
-          console.log(res);
         if (res.json.message === "Invalid user authentication,Please try to relogin with exact credentials.") {
           navigation.navigate('TruckLogin');
           setState({ ...state, isLoading: false});  
           AsyncStorage.clear();
         }
         if(res.json.message === "Insufficient Parameters"){
-            setState({ ...state, isLoading: false});
-            console.log('no data here')
+          setState({ ...state, isLoading: false});
         }
-        console.log(res.json);
+        
         if (res.json.result)setOfferLoadData(res.json);
             setState({ ...state, isLoading: false});
         });
@@ -107,8 +230,6 @@ export default function OnlineOfferVehicle() {
     };
 
     useEffect(() => {
-      
-        // Anything in here is fired on component unmount.
         this.mounted = true;
         _getDashboardDetails();
     
@@ -129,6 +250,77 @@ export default function OnlineOfferVehicle() {
             <Text>Getting Offer Vehicles</Text>
           </View> 
         )}
+        <Dialog
+        visible={dialogState}
+        title="Accept the offer"
+        onTouchOutside={() => setDialogState(!dialogState)} >
+        
+        <View
+          style={[
+              {
+              flexDirection: 'row',
+              width: '100%',
+              gap: 15,
+              paddingTop: 10,
+              marginBottom:10
+              },
+          ]}>
+          <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+              <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+                  onPress={()=>{acceptDirectOrder(modalState.modalLoadId)}}
+              >
+                  <Text style={{...appPageStyle.primaryTextColor}}>Accept </Text>
+              </TouchableOpacity>
+          </View>
+          <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+              <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+              onPress={() => setDialogState(!dialogState)}>
+                  {!state.actionLoading &&(
+                      <Text style={appPageStyle.secondaryTextColor}>Close</Text>
+                  )}
+                  {state.actionLoading && (
+                      <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
+                  )}
+              </TouchableOpacity>
+          </View>
+      </View>
+      </Dialog>
+
+      <Dialog
+        visible={rejectDialogState}
+        title="Reject the offer"
+        onTouchOutside={() => setRejectDialogState(!rejectDialogState)} >
+        
+        <View
+          style={[
+              {
+              flexDirection: 'row',
+              width: '100%',
+              gap: 15,
+              paddingTop: 10,
+              marginBottom:10
+              },
+          ]}>
+          <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+              <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+                  onPress={()=>{rejectDirectOrder(modalState.modalLoadId)}}
+              >
+                  <Text style={{...appPageStyle.secondaryTextColor}}>Reject</Text>
+              </TouchableOpacity>
+          </View>
+          <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+              <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+              onPress={() => setRejectDialogState(!rejectDialogState)}>
+                  {!state.actionLoading &&(
+                      <Text style={appPageStyle.secondaryTextColor}>Close</Text>
+                  )}
+                  {state.actionLoading && (
+                      <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
+                  )}
+              </TouchableOpacity>
+          </View>
+      </View>
+      </Dialog>
       {!state.isLoading &&(
         <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
         {offerLoadData.offer_list &&
@@ -188,22 +380,23 @@ export default function OnlineOfferVehicle() {
                                   },
                               ]}>
                                 <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
-                                    <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
-                                      onPress={()=> navigation.navigate('DirectOfferNewVehicle', { loads })}
-                                    >
-                                        <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
-                                    <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 100, borderRadius: 10, alignItems: "center", justifyContent: "center",}} onPress={()=>{reject(loads)}}>
-                                        {!state.actionLoading &&(
-                                            <Text style={appPageStyle.secondaryTextColor}>X Reject</Text>
-                                        )}
-                                        {state.actionLoading && (
-                                            <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
-                                        )}
-                                    </TouchableOpacity>
-                                </View>
+                                  <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+                                      onPress={()=>confirmOffer(offer.trip_id)}
+                                  >
+                                      <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
+                                  </TouchableOpacity>
+                              </View>
+                              <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+                                  <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+                                  onPress={() => rejectOffer(offer.trip_id)}>
+                                      {!state.actionLoading &&(
+                                          <Text style={appPageStyle.secondaryTextColor}>X Reject</Text>
+                                      )}
+                                      {state.actionLoading && (
+                                          <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
+                                      )}
+                                  </TouchableOpacity>
+                              </View>
                               </View>
                         </View>
                     </View>

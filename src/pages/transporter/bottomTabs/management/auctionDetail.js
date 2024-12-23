@@ -19,6 +19,7 @@ import {
   ActivityIndicator,
   StatusBar
 } from './../../../../components/index';
+import { Dialog } from 'react-native-simple-dialogs';
 
 
 export default function AuctionDetails(props) {
@@ -36,7 +37,8 @@ export default function AuctionDetails(props) {
         user_id:'',
         api_key: '',
         from_date:'',
-        to_date:''
+        to_date:'',
+        dialogVisible:false
       });
     
     const [dates, setDates] = useState({
@@ -51,19 +53,25 @@ export default function AuctionDetails(props) {
     const [user_details, setUserDetails]      = useState('');
     const [totalPrice, setTotalPrice] = useState(0);
     const [bidCommission, setBidCommission] = useState(0);
+    const [dialogState, setDialogState] = useState(false);
+    const [rejectDialogState, setRejectDialogState] = useState(false);
 
     const successWithDurationHandler = (message) => {
         let toast = Toast.show(message, {
           duration: Toast.durations.LONG,
           position: Toast.positions.CENTER,
           backgroundColor: 'green',
+          shadow: true,
           animation: true,
+          hideOnPress: true,
+          delay: 0,
         });
       };
   
       const toastWithDurationHandler = (message) => {
         let toast = Toast.show(message, {
           duration: Toast.durations.LONG,
+          position: Toast.positions.CENTER,
           backgroundColor: 'red',
           animation: true,
         });
@@ -97,7 +105,6 @@ export default function AuctionDetails(props) {
         JSON.stringify({ user_id, api_key, customer_id, load_id: bid.offer.trip_id })
         )
         .then((res) => {
-            console.log(res);
             if (res.json.message === 
             "Invalid user authentication,Please try to relogin with exact credentials.") {
                 setState({ ...state, isLoading: false});  
@@ -108,6 +115,9 @@ export default function AuctionDetails(props) {
             if (res.json.result) {
                 setState({ ...state, actionLoading: false});
                 toastWithDurationHandler('Offer Rejected');
+                setTimeout(function () {
+                  navigation.navigate('OnlineOfferVehicle')
+                }, 3000);
             }
         })
         .catch((err) => {
@@ -143,7 +153,7 @@ export default function AuctionDetails(props) {
           JSON.stringify({ user_id, api_key, customer_id, load_id: bid.offer.trip_id })
         )
           .then((res) => {
-            console.log(res);
+          
             if (res.json.message === 
               "Invalid user authentication,Please try to relogin with exact credentials.") {
                 setState({ ...state, isLoading: false});  
@@ -154,6 +164,9 @@ export default function AuctionDetails(props) {
             if (res.json.result) {
                 setState({ ...state, actionLoading: false});
                 successWithDurationHandler('Offer Accepted');
+                setTimeout(function () {
+                  navigation.navigate('OnlineOfferVehicle')
+                }, 3000);
             }
           })
           .catch((err) => {
@@ -224,6 +237,77 @@ export default function AuctionDetails(props) {
     <ScrollView 
       style={{backgroundColor: 'rgba(240, 138, 41, 0.03)'}}
     >
+      <Dialog
+        visible={dialogState}
+        title="Accept the offer"
+        onTouchOutside={() => setDialogState(!dialogState)} >
+        
+        <View
+          style={[
+              {
+              flexDirection: 'row',
+              width: '100%',
+              gap: 15,
+              paddingTop: 10,
+              marginBottom:10
+              },
+          ]}>
+          <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+              <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+                  onPress={()=>{acceptDirectOrder()}}
+              >
+                  <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
+              </TouchableOpacity>
+          </View>
+          <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+              <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+              onPress={() => setDialogState(!dialogState)}>
+                  {!state.actionLoading &&(
+                      <Text style={appPageStyle.secondaryTextColor}>Close</Text>
+                  )}
+                  {state.actionLoading && (
+                      <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
+                  )}
+              </TouchableOpacity>
+          </View>
+      </View>
+      </Dialog>
+
+      <Dialog
+        visible={rejectDialogState}
+        title="Reject the offer"
+        onTouchOutside={() => setRejectDialogState(!rejectDialogState)} >
+        
+        <View
+          style={[
+              {
+              flexDirection: 'row',
+              width: '100%',
+              gap: 15,
+              paddingTop: 10,
+              marginBottom:10
+              },
+          ]}>
+          <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+              <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+                  onPress={()=>{rejectDirectOrder()}}
+              >
+                  <Text style={{...appPageStyle.secondaryTextColor}}>Reject</Text>
+              </TouchableOpacity>
+          </View>
+          <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
+              <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+              onPress={() => setRejectDialogState(!rejectDialogState)}>
+                  {!state.actionLoading &&(
+                      <Text style={appPageStyle.secondaryTextColor}>Close</Text>
+                  )}
+                  {state.actionLoading && (
+                      <ActivityIndicator size="small" {...appPageStyle.secondaryTextColor} />       
+                  )}
+              </TouchableOpacity>
+          </View>
+      </View>
+      </Dialog>
         {state.isLoading &&(
           <View style={styles.container}>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "#fff" translucent = {true}/>
@@ -233,7 +317,7 @@ export default function AuctionDetails(props) {
         )}
       {!state.isLoading &&(
         <View style={{marginTop: 5, marginBottom: 20, width: '100%', alignItems: "center", justifyContent: "center",}}>
-        {console.log(bestBid)}
+        
         {offerLoadData &&
             <View>
                 <View style={[styles.boxShadow, {minHeight: 150, width: '94%', backgroundColor: '#fff', marginTop: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",} ]}>
@@ -290,7 +374,7 @@ export default function AuctionDetails(props) {
                     </View>
                 </View>
                 
-                <TouchableOpacity onPress={()=>navigation.navigate('detailsOfferGoods', {details: bestBid.load_id})} style={{marginTop: 20}}>
+                <TouchableOpacity onPress={()=>navigation.navigate('DetailsOfferGoods', {details: bestBid.load_id})} style={{marginTop: 20}}>
                     <Text style={{fontWeight: 'bold', ...appPageStyle.secondaryTextColor}}>View Goods Details</Text>
                 </TouchableOpacity>
                 <View
@@ -305,13 +389,14 @@ export default function AuctionDetails(props) {
                     ]}>
                     <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
                         <TouchableOpacity style={{...appPageStyle.primaryColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
-                            onPress={()=>{acceptDirectOrder()}}
+                            onPress={()=>setDialogState(!dialogState)}
                         >
                             <Text style={{...appPageStyle.primaryTextColor}}>Accept</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{position: "relative", top: 0, right:0, marginTop: 25,justifyContent: "center"}}>
-                        <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} onPress={()=>{rejectDirectOrder()}}>
+                        <TouchableOpacity style={{...appPageStyle.secondaryBackgroundColor, height: 35, width: 150, borderRadius: 10, alignItems: "center", justifyContent: "center",}} 
+                        onPress={() => setRejectDialogState(!rejectDialogState)}>
                             {!state.actionLoading &&(
                                 <Text style={appPageStyle.secondaryTextColor}>X Reject</Text>
                             )}
