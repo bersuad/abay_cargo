@@ -59,6 +59,7 @@ export default function AddOffer() {
     isLoading: false,
     inputFormat: true,
     checkInternet: true,
+    delivery_type:''
   });
 
   const [dropDownList, setDropDownList] = useState({
@@ -554,7 +555,7 @@ export default function AddOffer() {
     
 
 
-    formData.append("images[]", {
+    formData.append("bill_of_landing", {
       uri: fright_images.uri,
       name: fright_images.name,
       type: fright_images.type
@@ -594,7 +595,9 @@ export default function AddOffer() {
       if (res.json.message === "Load added successfully, Please wait for approval from Administration") {
         setState({ ...state, isLoading: false });
         successWithDurationHandler("Load added successfully, Please wait for approval from Administration.");
-        navigation.navigate('OfferLoad');
+        setTimeout(function () {
+          navigation.navigate('OfferLoad');
+        }, 3000);
       } else {
         setState({ ...state, isLoading: false });
         toastWithDurationHandler(res.json.message);
@@ -611,7 +614,7 @@ export default function AddOffer() {
   const [from_Coordinates, setSelectedFromCorrdination] = useState(null);
   const [selectedToLocation, setSelectedToLocation] = useState(null);
   const [to_Coordinates, setSelectedToCorrdination] = useState(null);
-  
+  const [inputValue, setInputValue] = useState("");
 
   const handleFromLocationSelect = (data, details) => {
     setState({ ...state, isLoading: false });
@@ -622,6 +625,7 @@ export default function AddOffer() {
     setSelectedFromCorrdination({
       address: details.geometry.location
     });
+    setInputValue(data.description);
 
     setVehicleDetails({ ...vehiclesDetails, from_address: data.description, from_lat: details.geometry.location.lat, from_lon: details.geometry.location.lng });
 
@@ -684,14 +688,15 @@ export default function AddOffer() {
           />
         </View>
         <Text style={styles.HeaderText}>Inital Location</Text>
+        
         <ScrollView nestedScrollEnabled={true} style={{ width: "95%", flex: 1, backgroundColor: '#fff', }} keyboardShouldPersistTaps="handled">
           <GooglePlacesAutocomplete
-              placeholder='Inital Location'
+              placeholder={vehiclesDetails.from_address? vehiclesDetails.from_address:'Inital Location'}
               onPress={handleFromLocationSelect}
-              keepResultsAfterBlur={true}
-              textInputProps={{ onBlur: () => { console.warn("Blur") } }}
+              keepResultsAfterBlur={false}
+              // textInputProps={{ onBlur: () => { console.log("Blur") } }}
               query={{
-                key: "AIzaSyCmTKHfje5c63U_hjhn10MiSGsHEVZbKoE", // Google Places API Key
+                key: "AIzaSyCmTKHfje5c63U_hjhn10MiSGsHEVZbKoE", 
                 language: 'en', 
               }}
               fetchDetails={true} 
@@ -703,6 +708,13 @@ export default function AddOffer() {
               }}
               PlacesAPI='places'
               debounce={200}
+              textInputProps={{
+                value: inputValue,
+                onChangeText: (text) => setInputValue(text),
+                onBlur: () => {
+                  console.log("Blur");
+                },
+              }}
             />
         </ScrollView>
 
@@ -712,9 +724,9 @@ export default function AddOffer() {
               placeholder='Destination Location'
               onPress={handleToLocationSelect}
               keepResultsAfterBlur={true}
-              textInputProps={{ onBlur: () => { console.warn("Blur") } }}
+              textInputProps={{ onBlur: () => { console.log("Blur") } }}
               query={{
-                key: "AIzaSyCmTKHfje5c63U_hjhn10MiSGsHEVZbKoE", // Google Places API Key
+                key: "AIzaSyCmTKHfje5c63U_hjhn10MiSGsHEVZbKoE",
                 language: 'en', 
               }}
               fetchDetails={true} 
@@ -893,6 +905,10 @@ export default function AddOffer() {
             onSelect={(insuranceType, index) => {
               setErrMsg({ ...errMsg, insurance_type: "" });
               setVehicleDetails({ ...vehiclesDetails, delivery_types: insuranceType.delivery_type_id })
+              setState({
+                ...state,
+                delivery_types: insuranceType.delivery_type_id,
+              });
             }}
             value={vehiclesDetails.delivery_types}
             renderButton={(insuranceType, isOpened) => {
@@ -927,8 +943,9 @@ export default function AddOffer() {
               minHeight: 200,
             },
           ]}>
+          {state.delivery_types == 2 && (
           <View style={{ ...styles.iconArea, height: 60, width: "50%", marginLeft: 20 }}>
-            <Text style={{ alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15 }}>Upload Freight Images</Text>
+            <Text style={{ alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15 }}>Bill of Lading</Text>
             <View style={{ marginLeft: -10, marginTop: 10 }}>
               {placeholderImage && <Image style={{ ...styles.cardImage, borderRadius: 10, height: 100, width: 100 }} source={{ uri: placeholderImage }} />}
               <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
@@ -936,6 +953,7 @@ export default function AddOffer() {
               </TouchableOpacity>
             </View>
           </View>
+          )}
           <View style={{ ...styles.iconArea, height: 60, width: "50%", marginLeft: 20 }}>
             <Text style={{ alignSelf: 'left', fontWeight: 500, fontSize: 14, marginTop: 15 }}>Packing List</Text>
             <View style={{ marginLeft: -10, marginTop: 10 }}>

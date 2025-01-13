@@ -172,6 +172,7 @@ const [isVisible, setIsVisible] = useState(false);
         JSON.stringify({ user_id, api_key, customer_id , shipper_id: user_id })
       )
         .then((res) => {
+          console.log(res.json.profile);
 
           if (res.json.message === 
             "Invalid user authentication,Please try to relogin with exact credentials.") {
@@ -196,7 +197,7 @@ const [isVisible, setIsVisible] = useState(false);
                 contact_person_responsibility:
                 shipper?.contact_person?.responsibility,
                 contact_person_phone: shipper?.basic_info?.contact_person_phone,
-                //contact_person_email: shipper?.contact_person?.email,
+                contact_person_email: shipper?.contact_person?.email,
                 total_fleet_size: shipper.user_fleet_size,
                 alternate_phone: shipper?.address?.alternative_phone,
                 business_area: shipper?.basic_info?.business_area,
